@@ -7,8 +7,8 @@ import org.testng.ITestResult;
 
 public class ExecutionFlowController implements IInvokedMethodListener {
 	
-	protected static final ThreadLocal<Map<String, Object>> fromBefore = new ThreadLocal<>();
-	protected static final ThreadLocal<Map<String, Object>> fromMethod = new ThreadLocal<>();
+	protected static final ThreadLocal<Map<String, Object>> fromBefore = new InheritableThreadLocal<>();
+	protected static final ThreadLocal<Map<String, Object>> fromMethod = new InheritableThreadLocal<>();
 
 	public void afterInvocation(IInvokedMethod method, ITestResult testResult) {
 	    if (method.getTestMethod().isBeforeMethodConfiguration()) {
