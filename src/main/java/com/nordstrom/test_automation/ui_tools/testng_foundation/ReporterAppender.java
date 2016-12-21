@@ -30,17 +30,20 @@ public class ReporterAppender extends OutputStreamAppender<ILoggingEvent> {
     }
     
     private String getOutput() {
+    	String output;
     	Charset charset = ((PatternLayoutEncoder) encoder).getCharset();
     	ByteArrayOutputStream outputStream = (ByteArrayOutputStream) getOutputStream();
     	if (charset == null) {
-    		return outputStream.toString();
+    		output = outputStream.toString();
     	} else {
 	    	try {
-				return outputStream.toString(charset.name());
+				output = outputStream.toString(charset.name());
 			} catch (UnsupportedEncodingException e) {
 				throw new IllegalStateException("An existing charset cannot possibly be unsupported.");
 			}
     	}
+    	outputStream.reset();
+    	return output;
     }
     
 	/**
