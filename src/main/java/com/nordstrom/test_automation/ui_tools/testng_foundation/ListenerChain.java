@@ -40,8 +40,6 @@ public class ListenerChain
 	 */
 	@Override
 	public void onStart(ISuite suite) {
-		System.out.println("[ISuiteListener] onStart");
-		
 		Set<ListenerChainable> chainables = Sets.newHashSet();
 		for (ITestNGMethod method : suite.getAllMethods()) {
 			Object instance = method.getInstance();
@@ -68,8 +66,6 @@ public class ListenerChain
 	 */
 	@Override
 	public void onFinish(ISuite suite) {
-		System.out.println("[ISuiteListener] onFinish");
-		
 		for (ISuiteListener suiteListener : m_suiteListeners) {
 			suiteListener.onFinish(suite);
 		}
@@ -86,8 +82,6 @@ public class ListenerChain
 	 */
 	@Override
 	public void onTestStart(ITestResult result) {
-		System.out.println("[ITestListener] onTestStart");
-		
 		for (int i = m_testListeners.size() - 1; i > -1; i--) {
 			m_testListeners.get(i).onTestStart(result);
 		}
@@ -102,8 +96,6 @@ public class ListenerChain
 	 */
 	@Override
 	public void onTestSuccess(ITestResult result) {
-		System.out.println("[ITestListener] onTestSuccess");
-		
 		for (ITestListener testListener : m_testListeners) {
 			testListener.onTestSuccess(result);
 		}
@@ -118,8 +110,6 @@ public class ListenerChain
 	 */
 	@Override
 	public void onTestFailure(ITestResult result) {
-		System.out.println("[ITestListener] onTestFailure");
-		
 		for (ITestListener testListener : m_testListeners) {
 			testListener.onTestFailure(result);
 		}
@@ -134,8 +124,6 @@ public class ListenerChain
 	 */
 	@Override
 	public void onTestSkipped(ITestResult result) {
-		System.out.println("[ITestListener] onTestSkipped");
-		
 		for (ITestListener testListener : m_testListeners) {
 			testListener.onTestSkipped(result);
 		}
@@ -152,8 +140,6 @@ public class ListenerChain
 	 */
 	@Override
 	public void onTestFailedButWithinSuccessPercentage(ITestResult result) {
-		System.out.println("[ITestListener] onTestFailedButWithinSuccessPercentage");
-		
 		for (ITestListener testListener : m_testListeners) {
 			testListener.onTestFailedButWithinSuccessPercentage(result);
 		}
@@ -168,8 +154,6 @@ public class ListenerChain
 	 */
 	@Override
 	public void onStart(ITestContext context) {
-		System.out.println("[ITestListener] onStart");
-		
 		for (int i = m_testListeners.size() - 1; i > -1; i--) {
 			m_testListeners.get(i).onStart(context);
 		}
@@ -184,8 +168,6 @@ public class ListenerChain
 	 */
 	@Override
 	public void onFinish(ITestContext context) {
-		System.out.println("[ITestListener] onFinish");
-		
 		for (ITestListener testListener : m_testListeners) {
 			testListener.onFinish(context);
 		}
@@ -201,8 +183,6 @@ public class ListenerChain
 	 */
 	@Override
 	public void onBeforeClass(ITestClass testClass) {
-		System.out.println("[IClassListener] onBeforeClass");
-		
 		for (int i = m_classListeners.size() - 1; i > -1; i--) {
 			m_classListeners.get(i).onBeforeClass(testClass);
 		}
@@ -218,8 +198,6 @@ public class ListenerChain
 	 */
 	@Override
 	public void onAfterClass(ITestClass testClass) {
-		System.out.println("[IClassListener] onAfterClass");
-		
 		for (IClassListener classListener : m_classListeners) {
 			classListener.onAfterClass(testClass);
 		}
@@ -234,8 +212,6 @@ public class ListenerChain
 	 */
 	@Override
 	public void beforeInvocation(IInvokedMethod method, ITestResult testResult) {
-		System.out.println("[IInvokedMethodListener] beforeInvocation");
-		
 		for (int i = m_methodListeners.size() - 1; i > -1; i--) {
 			m_methodListeners.get(i).beforeInvocation(method, testResult);
 		}
@@ -250,8 +226,6 @@ public class ListenerChain
 	 */
 	@Override
 	public void afterInvocation(IInvokedMethod method, ITestResult testResult) {
-		System.out.println("[IInvokedMethodListener] afterInvocation");
-		
 		for (IInvokedMethodListener methodListener : m_methodListeners) {
 			methodListener.afterInvocation(method, testResult);
 		}
@@ -265,8 +239,6 @@ public class ListenerChain
 	 */
 	@Override
 	public void onConfigurationSuccess(ITestResult itr) {
-		System.out.println("[IConfigurationListener] onConfigurationSuccess");
-		
 		for (IConfigurationListener configListener : m_configListeners) {
 			configListener.onConfigurationSuccess(itr);
 		}
@@ -280,8 +252,6 @@ public class ListenerChain
 	 */
 	@Override
 	public void onConfigurationFailure(ITestResult itr) {
-		System.out.println("[IConfigurationListener] onConfigurationFailure");
-		
 		for (IConfigurationListener configListener : m_configListeners) {
 			configListener.onConfigurationFailure(itr);
 		}
@@ -295,8 +265,6 @@ public class ListenerChain
 	 */
 	@Override
 	public void onConfigurationSkip(ITestResult itr) {
-		System.out.println("[IConfigurationListener] onConfigurationSkip");
-		
 		for (IConfigurationListener configListener : m_configListeners) {
 			configListener.onConfigurationSkip(itr);
 		}
@@ -310,8 +278,6 @@ public class ListenerChain
 	 */
 	@Override
 	public void beforeConfiguration(ITestResult tr) {
-		System.out.println("[IConfigurationListener2] beforeConfiguration");
-		
 		for (int i = m_configListeners.size() - 1; i > -1; i--) {
 			m_configListeners.get(i).beforeConfiguration(tr);
 		}
