@@ -1,10 +1,9 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.nordstrom.test-automation.ui-tools</groupId>
   <artifactId>testng-foundation</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>1.0.0</version>
   <packaging>jar</packaging>
 
   <name>testng-foundation</name>
@@ -23,7 +22,7 @@
     <connection>scm:git:git@github.com:bb8d/testng-foundation.git</connection>
     <developerConnection>scm:git:git@github.com:bb8d/testng-foundation.git</developerConnection>
     <url>https://git.nordstrom.net/projects/MFATT/repos/testng-foundation/browse</url>
-    <tag>HEAD</tag>
+    <tag>testng-foundation-1.0.0</tag>
   </scm>
 
   <dependencies>
