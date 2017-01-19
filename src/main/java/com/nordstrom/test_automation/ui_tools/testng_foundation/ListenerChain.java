@@ -176,7 +176,7 @@ public class ListenerChain
 	/**
 	 * [IClassListener]
 	 * Invoked after the test class is instantiated and before
-	 * {@link org.testng.annotations.BeforeClass &commat;BeforeClass} 
+	 * {@link org.testng.annotations.BeforeClass &#64;BeforeClass} 
 	 * configuration methods are called.
 	 * 
 	 * @param testClass TestNG representation for the current test class
@@ -191,7 +191,7 @@ public class ListenerChain
 	/**
 	 * [IClassListener]
 	 * Invoked after all of the test methods of the test class have been invoked
-	 * and before {@link org.testng.annotations.AfterClass &commat;AfterClass}
+	 * and before {@link org.testng.annotations.AfterClass &#64;AfterClass}
 	 * configuration methods are called.
 	 * 
 	 * @param testClass TestNG representation for the current test class

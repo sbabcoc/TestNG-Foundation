@@ -19,10 +19,10 @@ import org.testng.collections.Maps;
  *             <li>{@link #getDriver()} gets the driver for the current test.</li>
  *             <li>{@link #setDriver(WebDriver)} sets the driver for the current test.</li>
  *             <li>{@link #getDriver(ITestResult)} gets the driver for the specified test result.</li>
- *             <li>{@link #getDriver(WebDriver, ITestResult)} sets the driver for the specified test result.</li>
+ *             <li>{@link #setDriver(WebDriver, ITestResult)} sets the driver for the specified test result.</li>
  *         </ul>
  *     </li>
- * <ul>
+ * </ul>
  */
 public class PropertyManager {
 	
