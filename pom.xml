@@ -19,8 +19,8 @@
   </properties>
 
   <scm>
-    <connection>scm:git:git@github.com:bb8d/testng-foundation.git</connection>
-    <developerConnection>scm:git:git@github.com:bb8d/testng-foundation.git</developerConnection>
+    <connection>scm:git:git@nordstrom.net:bb8d/testng-foundation.git</connection>
+    <developerConnection>scm:git:git@nordstrom.net:bb8d/testng-foundation.git</developerConnection>
     <url>https://git.nordstrom.net/projects/MFATT/repos/testng-foundation/browse</url>
     <tag>testng-foundation-1.0.0</tag>
   </scm>
