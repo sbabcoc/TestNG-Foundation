@@ -3,7 +3,7 @@
 
   <groupId>com.nordstrom.test-automation.ui-tools</groupId>
   <artifactId>testng-foundation</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>1.0.0</version>
   <packaging>jar</packaging>
 
   <name>testng-foundation</name>
@@ -22,7 +22,7 @@
     <connection>scm:git:git@nordstrom.net:bb8d/testng-foundation.git</connection>
     <developerConnection>scm:git:git@nordstrom.net:bb8d/testng-foundation.git</developerConnection>
     <url>https://git.nordstrom.net/projects/MFATT/repos/testng-foundation/browse</url>
-    <tag>HEAD</tag>
+    <tag>testng-foundation-1.0.0</tag>
   </scm>
 
   <dependencies>
