@@ -3,11 +3,12 @@
 
   <groupId>com.nordstrom.test-automation.ui-tools</groupId>
   <artifactId>testng-foundation</artifactId>
-  <version>1.0.0</version>
+  <version>99999-SNAPSHOT</version>
   <packaging>jar</packaging>
 
-  <name>testng-foundation</name>
-  <url>http://maven.apache.org</url>
+  <name>TestNG Foundation</name>
+  <description>This is the foundation framework for TestNG automation via Selenium WebDriver and RESTeasy</description>
+  <url>https://git.nordstrom.net/projects/MFATT/repos/testng-foundation/browse</url>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -15,16 +16,16 @@
     <compiler-plugin.version>3.6.0</compiler-plugin.version>
     <source-plugin.version>3.0.1</source-plugin.version>
     <javadoc-plugin.version>2.10.4</javadoc-plugin.version>
-    <release-plugin.version>2.5.3</release-plugin.version>
+    <deploy-plugin.version>2.8.2</deploy-plugin.version>
   </properties>
 
-  <scm>
-    <connection>scm:git:git@nordstrom.net:bb8d/testng-foundation.git</connection>
-    <developerConnection>scm:git:git@nordstrom.net:bb8d/testng-foundation.git</developerConnection>
-    <url>https://git.nordstrom.net/projects/MFATT/repos/testng-foundation/browse</url>
-    <tag>testng-foundation-1.0.0</tag>
-  </scm>
-
+  <distributionManagement>
+    <repository>
+      <id>thirdparty</id>
+      <url>https://mvnrepo.nordstrom.net/nexus/content/repositories/thirdparty</url>
+    </repository>
+  </distributionManagement>
+  
   <dependencies>
     <dependency>
       <groupId>com.nordstrom.test-automation.tools</groupId>
@@ -57,8 +58,8 @@
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-release-plugin</artifactId>
-          <version>${release-plugin.version}</version>
+          <artifactId>maven-deploy-plugin</artifactId>
+          <version>${deploy-plugin.version}</version>
         </plugin>
       </plugins>
     </pluginManagement>
@@ -90,13 +91,21 @@
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-release-plugin</artifactId>
-        <configuration>
-          <autoVersionSubmodules>true</autoVersionSubmodules>
-          <useReleaseProfile>false</useReleaseProfile>
-          <releaseProfiles>release</releaseProfiles>
-          <goals>deploy</goals>
-        </configuration>
+        <artifactId>maven-deploy-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>deploy-file</id>
+            <phase>deploy</phase>
+            <goals>
+              <goal>deploy-file</goal>
+            </goals>
+            <configuration>
+              <file>${project.build.directory}/${project.build.finalName}</file>
+              <repositoryId>thirdparty</repositoryId>
+              <url>https://mvnrepo.nordstrom.net/nexus/content/repositories/thirdparty</url>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>
