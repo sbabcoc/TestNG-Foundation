@@ -100,7 +100,7 @@
               <goal>deploy-file</goal>
             </goals>
             <configuration>
-              <file>${project.build.directory}/${project.build.finalName}</file>
+              <file>${project.build.directory}${file.separator}${project.build.finalName}.jar</file>
               <repositoryId>thirdparty</repositoryId>
               <url>https://mvnrepo.nordstrom.net/nexus/content/repositories/thirdparty</url>
             </configuration>
