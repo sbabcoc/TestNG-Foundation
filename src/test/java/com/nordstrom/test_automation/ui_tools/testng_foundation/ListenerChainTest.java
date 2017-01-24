@@ -2,30 +2,11 @@ package com.nordstrom.test_automation.ui_tools.testng_foundation;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.fail;
 
-import java.lang.reflect.Method;
-import java.util.Collections;
-import java.util.Set;
-
-import org.testng.IClassListener;
-import org.testng.IConfigurationListener2;
-import org.testng.IInvokedMethod;
-import org.testng.IInvokedMethodListener;
-import org.testng.ISuite;
-import org.testng.ISuiteListener;
-import org.testng.ITestClass;
-import org.testng.ITestContext;
-import org.testng.ITestListener;
 import org.testng.ITestNGListener;
-import org.testng.ITestResult;
-import org.testng.SkipException;
 import org.testng.TestListenerAdapter;
 import org.testng.TestNG;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-import org.testng.collections.Sets;
 
 public class ListenerChainTest {
 
@@ -78,7 +59,7 @@ public class ListenerChainTest {
 	}
 	
 	@Test
-	public void verifytestFailed() {
+	public void verifyTestFailed() {
 		
 		ExecutionFlowController efc = new ExecutionFlowController();
 		ListenerChain lc = new ListenerChain();
@@ -341,227 +322,6 @@ public class ListenerChainTest {
 		
 		assertTrue(ChainedListener.testStarted.contains("testAfterSkipped"));
 		assertTrue(ChainedListener.testSuccess.contains("testAfterSkipped"));
-		
-	}
-	
-	private static class ListenerChainerClass implements ListenerChainable {
-		
-		private int invokeCount;
-		
-		@BeforeMethod(groups = {"happyPath", "testFailed", "testSkipped", "failAndPass", "afterFailed", "afterSkipped"})
-		public void beforeSuccess(Method method) {
-			System.out.println("beforeSuccess");
-		}
-		
-		@BeforeMethod(groups = {"beforeFailed"})
-		public void beforeFailure(Method method) {
-			System.out.println("beforeFailure");
-			fail("beforeFailure");
-		}
-		
-		@BeforeMethod(groups = {"beforeSkipped"})
-		public void beforeSkipped(Method method) {
-			System.out.println("beforeSkipped");
-			throw new SkipException("beforeSkipped");
-		}
-		
-		@Test(groups = {"happyPath"})
-		public void happyPath() {
-			System.out.println("happyPath");
-			assertTrue(true);
-		}
-		
-		@Test(groups = {"testFailed"})
-		public void testFailed() {
-			System.out.println("testFailed");
-			fail("testFailed");
-		}
-		
-		@Test(groups = {"testSkipped"})
-		public void testSkipped() {
-			System.out.println("testSkipped");
-			throw new SkipException("testSkipped");
-		}
-		
-		@Test(invocationCount = 4, successPercentage = 75, groups = {"failAndPass"})
-		public void failAndPass() {
-			System.out.println("failAndPass");
-			assertTrue(invokeCount++ > 0);
-		}
-		
-		@Test(groups = {"beforeFailed"})
-		public void skipBeforeFailed() {
-			System.out.println("skipBeforeFailed");
-			assertTrue(true);
-		}
-		
-		@Test(groups = {"beforeSkipped"})
-		public void skipBeforeSkipped() {
-			System.out.println("skipBeforeSkipped");
-			assertTrue(true);
-		}
-		
-		@Test(groups = {"afterFailed"})
-		public void testAfterFailed() {
-			System.out.println("testAfterFailed");
-			assertTrue(true);
-		}
-		
-		@Test(groups = {"afterSkipped"})
-		public void testAfterSkipped() {
-			System.out.println("testAfterSkipped");
-			assertTrue(true);
-		}
-		
-		@AfterMethod(groups = {"happyPath", "testFailed", "testSkipped", "failAndPass", "beforeFailed", "beforeSkipped"})
-		public void afterSuccess(Method method) {
-			System.out.println("afterSuccess");
-		}
-		
-		@AfterMethod(groups = {"afterFailed"})
-		public void afterFailure(Method method) {
-			System.out.println("afterFailure");
-			fail("afterFailure");
-		}
-		
-		@AfterMethod(groups = {"afterSkipped"})
-		public void afterSkipped(Method method) {
-			System.out.println("afterSkipped");
-			throw new SkipException("afterSkipped");
-		}
-		
-		@Override
-		public void attachListeners(ListenerChain listenerChain) {
-			listenerChain.around(ChainedListener.class);
-		}
-		
-	}
-	
-	public static class ChainedListener
-			implements ISuiteListener, ITestListener, IClassListener, IInvokedMethodListener, IConfigurationListener2 {
-		
-		private static Set<String> configSuccess = Collections.synchronizedSet(Sets.<String>newHashSet());
-		private static Set<String> configFailure = Collections.synchronizedSet(Sets.<String>newHashSet());
-		private static Set<String> configSkipped = Collections.synchronizedSet(Sets.<String>newHashSet());
-		private static Set<String> beforeConfig = Collections.synchronizedSet(Sets.<String>newHashSet());
-		
-		private static Set<String> beforeMethodBefore = Collections.synchronizedSet(Sets.<String>newHashSet());
-		private static Set<String> beforeMethodAfter = Collections.synchronizedSet(Sets.<String>newHashSet());
-		private static Set<String> testMethodBefore = Collections.synchronizedSet(Sets.<String>newHashSet());
-		private static Set<String> testMethodAfter = Collections.synchronizedSet(Sets.<String>newHashSet());
-		private static Set<String> afterMethodBefore = Collections.synchronizedSet(Sets.<String>newHashSet());
-		private static Set<String> afterMethodAfter = Collections.synchronizedSet(Sets.<String>newHashSet());
-		
-		private static Set<String> beforeClass = Collections.synchronizedSet(Sets.<String>newHashSet());
-		private static Set<String> afterClass = Collections.synchronizedSet(Sets.<String>newHashSet());
-		
-		private static Set<String> testStarted = Collections.synchronizedSet(Sets.<String>newHashSet());
-		private static Set<String> testSuccess = Collections.synchronizedSet(Sets.<String>newHashSet());
-		private static Set<String> testFailure = Collections.synchronizedSet(Sets.<String>newHashSet());
-		private static Set<String> testSkipped = Collections.synchronizedSet(Sets.<String>newHashSet());
-		private static Set<String> testCurved = Collections.synchronizedSet(Sets.<String>newHashSet());
-		private static Set<String> testsBegun = Collections.synchronizedSet(Sets.<String>newHashSet());
-		private static Set<String> testsEnded = Collections.synchronizedSet(Sets.<String>newHashSet());
-		
-		private static Set<String> suiteBegun = Collections.synchronizedSet(Sets.<String>newHashSet());
-		private static Set<String> suiteEnded = Collections.synchronizedSet(Sets.<String>newHashSet());
-
-		@Override
-		public void onConfigurationSuccess(ITestResult itr) {
-			configSuccess.add(itr.getName());
-		}
-
-		@Override
-		public void onConfigurationFailure(ITestResult itr) {
-			configFailure.add(itr.getName());
-		}
-
-		@Override
-		public void onConfigurationSkip(ITestResult itr) {
-			configSkipped.add(itr.getName());
-		}
-
-		@Override
-		public void beforeConfiguration(ITestResult tr) {
-			beforeConfig.add(tr.getName());
-		}
-
-		@Override
-		public void beforeInvocation(IInvokedMethod method, ITestResult testResult) {
-		    if (method.getTestMethod().isBeforeMethodConfiguration()) {
-				beforeMethodBefore.add(testResult.getName());
-		    } else if (method.isTestMethod()) {
-		    	testMethodBefore.add(testResult.getName());
-			} else if (method.getTestMethod().isAfterMethodConfiguration()) {
-				afterMethodBefore.add(testResult.getName());
-			}
-		}
-
-		@Override
-		public void afterInvocation(IInvokedMethod method, ITestResult testResult) {
-		    if (method.getTestMethod().isBeforeMethodConfiguration()) {
-				beforeMethodAfter.add(testResult.getName());
-		    } else if (method.isTestMethod()) {
-		    	testMethodAfter.add(testResult.getName());
-			} else if (method.getTestMethod().isAfterMethodConfiguration()) {
-				afterMethodAfter.add(testResult.getName());
-			}
-		}
-
-		@Override
-		public void onBeforeClass(ITestClass testClass) {
-			beforeClass.add(testClass.getRealClass().getSimpleName());
-		}
-
-		@Override
-		public void onAfterClass(ITestClass testClass) {
-			afterClass.add(testClass.getRealClass().getSimpleName());
-		}
-
-		@Override
-		public void onTestStart(ITestResult result) {
-			testStarted.add(result.getName());
-		}
-
-		@Override
-		public void onTestSuccess(ITestResult result) {
-			testSuccess.add(result.getName());
-		}
-
-		@Override
-		public void onTestFailure(ITestResult result) {
-			testFailure.add(result.getName());
-		}
-
-		@Override
-		public void onTestSkipped(ITestResult result) {
-			testSkipped.add(result.getName());
-		}
-
-		@Override
-		public void onTestFailedButWithinSuccessPercentage(ITestResult result) {
-			testCurved.add(result.getName());
-		}
-
-		@Override
-		public void onStart(ITestContext context) {
-			testsBegun.add(context.getName());
-		}
-
-		@Override
-		public void onFinish(ITestContext context) {
-			testsEnded.add(context.getName());
-		}
-
-		@Override
-		public void onStart(ISuite suite) {
-			suiteBegun.add(suite.getName());
-		}
-
-		@Override
-		public void onFinish(ISuite suite) {
-			suiteEnded.add(suite.getName());
-		}
 		
 	}
 	
