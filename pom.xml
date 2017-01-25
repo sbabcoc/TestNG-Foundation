@@ -3,7 +3,7 @@
 
   <groupId>com.nordstrom.test-automation.ui-tools</groupId>
   <artifactId>testng-foundation</artifactId>
-  <version>99999-SNAPSHOT</version>
+  <version>1.0.2-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <name>TestNG Foundation</name>
@@ -21,8 +21,8 @@
 
   <distributionManagement>
     <repository>
-      <id>thirdparty</id>
-      <url>https://mvnrepo.nordstrom.net/nexus/content/repositories/thirdparty</url>
+      <id>releases</id>
+      <url>https://mvnrepo.nordstrom.net/nexus/content/repositories/releases</url>
     </repository>
   </distributionManagement>
   
@@ -101,8 +101,8 @@
             </goals>
             <configuration>
               <file>${project.build.directory}${file.separator}${project.build.finalName}.jar</file>
-              <repositoryId>thirdparty</repositoryId>
-              <url>https://mvnrepo.nordstrom.net/nexus/content/repositories/thirdparty</url>
+              <repositoryId>releases</repositoryId>
+              <url>https://mvnrepo.nordstrom.net/nexus/content/repositories/releases</url>
             </configuration>
           </execution>
         </executions>
