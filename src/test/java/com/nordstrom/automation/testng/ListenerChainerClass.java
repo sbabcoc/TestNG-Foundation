@@ -1,4 +1,4 @@
-package com.nordstrom.test_automation.ui_tools.testng_foundation;
+package com.nordstrom.automation.testng;
 
 import static org.testng.Assert.assertTrue;
 import static org.testng.Assert.fail;
@@ -9,6 +9,9 @@ import org.testng.SkipException;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+
+import com.nordstrom.automation.testng.ListenerChain;
+import com.nordstrom.automation.testng.ListenerChainable;
 
 class ListenerChainerClass implements ListenerChainable {
 	

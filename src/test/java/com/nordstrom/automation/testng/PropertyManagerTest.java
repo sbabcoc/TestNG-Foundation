@@ -1,4 +1,4 @@
-package com.nordstrom.test_automation.ui_tools.testng_foundation;
+package com.nordstrom.automation.testng;
 
 import static org.testng.Assert.assertEquals;
 
@@ -14,6 +14,7 @@ import org.testng.Reporter;
 import org.testng.annotations.Test;
 
 import com.google.common.collect.Maps;
+import com.nordstrom.automation.testng.PropertyManager;
 
 public class PropertyManagerTest {
 	

@@ -1,4 +1,4 @@
-package com.nordstrom.test_automation.ui_tools.testng_foundation;
+package com.nordstrom.automation.testng;
 
 import java.util.Map;
 

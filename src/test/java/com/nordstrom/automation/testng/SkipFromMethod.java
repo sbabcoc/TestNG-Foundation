@@ -1,4 +1,4 @@
-package com.nordstrom.test_automation.ui_tools.testng_foundation;
+package com.nordstrom.automation.testng;
 
 import static org.testng.Assert.assertTrue;
 
@@ -6,11 +6,12 @@ import java.lang.reflect.Method;
 
 import org.testng.ITestResult;
 import org.testng.Reporter;
+import org.testng.SkipException;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-class HappyPathClass {
+class SkipFromMethod {
 	
 	protected static final String ATTRIBUTE = "ATTRIBUTE";
 	protected static final String VALUE = "VALUE";
@@ -35,7 +36,7 @@ class HappyPathClass {
 	public void testMethod() {
 		methodResult = Reporter.getCurrentTestResult();
 		fromMethod = (String) methodResult.getAttribute(ATTRIBUTE);
-		assertTrue(true);
+		throw new SkipException("Skip from [method]");
 	}
 	
 	@Test
