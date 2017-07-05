@@ -12,7 +12,8 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <automation-framework-core.version>0.3.0.0</automation-framework-core.version>
+    <testng.version>6.10</testng.version>
+    <automation-framework-core.version>0.5.0.0</automation-framework-core.version>
     <compiler-plugin.version>3.6.0</compiler-plugin.version>
     <source-plugin.version>3.0.1</source-plugin.version>
     <javadoc-plugin.version>2.10.4</javadoc-plugin.version>
@@ -26,11 +27,29 @@
     </repository>
   </distributionManagement>
   
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.testng</groupId>
+        <artifactId>testng</artifactId>
+        <version>${testng.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.nordstrom.test-automation.tools</groupId>
+        <artifactId>automation-framework-core</artifactId>
+        <version>${automation-framework-core.version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+  
   <dependencies>
+    <dependency>
+      <groupId>org.testng</groupId>
+      <artifactId>testng</artifactId>
+    </dependency>
     <dependency>
       <groupId>com.nordstrom.test-automation.tools</groupId>
       <artifactId>automation-framework-core</artifactId>
-      <version>${automation-framework-core.version}</version>
     </dependency>
   </dependencies>
 

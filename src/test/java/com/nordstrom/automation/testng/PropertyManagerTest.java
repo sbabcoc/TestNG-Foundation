@@ -5,6 +5,7 @@ import static org.testng.Assert.assertEquals;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -13,7 +14,6 @@ import org.testng.ITestResult;
 import org.testng.Reporter;
 import org.testng.annotations.Test;
 
-import com.google.common.collect.Maps;
 import com.nordstrom.automation.testng.PropertyManager;
 
 public class PropertyManagerTest {
@@ -31,7 +31,7 @@ public class PropertyManagerTest {
 	private static final Map<String, Object> attributeMap;
 	
 	static {
-		Map<String, Object> map = Maps.newHashMap();
+		Map<String, Object> map = new HashMap<>();
 		map.put(BOOLEAN_KEY, BOOLEAN_VAL);
 		map.put(STRING_KEY, STRING_VAL );
 		map.put(OBJECT_KEY, OBJECT_VAL);
