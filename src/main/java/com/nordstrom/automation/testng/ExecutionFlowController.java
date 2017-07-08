@@ -12,6 +12,16 @@ import org.testng.ITestResult;
 /**
  * This TestNG listener performs several basic functions related to test method execution: <br>
  * <ul>
+ *     <li>Propagate attributes: [<i>before</i> method] &rarr; [test method] &rarr; [<i>after</i> method]</li>
+ * </ul> 
+ */
+
+/*
+ * TODO - This block comment describes features that have yet to be implemented.
+ * 
+ * The following items describe features that have yet to be implemented: target platform, automatic retry, and method
+ * timeout management. All of these will be implemented in the method interceptor.
+ * 
  *     <li>For test classes that request target platform support: 
  *         <ul>
  *             <li>For runs targeting a specific platform, filter out non-target methods.</li>
@@ -28,18 +38,6 @@ import org.testng.ITestResult;
  *         </ul>
  *     </li>
  *     <li>For methods that don't specify a timeout interval, set the configured (or default) standard interval.</li>
- *     <li>Manage Selenium driver lifetime.
- *         <ul>
- *             <li>Driver capabilities will be provided by implementations of a standard interface.</li>
- *             <li>A few standard implementations will be provided (Chrome/Firefox/Edge).</li>
- *             <li>The standard implementations will be cataloged in an enumeration that maps target browsers to
- *                 capabilities records and fully qualified implementation class names.</li>
- *             <li>The driver catalog will be extensible through the Java properties mechanism.</li>
- *             <li><b>NOTE</b>: Method timeout intervals are adjusted to account for driver acquisition delay.</li>
- *         </ul>
- *     </li>
- *     <li>Propagate attributes: [<i>before</i> method] &rarr; [test method] &rarr; [<i>after</i> method]</li>
- * </ul> 
  */
 public class ExecutionFlowController implements IInvokedMethodListener, IMethodInterceptor {
 	

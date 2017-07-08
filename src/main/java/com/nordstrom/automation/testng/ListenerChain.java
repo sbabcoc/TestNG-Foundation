@@ -20,6 +20,10 @@ import org.testng.ITestResult;
 import org.testng.collections.Lists;
 import org.testng.collections.Sets;
 
+/**
+ * This TestNG listener enables the addition of other listeners at runtime and guarantees the order in which they're
+ * invoked. This is similar in behavior to a JUnit rule chain.
+ */
 public class ListenerChain
 		implements ISuiteListener, ITestListener, IClassListener, IInvokedMethodListener, IConfigurationListener2 {
 	
