@@ -63,19 +63,3 @@ public class ExampleTest implements ListenerChainable {
 ```
 
 As shown above, we use the **`attachListeners()`** callback to attach <span style="color:blue">DriverManager</span> and <span style="color:blue">ExecutionFlowController</span>. The order in which listener methods are invoked is determined by the order in which listener objects are added to the chain. Listener _before_ methods are invoked in <span style="color:yellowgreen">last-added-first-called</span> order. Listener _after_ methods are invoked in <span style="color:yellowgreen">first-added-first-called</span> order. Only one instance of any given listener class will be included in the chain.
-
-## ExecutionFlowController
-
-To maintain its settings and state through all phases of each test, **Selenium Foundation** relies on the <span style="color:blue">ExecutionFlowController</span> listener. This **TestNG** listener propagates values stored as test attributes from one phase of test execution to the next. A bit of background about TestNG test attribute will be helpful in understanding the purpose of this listener.
-
-Each configuration method (i.e. - `@BeforeMethod` or `@AfterMethod`) and each test method executed by **TestNG** is given its own private data object to play with - the <span style="color:blue">ITestResult</span> object. Among its many responsibilities, the test result object maintains a set of named values - the <span style="color:yellowgreen">attributes</span> collection. **Selenium Foundation** uses this **TestNG** feature to store test-specific values such as driver instance, initial page object, configuration object, and local Selenium Grid process objects.
-
-The <span style="color:yellowgreen">attributes</span> collections are only accessible from the test result object within which they're stored, and each phase of test execution only provides direct access to the "current" test result object - the one owned by the configuration method or test method that's currently being executed. Values stored in the <span style="color:yellowgreen">attributes</span> collection of the `@BeforeMethod` method don't automatically get propagated to the <span style="color:yellowgreen">attributes</span> collection of the `@Test` method. Values stored in the <span style="color:yellowgreen">attributes</span> collection of the `@Test` method don't automatically get propagated to the <span style="color:yellowgreen">attributes</span> collection of the `@AfterMethod` method.
-
-For tests built on **Selenium Foundation**, we need all of the values stored during each phase of the test to be available to the subsequent phases. The task of propagating test attributes from one phase to the next is handled by <span style="color:blue">ExecutionFlowController</span>. After a `@BeforeMethod` method or test method is invoked, <span style="color:blue">ExecutionFlowController</span> extracts the <span style="color:yellowgreen">attributes</span> collection from this method's result object into its own thread-local storage. Before a test method or `@AfterMethod` method is invoked, <span style="color:blue">ExecutionFlowController</span> injects the values it stored from the previous phase into the <span style="color:yellowgreen">attributes</span> collection of this method's result object.
-
-Note that <span style="color:blue">ExecutionFlowController</span> propagates the entire <span style="color:yellowgreen">attributes</span> collection from phase to phase, not just the attributes created by **Selenium Foundation**. If your test code or page models create test attributes, these will be propagated as well. This provides a convenient, thread-safe way to persist values that are available through the entire test life cycle, which are only visible within the context of the test that created them.
-
-
-
-
