@@ -54,23 +54,23 @@ public class ExecutionFlowController implements IInvokedMethodListener, IMethodI
 	    } else if (method.isTestMethod()) {
 			fromMethod.set(PropertyManager.extractAttributes(testResult));
 		} else if (method.getTestMethod().isAfterMethodConfiguration()) {
-			
+			// nothing to do here
 		}
 	}
 
 	public void beforeInvocation(IInvokedMethod method, ITestResult testResult) {
-		if (testResult.getInstance() instanceof IInvokedMethodListenerEx) {
-			((IInvokedMethodListenerEx) testResult.getInstance()).beforeInvocation(method, testResult);
-		}
-		
 	    if (method.getTestMethod().isBeforeMethodConfiguration()) {
-			
+			// nothing to do here
 	    } else if (method.isTestMethod()) {
 			PropertyManager.injectAttributes(fromBefore.get(), testResult);
 			fromBefore.remove();
 		} else if (method.getTestMethod().isAfterMethodConfiguration()) {
 			PropertyManager.injectAttributes(fromMethod.get(), testResult);
 			fromMethod.remove();
+		}
+		
+		if (testResult.getInstance() instanceof IInvokedMethodListenerEx) {
+			((IInvokedMethodListenerEx) testResult.getInstance()).beforeInvocation(method, testResult);
 		}
 	}
 

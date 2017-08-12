@@ -1,6 +1,7 @@
 package com.nordstrom.automation.testng;
 
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.testng.ITestResult;
 import org.testng.collections.Maps;
@@ -42,8 +43,8 @@ public class PropertyManager {
 	 */
 	public static void injectAttributes(Map<String, Object> attributes, ITestResult testResult) {
 		if (attributes != null) {
-			for (String thisName : attributes.keySet()) {
-				testResult.setAttribute(thisName, attributes.get(thisName));
+			for (Entry<String, Object> thisEntry : attributes.entrySet()) {
+				testResult.setAttribute(thisEntry.getKey(), thisEntry.getValue());
 			}
 		}
 	}
