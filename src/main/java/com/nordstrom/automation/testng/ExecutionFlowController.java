@@ -44,6 +44,7 @@ public class ExecutionFlowController implements IInvokedMethodListener, IMethodI
 	protected static final ThreadLocal<Map<String, Object>> fromBefore = new InheritableThreadLocal<>();
 	protected static final ThreadLocal<Map<String, Object>> fromMethod = new InheritableThreadLocal<>();
 
+	@Override
 	public void afterInvocation(IInvokedMethod method, ITestResult testResult) {
 		if (testResult.getInstance() instanceof IInvokedMethodListenerEx) {
 			((IInvokedMethodListenerEx) testResult.getInstance()).afterInvocation(method, testResult);
@@ -58,6 +59,7 @@ public class ExecutionFlowController implements IInvokedMethodListener, IMethodI
 		}
 	}
 
+	@Override
 	public void beforeInvocation(IInvokedMethod method, ITestResult testResult) {
 	    if (method.getTestMethod().isBeforeMethodConfiguration()) {
 			// nothing to do here
