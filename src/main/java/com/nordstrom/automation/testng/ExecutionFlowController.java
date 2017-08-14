@@ -13,6 +13,11 @@ import org.testng.ITestResult;
  * This TestNG listener performs several basic functions related to test method execution: <br>
  * <ul>
  *     <li>Propagate attributes: [<i>before</i> method] &rarr; [test method] &rarr; [<i>after</i> method]</li>
+ *     <li>For test classes that implement the {@link IInvokedMethodListenerEx} interface,
+ *     <b>ExecutionFlowController</b> forwards calls from its own invoked method listener implementation to the
+ *     corresponding methods in the test class. Inbound attribute propagation is performed before forwarding the
+ *     {@link #beforeInvocation()} call, and outbound attribute propagation is performed after forwarding the
+ *     {@link #afterInvocation()} call.</li>
  * </ul> 
  */
 
