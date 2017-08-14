@@ -9,7 +9,7 @@ Future releases of **TestNG Foundation** will add automatic retry of failed test
 * [ExecutionFlowController](https://git.nordstrom.net/projects/MFATT/repos/testng-foundation/browse/src/main/java/com/nordstrom/automation/testng/ExecutionFlowController.java):  
 **ExecutionFlowController** is a TestNG listener that propagates test context attributes:  
  [_before_ method] → [test method] → [_after_ method]  
- For test classes that implement the **IInvokedMethodListenerEx** interface, **ExecutionFlowController** forwards calls from its own invoked method listener implementation to the corresponding methods in the test class. Inbound attribute propagation is performed before forwarding the `beforeInvocation()` call, and outbound attribute propagation is performed after forwarding the `afterInvocation()` call.
+ For test classes that implement the **IInvokedMethodListenerEx** interface, **ExecutionFlowController** forwards calls from its own invoked method listener implementation to the corresponding methods in the test class. Inbound attribute propagation is performed before forwarding the `beforeInvocation(IInvokedMethod, ITestResult)` call, and outbound attribute propagation is performed after forwarding the `afterInvocation(IInvokedMethod, ITestResult)` call.
 * [ListenerChain](https://git.nordstrom.net/projects/MFATT/repos/testng-foundation/browse/src/main/java/com/nordstrom/automation/testng/ListenerChain.java):  
 **ListenerChain** is a TestNG listener that enables you to add other listeners at runtime and guarantees the order in which they're invoked. This is similar in behavior to a JUnit rule chain.
 

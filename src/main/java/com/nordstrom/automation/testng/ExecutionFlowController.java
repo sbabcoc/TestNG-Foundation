@@ -16,8 +16,8 @@ import org.testng.ITestResult;
  *     <li>For test classes that implement the {@link IInvokedMethodListenerEx} interface,
  *     <b>ExecutionFlowController</b> forwards calls from its own invoked method listener implementation to the
  *     corresponding methods in the test class. Inbound attribute propagation is performed before forwarding the
- *     {@link #beforeInvocation()} call, and outbound attribute propagation is performed after forwarding the
- *     {@link #afterInvocation()} call.</li>
+ *     {@link #beforeInvocation(IInvokedMethod, ITestResult)} call, and outbound attribute propagation is performed
+ *     after forwarding the {@link #afterInvocation(IInvokedMethod, ITestResult)} call.</li>
  * </ul> 
  */
 
