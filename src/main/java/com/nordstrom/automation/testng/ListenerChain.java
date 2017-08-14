@@ -27,14 +27,14 @@ import org.testng.collections.Sets;
 public class ListenerChain
 		implements ISuiteListener, ITestListener, IClassListener, IInvokedMethodListener, IConfigurationListener2 {
 	
-	private Set<Class<? extends ITestNGListener>> m_allListeners = 
+	private Set<Class<? extends ITestNGListener>> allListeners = 
 			Collections.synchronizedSet(Sets.<Class<? extends ITestNGListener>>newHashSet());
 	
-	private List<ISuiteListener> m_suiteListeners = Collections.synchronizedList(Lists.<ISuiteListener>newArrayList());
-	private List<ITestListener> m_testListeners = Collections.synchronizedList(Lists.<ITestListener>newArrayList());
-	private List<IClassListener> m_classListeners = Collections.synchronizedList(Lists.<IClassListener>newArrayList());
-	private List<IInvokedMethodListener> m_methodListeners = Collections.synchronizedList(Lists.<IInvokedMethodListener>newArrayList());
-	private List<IConfigurationListener2> m_configListeners = Collections.synchronizedList(Lists.<IConfigurationListener2>newArrayList());
+	private List<ISuiteListener> suiteListeners = Collections.synchronizedList(Lists.<ISuiteListener>newArrayList());
+	private List<ITestListener> testListeners = Collections.synchronizedList(Lists.<ITestListener>newArrayList());
+	private List<IClassListener> classListeners = Collections.synchronizedList(Lists.<IClassListener>newArrayList());
+	private List<IInvokedMethodListener> methodListeners = Collections.synchronizedList(Lists.<IInvokedMethodListener>newArrayList());
+	private List<IConfigurationListener2> configListeners = Collections.synchronizedList(Lists.<IConfigurationListener2>newArrayList());
 
 	/** 
 	 * [ISuiteListener]
@@ -56,8 +56,8 @@ public class ListenerChain
 			chainable.attachListeners(this);
 		}
 		
-		for (int i = m_suiteListeners.size() - 1; i > -1; i--) {
-			m_suiteListeners.get(i).onStart(suite);
+		for (int i = suiteListeners.size() - 1; i > -1; i--) {
+			suiteListeners.get(i).onStart(suite);
 		}
 	}
 
@@ -70,7 +70,7 @@ public class ListenerChain
 	 */
 	@Override
 	public void onFinish(ISuite suite) {
-		for (ISuiteListener suiteListener : m_suiteListeners) {
+		for (ISuiteListener suiteListener : suiteListeners) {
 			suiteListener.onFinish(suite);
 		}
 	}
@@ -86,8 +86,8 @@ public class ListenerChain
 	 */
 	@Override
 	public void onTestStart(ITestResult result) {
-		for (int i = m_testListeners.size() - 1; i > -1; i--) {
-			m_testListeners.get(i).onTestStart(result);
+		for (int i = testListeners.size() - 1; i > -1; i--) {
+			testListeners.get(i).onTestStart(result);
 		}
 	}
 
@@ -100,7 +100,7 @@ public class ListenerChain
 	 */
 	@Override
 	public void onTestSuccess(ITestResult result) {
-		for (ITestListener testListener : m_testListeners) {
+		for (ITestListener testListener : testListeners) {
 			testListener.onTestSuccess(result);
 		}
 	}
@@ -114,7 +114,7 @@ public class ListenerChain
 	 */
 	@Override
 	public void onTestFailure(ITestResult result) {
-		for (ITestListener testListener : m_testListeners) {
+		for (ITestListener testListener : testListeners) {
 			testListener.onTestFailure(result);
 		}
 	}
@@ -128,7 +128,7 @@ public class ListenerChain
 	 */
 	@Override
 	public void onTestSkipped(ITestResult result) {
-		for (ITestListener testListener : m_testListeners) {
+		for (ITestListener testListener : testListeners) {
 			testListener.onTestSkipped(result);
 		}
 	}
@@ -144,7 +144,7 @@ public class ListenerChain
 	 */
 	@Override
 	public void onTestFailedButWithinSuccessPercentage(ITestResult result) {
-		for (ITestListener testListener : m_testListeners) {
+		for (ITestListener testListener : testListeners) {
 			testListener.onTestFailedButWithinSuccessPercentage(result);
 		}
 	}
@@ -158,8 +158,8 @@ public class ListenerChain
 	 */
 	@Override
 	public void onStart(ITestContext context) {
-		for (int i = m_testListeners.size() - 1; i > -1; i--) {
-			m_testListeners.get(i).onStart(context);
+		for (int i = testListeners.size() - 1; i > -1; i--) {
+			testListeners.get(i).onStart(context);
 		}
 	}
 
@@ -172,7 +172,7 @@ public class ListenerChain
 	 */
 	@Override
 	public void onFinish(ITestContext context) {
-		for (ITestListener testListener : m_testListeners) {
+		for (ITestListener testListener : testListeners) {
 			testListener.onFinish(context);
 		}
 	}
@@ -187,8 +187,8 @@ public class ListenerChain
 	 */
 	@Override
 	public void onBeforeClass(ITestClass testClass) {
-		for (int i = m_classListeners.size() - 1; i > -1; i--) {
-			m_classListeners.get(i).onBeforeClass(testClass);
+		for (int i = classListeners.size() - 1; i > -1; i--) {
+			classListeners.get(i).onBeforeClass(testClass);
 		}
 	}
 
@@ -202,7 +202,7 @@ public class ListenerChain
 	 */
 	@Override
 	public void onAfterClass(ITestClass testClass) {
-		for (IClassListener classListener : m_classListeners) {
+		for (IClassListener classListener : classListeners) {
 			classListener.onAfterClass(testClass);
 		}
 	}
@@ -216,8 +216,8 @@ public class ListenerChain
 	 */
 	@Override
 	public void beforeInvocation(IInvokedMethod method, ITestResult testResult) {
-		for (int i = m_methodListeners.size() - 1; i > -1; i--) {
-			m_methodListeners.get(i).beforeInvocation(method, testResult);
+		for (int i = methodListeners.size() - 1; i > -1; i--) {
+			methodListeners.get(i).beforeInvocation(method, testResult);
 		}
 	}
 
@@ -230,7 +230,7 @@ public class ListenerChain
 	 */
 	@Override
 	public void afterInvocation(IInvokedMethod method, ITestResult testResult) {
-		for (IInvokedMethodListener methodListener : m_methodListeners) {
+		for (IInvokedMethodListener methodListener : methodListeners) {
 			methodListener.afterInvocation(method, testResult);
 		}
 	}
@@ -243,7 +243,7 @@ public class ListenerChain
 	 */
 	@Override
 	public void onConfigurationSuccess(ITestResult itr) {
-		for (IConfigurationListener configListener : m_configListeners) {
+		for (IConfigurationListener configListener : configListeners) {
 			configListener.onConfigurationSuccess(itr);
 		}
 	}
@@ -256,7 +256,7 @@ public class ListenerChain
 	 */
 	@Override
 	public void onConfigurationFailure(ITestResult itr) {
-		for (IConfigurationListener configListener : m_configListeners) {
+		for (IConfigurationListener configListener : configListeners) {
 			configListener.onConfigurationFailure(itr);
 		}
 	}
@@ -269,7 +269,7 @@ public class ListenerChain
 	 */
 	@Override
 	public void onConfigurationSkip(ITestResult itr) {
-		for (IConfigurationListener configListener : m_configListeners) {
+		for (IConfigurationListener configListener : configListeners) {
 			configListener.onConfigurationSkip(itr);
 		}
 	}
@@ -282,8 +282,8 @@ public class ListenerChain
 	 */
 	@Override
 	public void beforeConfiguration(ITestResult tr) {
-		for (int i = m_configListeners.size() - 1; i > -1; i--) {
-			m_configListeners.get(i).beforeConfiguration(tr);
+		for (int i = configListeners.size() - 1; i > -1; i--) {
+			configListeners.get(i).beforeConfiguration(tr);
 		}
 	}
 
@@ -299,17 +299,22 @@ public class ListenerChain
 	 * @return {@code this} (the target instance of {@link ListenerChain})
 	 */
 	public ListenerChain around(Class<? extends ITestNGListener> listenerTyp) {
-		if (!m_allListeners.contains(listenerTyp)) {
-			m_allListeners.add(listenerTyp);
+		if (!allListeners.contains(listenerTyp)) {
+			allListeners.add(listenerTyp);
 			try {
 				ITestNGListener listenerObj = listenerTyp.newInstance();
-				if (listenerObj instanceof ISuiteListener) m_suiteListeners.add((ISuiteListener) listenerObj);
-				if (listenerObj instanceof ITestListener) m_testListeners.add((ITestListener) listenerObj);
-				if (listenerObj instanceof IClassListener) m_classListeners.add((IClassListener) listenerObj);
-				if (listenerObj instanceof IInvokedMethodListener) m_methodListeners.add((IInvokedMethodListener) listenerObj);
-				if (listenerObj instanceof IConfigurationListener2) m_configListeners.add((IConfigurationListener2) listenerObj);
+				if (listenerObj instanceof ISuiteListener)
+					suiteListeners.add((ISuiteListener) listenerObj);
+				if (listenerObj instanceof ITestListener)
+					testListeners.add((ITestListener) listenerObj);
+				if (listenerObj instanceof IClassListener)
+					classListeners.add((IClassListener) listenerObj);
+				if (listenerObj instanceof IInvokedMethodListener)
+					methodListeners.add((IInvokedMethodListener) listenerObj);
+				if (listenerObj instanceof IConfigurationListener2)
+					configListeners.add((IConfigurationListener2) listenerObj);
 			} catch (InstantiationException | IllegalAccessException e) {
-				e.printStackTrace();
+				throw new RuntimeException("Unable to instantiate listener: " + listenerTyp.getName(), e);
 			}
 		}
 		return this;

@@ -13,6 +13,11 @@ import org.testng.ITestResult;
  * This TestNG listener performs several basic functions related to test method execution: <br>
  * <ul>
  *     <li>Propagate attributes: [<i>before</i> method] &rarr; [test method] &rarr; [<i>after</i> method]</li>
+ *     <li>For test classes that implement the {@link IInvokedMethodListenerEx} interface,
+ *     <b>ExecutionFlowController</b> forwards calls from its own invoked method listener implementation to the
+ *     corresponding methods in the test class. Inbound attribute propagation is performed before forwarding the
+ *     {@link #beforeInvocation()} call, and outbound attribute propagation is performed after forwarding the
+ *     {@link #afterInvocation()} call.</li>
  * </ul> 
  */
 
@@ -44,6 +49,7 @@ public class ExecutionFlowController implements IInvokedMethodListener, IMethodI
 	protected static final ThreadLocal<Map<String, Object>> fromBefore = new InheritableThreadLocal<>();
 	protected static final ThreadLocal<Map<String, Object>> fromMethod = new InheritableThreadLocal<>();
 
+	@Override
 	public void afterInvocation(IInvokedMethod method, ITestResult testResult) {
 		if (testResult.getInstance() instanceof IInvokedMethodListenerEx) {
 			((IInvokedMethodListenerEx) testResult.getInstance()).afterInvocation(method, testResult);
@@ -54,23 +60,24 @@ public class ExecutionFlowController implements IInvokedMethodListener, IMethodI
 	    } else if (method.isTestMethod()) {
 			fromMethod.set(PropertyManager.extractAttributes(testResult));
 		} else if (method.getTestMethod().isAfterMethodConfiguration()) {
-			
+			// nothing to do here
 		}
 	}
 
+	@Override
 	public void beforeInvocation(IInvokedMethod method, ITestResult testResult) {
-		if (testResult.getInstance() instanceof IInvokedMethodListenerEx) {
-			((IInvokedMethodListenerEx) testResult.getInstance()).beforeInvocation(method, testResult);
-		}
-		
 	    if (method.getTestMethod().isBeforeMethodConfiguration()) {
-			
+			// nothing to do here
 	    } else if (method.isTestMethod()) {
 			PropertyManager.injectAttributes(fromBefore.get(), testResult);
 			fromBefore.remove();
 		} else if (method.getTestMethod().isAfterMethodConfiguration()) {
 			PropertyManager.injectAttributes(fromMethod.get(), testResult);
 			fromMethod.remove();
+		}
+		
+		if (testResult.getInstance() instanceof IInvokedMethodListenerEx) {
+			((IInvokedMethodListenerEx) testResult.getInstance()).beforeInvocation(method, testResult);
 		}
 	}
 
