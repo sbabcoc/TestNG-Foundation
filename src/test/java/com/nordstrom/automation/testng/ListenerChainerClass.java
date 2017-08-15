@@ -14,94 +14,94 @@ import com.nordstrom.automation.testng.ListenerChain;
 import com.nordstrom.automation.testng.ListenerChainable;
 
 class ListenerChainerClass implements ListenerChainable {
-	
-	private int invokeCount;
-	
-	@BeforeMethod(groups = {"happyPath", "testFailed", "testSkipped", "failAndPass", "afterFailed", "afterSkipped"})
-	public void beforeSuccess(Method method) {
-		System.out.println("beforeSuccess");
-	}
-	
-	@BeforeMethod(groups = {"beforeFailed"})
-	public void beforeFailure(Method method) {
-		System.out.println("beforeFailure");
-		fail("beforeFailure");
-	}
-	
-	@BeforeMethod(groups = {"beforeSkipped"})
-	public void beforeSkipped(Method method) {
-		System.out.println("beforeSkipped");
-		throw new SkipException("beforeSkipped");
-	}
-	
-	@Test(groups = {"happyPath"})
-	public void happyPath() {
-		System.out.println("happyPath");
-		assertTrue(true);
-	}
-	
-	@Test(groups = {"testFailed"})
-	public void testFailed() {
-		System.out.println("testFailed");
-		fail("testFailed");
-	}
-	
-	@Test(groups = {"testSkipped"})
-	public void testSkipped() {
-		System.out.println("testSkipped");
-		throw new SkipException("testSkipped");
-	}
-	
-	@Test(invocationCount = 4, successPercentage = 75, groups = {"failAndPass"})
-	public void failAndPass() {
-		System.out.println("failAndPass");
-		assertTrue(invokeCount++ > 0);
-	}
-	
-	@Test(groups = {"beforeFailed"})
-	public void skipBeforeFailed() {
-		System.out.println("skipBeforeFailed");
-		assertTrue(true);
-	}
-	
-	@Test(groups = {"beforeSkipped"})
-	public void skipBeforeSkipped() {
-		System.out.println("skipBeforeSkipped");
-		assertTrue(true);
-	}
-	
-	@Test(groups = {"afterFailed"})
-	public void testAfterFailed() {
-		System.out.println("testAfterFailed");
-		assertTrue(true);
-	}
-	
-	@Test(groups = {"afterSkipped"})
-	public void testAfterSkipped() {
-		System.out.println("testAfterSkipped");
-		assertTrue(true);
-	}
-	
-	@AfterMethod(groups = {"happyPath", "testFailed", "testSkipped", "failAndPass", "beforeFailed", "beforeSkipped"})
-	public void afterSuccess(Method method) {
-		System.out.println("afterSuccess");
-	}
-	
-	@AfterMethod(groups = {"afterFailed"})
-	public void afterFailure(Method method) {
-		System.out.println("afterFailure");
-		fail("afterFailure");
-	}
-	
-	@AfterMethod(groups = {"afterSkipped"})
-	public void afterSkipped(Method method) {
-		System.out.println("afterSkipped");
-		throw new SkipException("afterSkipped");
-	}
-	
-	@Override
-	public void attachListeners(ListenerChain listenerChain) {
-		listenerChain.around(ChainedListener.class);
-	}
-	
+    
+    private int invokeCount;
+    
+    @BeforeMethod(groups = {"happyPath", "testFailed", "testSkipped", "failAndPass", "afterFailed", "afterSkipped"})
+    public void beforeSuccess(Method method) {
+        System.out.println("beforeSuccess");
+    }
+    
+    @BeforeMethod(groups = {"beforeFailed"})
+    public void beforeFailure(Method method) {
+        System.out.println("beforeFailure");
+        fail("beforeFailure");
+    }
+    
+    @BeforeMethod(groups = {"beforeSkipped"})
+    public void beforeSkipped(Method method) {
+        System.out.println("beforeSkipped");
+        throw new SkipException("beforeSkipped");
+    }
+    
+    @Test(groups = {"happyPath"})
+    public void happyPath() {
+        System.out.println("happyPath");
+        assertTrue(true);
+    }
+    
+    @Test(groups = {"testFailed"})
+    public void testFailed() {
+        System.out.println("testFailed");
+        fail("testFailed");
+    }
+    
+    @Test(groups = {"testSkipped"})
+    public void testSkipped() {
+        System.out.println("testSkipped");
+        throw new SkipException("testSkipped");
+    }
+    
+    @Test(invocationCount = 4, successPercentage = 75, groups = {"failAndPass"})
+    public void failAndPass() {
+        System.out.println("failAndPass");
+        assertTrue(invokeCount++ > 0);
+    }
+    
+    @Test(groups = {"beforeFailed"})
+    public void skipBeforeFailed() {
+        System.out.println("skipBeforeFailed");
+        assertTrue(true);
+    }
+    
+    @Test(groups = {"beforeSkipped"})
+    public void skipBeforeSkipped() {
+        System.out.println("skipBeforeSkipped");
+        assertTrue(true);
+    }
+    
+    @Test(groups = {"afterFailed"})
+    public void testAfterFailed() {
+        System.out.println("testAfterFailed");
+        assertTrue(true);
+    }
+    
+    @Test(groups = {"afterSkipped"})
+    public void testAfterSkipped() {
+        System.out.println("testAfterSkipped");
+        assertTrue(true);
+    }
+    
+    @AfterMethod(groups = {"happyPath", "testFailed", "testSkipped", "failAndPass", "beforeFailed", "beforeSkipped"})
+    public void afterSuccess(Method method) {
+        System.out.println("afterSuccess");
+    }
+    
+    @AfterMethod(groups = {"afterFailed"})
+    public void afterFailure(Method method) {
+        System.out.println("afterFailure");
+        fail("afterFailure");
+    }
+    
+    @AfterMethod(groups = {"afterSkipped"})
+    public void afterSkipped(Method method) {
+        System.out.println("afterSkipped");
+        throw new SkipException("afterSkipped");
+    }
+    
+    @Override
+    public void attachListeners(ListenerChain listenerChain) {
+        listenerChain.around(ChainedListener.class);
+    }
+    
 }

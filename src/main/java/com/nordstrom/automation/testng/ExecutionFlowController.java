@@ -45,48 +45,48 @@ import org.testng.ITestResult;
  *     <li>For methods that don't specify a timeout interval, set the configured (or default) standard interval.</li>
  */
 public class ExecutionFlowController implements IInvokedMethodListener, IMethodInterceptor {
-	
-	protected static final ThreadLocal<Map<String, Object>> fromBefore = new InheritableThreadLocal<>();
-	protected static final ThreadLocal<Map<String, Object>> fromMethod = new InheritableThreadLocal<>();
+    
+    protected static final ThreadLocal<Map<String, Object>> fromBefore = new InheritableThreadLocal<>();
+    protected static final ThreadLocal<Map<String, Object>> fromMethod = new InheritableThreadLocal<>();
 
-	@Override
-	public void afterInvocation(IInvokedMethod method, ITestResult testResult) {
-		if (testResult.getInstance() instanceof IInvokedMethodListenerEx) {
-			((IInvokedMethodListenerEx) testResult.getInstance()).afterInvocation(method, testResult);
-		}
-		
-	    if (method.getTestMethod().isBeforeMethodConfiguration()) {
-		    fromBefore.set(PropertyManager.extractAttributes(testResult));
-	    } else if (method.isTestMethod()) {
-			fromMethod.set(PropertyManager.extractAttributes(testResult));
-		} else if (method.getTestMethod().isAfterMethodConfiguration()) {
-			// nothing to do here
-		}
-	}
+    @Override
+    public void afterInvocation(IInvokedMethod method, ITestResult testResult) {
+        if (testResult.getInstance() instanceof IInvokedMethodListenerEx) {
+            ((IInvokedMethodListenerEx) testResult.getInstance()).afterInvocation(method, testResult);
+        }
+        
+        if (method.getTestMethod().isBeforeMethodConfiguration()) {
+            fromBefore.set(PropertyManager.extractAttributes(testResult));
+        } else if (method.isTestMethod()) {
+            fromMethod.set(PropertyManager.extractAttributes(testResult));
+        } else if (method.getTestMethod().isAfterMethodConfiguration()) {
+            // nothing to do here
+        }
+    }
 
-	@Override
-	public void beforeInvocation(IInvokedMethod method, ITestResult testResult) {
-	    if (method.getTestMethod().isBeforeMethodConfiguration()) {
-			// nothing to do here
-	    } else if (method.isTestMethod()) {
-			PropertyManager.injectAttributes(fromBefore.get(), testResult);
-			fromBefore.remove();
-		} else if (method.getTestMethod().isAfterMethodConfiguration()) {
-			PropertyManager.injectAttributes(fromMethod.get(), testResult);
-			fromMethod.remove();
-		}
-		
-		if (testResult.getInstance() instanceof IInvokedMethodListenerEx) {
-			((IInvokedMethodListenerEx) testResult.getInstance()).beforeInvocation(method, testResult);
-		}
-	}
+    @Override
+    public void beforeInvocation(IInvokedMethod method, ITestResult testResult) {
+        if (method.getTestMethod().isBeforeMethodConfiguration()) {
+            // nothing to do here
+        } else if (method.isTestMethod()) {
+            PropertyManager.injectAttributes(fromBefore.get(), testResult);
+            fromBefore.remove();
+        } else if (method.getTestMethod().isAfterMethodConfiguration()) {
+            PropertyManager.injectAttributes(fromMethod.get(), testResult);
+            fromMethod.remove();
+        }
+        
+        if (testResult.getInstance() instanceof IInvokedMethodListenerEx) {
+            ((IInvokedMethodListenerEx) testResult.getInstance()).beforeInvocation(method, testResult);
+        }
+    }
 
-	@Override
-	public List<IMethodInstance> intercept(List<IMethodInstance> methods, ITestContext context) {
-		// target platform support: filter out non-targeted methods
-		// target platform support: set method target descriptions
-		
-		return methods;
-	}
+    @Override
+    public List<IMethodInstance> intercept(List<IMethodInstance> methods, ITestContext context) {
+        // target platform support: filter out non-targeted methods
+        // target platform support: set method target descriptions
+        
+        return methods;
+    }
 
 }
