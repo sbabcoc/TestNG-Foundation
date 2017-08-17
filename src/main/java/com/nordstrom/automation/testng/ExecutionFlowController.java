@@ -1,21 +1,28 @@
 package com.nordstrom.automation.testng;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
+
+import org.testng.IAnnotationTransformer;
 import org.testng.IInvokedMethod;
 import org.testng.IInvokedMethodListener;
 import org.testng.IMethodInstance;
 import org.testng.IMethodInterceptor;
 import org.testng.ITestContext;
 import org.testng.ITestResult;
+import org.testng.annotations.ITestAnnotation;
+
+import com.nordstrom.automation.testng.TestNGConfig.TestNGSettings;
 
 /**
  * This TestNG listener performs several basic functions related to test method execution: <br>
  * <ul>
  *     <li>Propagate attributes: [<i>before</i> method] &rarr; [test method] &rarr; [<i>after</i> method]</li>
  *     <li>For test classes that implement the {@link IInvokedMethodListenerEx} interface,
- *     <b>ExecutionFlowController</b> forwards calls from its own invoked method listener implementation to the
- *     corresponding methods in the test class. Inbound attribute propagation is performed before forwarding the
+ *     <b>ExecutionFlowController</b> forwards calls received by its own invoked method listener implementation to
+ *     the corresponding methods in the test class. Inbound attribute propagation is performed before forwarding the
  *     {@link #beforeInvocation(IInvokedMethod, ITestResult)} call, and outbound attribute propagation is performed
  *     after forwarding the {@link #afterInvocation(IInvokedMethod, ITestResult)} call.</li>
  * </ul> 
@@ -44,7 +51,7 @@ import org.testng.ITestResult;
  *     </li>
  *     <li>For methods that don't specify a timeout interval, set the configured (or default) standard interval.</li>
  */
-public class ExecutionFlowController implements IInvokedMethodListener, IMethodInterceptor {
+public class ExecutionFlowController implements IInvokedMethodListener, IMethodInterceptor, IAnnotationTransformer {
     
     protected static final ThreadLocal<Map<String, Object>> fromBefore = new InheritableThreadLocal<>();
     protected static final ThreadLocal<Map<String, Object>> fromMethod = new InheritableThreadLocal<>();
@@ -87,6 +94,33 @@ public class ExecutionFlowController implements IInvokedMethodListener, IMethodI
         // target platform support: set method target descriptions
         
         return methods;
+    }
+
+	@Override
+    @SuppressWarnings("rawtypes")
+    public void transform(ITestAnnotation annotation, Class testClass, Constructor testConstructor, Method testMethod) {
+		// if @Test for test method
+        if (testMethod != null) {
+        	// get TestNG Foundation configuration
+        	TestNGConfig config = TestNGConfig.getConfig();
+        	// if default test timeout is defined
+        	if (config.containsKey(TestNGSettings.TEST_TIMEOUT.key())) {
+        		// get default test timeout
+            	long defaultTimeout = config.getLong(TestNGSettings.TEST_TIMEOUT.key());
+            	// if current timeout is less than default
+            	if (defaultTimeout > annotation.getTimeOut()) {
+            		// set test timeout interval
+            		annotation.setTimeOut(defaultTimeout);
+            	}
+        	}
+        }
+    }
+    
+    public static void adjustTimeout(long adjust, ITestResult testResult) {
+        long timeout = testResult.getMethod().getTimeOut();
+        if (timeout > 0) {
+            testResult.getMethod().setTimeOut(timeout + adjust);
+        }
     }
 
 }
