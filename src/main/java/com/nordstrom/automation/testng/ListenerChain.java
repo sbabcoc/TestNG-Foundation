@@ -33,8 +33,10 @@ public class ListenerChain
     private List<ISuiteListener> suiteListeners = Collections.synchronizedList(Lists.<ISuiteListener>newArrayList());
     private List<ITestListener> testListeners = Collections.synchronizedList(Lists.<ITestListener>newArrayList());
     private List<IClassListener> classListeners = Collections.synchronizedList(Lists.<IClassListener>newArrayList());
-    private List<IInvokedMethodListener> methodListeners = Collections.synchronizedList(Lists.<IInvokedMethodListener>newArrayList());
-    private List<IConfigurationListener2> configListeners = Collections.synchronizedList(Lists.<IConfigurationListener2>newArrayList());
+    private List<IInvokedMethodListener> methodListeners =
+            Collections.synchronizedList(Lists.<IInvokedMethodListener>newArrayList());
+    private List<IConfigurationListener2> configListeners =
+            Collections.synchronizedList(Lists.<IConfigurationListener2>newArrayList());
 
     /** 
      * [ISuiteListener]
@@ -303,16 +305,21 @@ public class ListenerChain
             allListeners.add(listenerTyp);
             try {
                 ITestNGListener listenerObj = listenerTyp.newInstance();
-                if (listenerObj instanceof ISuiteListener)
+                if (listenerObj instanceof ISuiteListener) {
                     suiteListeners.add((ISuiteListener) listenerObj);
-                if (listenerObj instanceof ITestListener)
+                }
+                if (listenerObj instanceof ITestListener) {
                     testListeners.add((ITestListener) listenerObj);
-                if (listenerObj instanceof IClassListener)
+                }
+                if (listenerObj instanceof IClassListener) {
                     classListeners.add((IClassListener) listenerObj);
-                if (listenerObj instanceof IInvokedMethodListener)
+                }
+                if (listenerObj instanceof IInvokedMethodListener) {
                     methodListeners.add((IInvokedMethodListener) listenerObj);
-                if (listenerObj instanceof IConfigurationListener2)
+                }
+                if (listenerObj instanceof IConfigurationListener2) {
                     configListeners.add((IConfigurationListener2) listenerObj);
+                }
             } catch (InstantiationException | IllegalAccessException e) {
                 throw new RuntimeException("Unable to instantiate listener: " + listenerTyp.getName(), e);
             }

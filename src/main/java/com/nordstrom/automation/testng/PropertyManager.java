@@ -15,7 +15,7 @@ import org.testng.collections.Maps;
  *         attribute collection of the specified test result.</li>
  * </ul>
  */
-public class PropertyManager {
+public final class PropertyManager {
     
     private PropertyManager() {
         throw new AssertionError("PropertyManager is a static utility class.");

@@ -17,6 +17,7 @@
     <source-plugin.version>3.0.1</source-plugin.version>
     <javadoc-plugin.version>2.10.4</javadoc-plugin.version>
     <deploy-plugin.version>2.8.2</deploy-plugin.version>
+    <settings.version>0.2.0.0</settings.version>
     <sonar.language>java</sonar.language>
   </properties>
 
@@ -34,6 +35,11 @@
         <artifactId>testng</artifactId>
         <version>${testng.version}</version>
       </dependency>
+      <dependency>
+        <groupId>com.nordstrom.test-automation.tools</groupId>
+        <artifactId>settings</artifactId>
+        <version>${settings.version}</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
   
@@ -41,6 +47,10 @@
     <dependency>
       <groupId>org.testng</groupId>
       <artifactId>testng</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.nordstrom.test-automation.tools</groupId>
+      <artifactId>settings</artifactId>
     </dependency>
   </dependencies>
 
