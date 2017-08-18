@@ -379,7 +379,8 @@ public class ListenerChain implements ISuiteListener, ITestListener, IClassListe
      */
     @Override
     @SuppressWarnings("rawtypes")
-    public void transform(IConfigurationAnnotation annotation, Class testClass, Constructor testConstructor, Method testMethod) {
+    public void transform(IConfigurationAnnotation annotation, Class testClass, Constructor testConstructor,
+                    Method testMethod) {
         for (IAnnotationTransformer2 annotationXformer : annotationXformers2) {
             annotationXformer.transform(annotation, testClass, testConstructor, testMethod);
         }
