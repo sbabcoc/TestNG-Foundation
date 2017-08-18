@@ -10,9 +10,6 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import com.nordstrom.automation.testng.ListenerChain;
-import com.nordstrom.automation.testng.ListenerChainable;
-
 class ListenerChainerClass implements ListenerChainable {
     
     private int invokeCount;
@@ -101,7 +98,7 @@ class ListenerChainerClass implements ListenerChainable {
     
     @Override
     public void attachListeners(ListenerChain listenerChain) {
-        listenerChain.around(ChainedListener.class);
+        listenerChain.around(ChainedListener.class).around(ExecutionFlowController.class);
     }
     
 }

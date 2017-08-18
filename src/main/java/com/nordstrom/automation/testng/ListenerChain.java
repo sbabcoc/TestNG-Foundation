@@ -1,9 +1,13 @@
 package com.nordstrom.automation.testng;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
+import org.testng.IAnnotationTransformer;
+import org.testng.IAnnotationTransformer2;
 import org.testng.IClassListener;
 import org.testng.IConfigurationListener;
 import org.testng.IConfigurationListener2;
@@ -17,6 +21,10 @@ import org.testng.ITestListener;
 import org.testng.ITestNGListener;
 import org.testng.ITestNGMethod;
 import org.testng.ITestResult;
+import org.testng.annotations.IConfigurationAnnotation;
+import org.testng.annotations.IDataProviderAnnotation;
+import org.testng.annotations.IFactoryAnnotation;
+import org.testng.annotations.ITestAnnotation;
 import org.testng.collections.Lists;
 import org.testng.collections.Sets;
 
@@ -24,8 +32,8 @@ import org.testng.collections.Sets;
  * This TestNG listener enables the addition of other listeners at runtime and guarantees the order in which they're
  * invoked. This is similar in behavior to a JUnit rule chain.
  */
-public class ListenerChain
-        implements ISuiteListener, ITestListener, IClassListener, IInvokedMethodListener, IConfigurationListener2 {
+public class ListenerChain implements ISuiteListener, ITestListener, IClassListener,
+                IInvokedMethodListener, IConfigurationListener2, IAnnotationTransformer2 {
     
     private Set<Class<? extends ITestNGListener>> allListeners = 
             Collections.synchronizedSet(Sets.<Class<? extends ITestNGListener>>newHashSet());
@@ -35,8 +43,14 @@ public class ListenerChain
     private List<IClassListener> classListeners = Collections.synchronizedList(Lists.<IClassListener>newArrayList());
     private List<IInvokedMethodListener> methodListeners =
             Collections.synchronizedList(Lists.<IInvokedMethodListener>newArrayList());
-    private List<IConfigurationListener2> configListeners =
+    private List<IConfigurationListener> configListeners =
+            Collections.synchronizedList(Lists.<IConfigurationListener>newArrayList());
+    private List<IConfigurationListener2> configListeners2 =
             Collections.synchronizedList(Lists.<IConfigurationListener2>newArrayList());
+    private List<IAnnotationTransformer> annotationXformers = 
+            Collections.synchronizedList(Lists.<IAnnotationTransformer>newArrayList());
+    private List<IAnnotationTransformer2> annotationXformers2 = 
+            Collections.synchronizedList(Lists.<IAnnotationTransformer2>newArrayList());
 
     /** 
      * [ISuiteListener]
@@ -248,6 +262,9 @@ public class ListenerChain
         for (IConfigurationListener configListener : configListeners) {
             configListener.onConfigurationSuccess(itr);
         }
+        for (IConfigurationListener configListener : configListeners2) {
+            configListener.onConfigurationSuccess(itr);
+        }
     }
 
     /**
@@ -259,6 +276,9 @@ public class ListenerChain
     @Override
     public void onConfigurationFailure(ITestResult itr) {
         for (IConfigurationListener configListener : configListeners) {
+            configListener.onConfigurationFailure(itr);
+        }
+        for (IConfigurationListener configListener : configListeners2) {
             configListener.onConfigurationFailure(itr);
         }
     }
@@ -274,6 +294,9 @@ public class ListenerChain
         for (IConfigurationListener configListener : configListeners) {
             configListener.onConfigurationSkip(itr);
         }
+        for (IConfigurationListener configListener : configListeners2) {
+            configListener.onConfigurationSkip(itr);
+        }
     }
 
     /**
@@ -284,8 +307,79 @@ public class ListenerChain
      */
     @Override
     public void beforeConfiguration(ITestResult tr) {
-        for (int i = configListeners.size() - 1; i > -1; i--) {
-            configListeners.get(i).beforeConfiguration(tr);
+        for (int i = configListeners2.size() - 1; i > -1; i--) {
+            configListeners2.get(i).beforeConfiguration(tr);
+        }
+    }
+
+    /**
+     * [IAnnotationTransformer]
+     * This method will be invoked by TestNG to give you a chance to modify a TestNG annotation read from your test
+     * classes. You can change the values you need by calling any of the setters on the ITest interface. Note that only one of the three parameters
+     * testClass, testConstructor and testMethod will be non-null.
+     * 
+     * @param annotation The annotation that was read from your test class.
+     * @param testClass If the annotation was found on a class, this parameter represents this class
+     *        (null otherwise).
+     * @param testConstructor If the annotation was found on a constructor, this parameter
+     *        represents this constructor (null otherwise).
+     * @param testMethod If the annotation was found on a method, this parameter represents this
+     *        method (null otherwise).
+     */
+    @Override
+    @SuppressWarnings("rawtypes")
+    public void transform(ITestAnnotation annotation, Class testClass, Constructor testConstructor, Method testMethod) {
+        for (IAnnotationTransformer annotationXformer : annotationXformers) {
+            annotationXformer.transform(annotation, testClass, testConstructor, testMethod);
+        }
+        for (IAnnotationTransformer2 annotationXformer : annotationXformers2) {
+            annotationXformer.transform(annotation, testClass, testConstructor, testMethod);
+        }
+    }
+
+    /**
+     * [IAnnotationTransformer2]
+     * Transform an IDataProvider annotation.
+     * 
+     * @param annotation The data provider annotation
+     * @param method The method annotated with the IDataProvider annotation.
+     */
+    @Override
+    public void transform(IDataProviderAnnotation annotation, Method method) {
+        for (IAnnotationTransformer2 annotationXformer : annotationXformers2) {
+            annotationXformer.transform(annotation, method);
+        }
+    }
+
+    /**
+     * [IAnnotationTransformer2]
+     * Transform an IFactory annotation.
+     * 
+     * @param annotation The factory annotation.
+     * @param method The method annotated with the IFactory annotation.
+     */
+    @Override
+    public void transform(IFactoryAnnotation annotation, Method method) {
+        for (IAnnotationTransformer2 annotationXformer : annotationXformers2) {
+            annotationXformer.transform(annotation, method);
+        }
+    }
+
+    /**
+     * [IAnnotationTransformer2]
+     * Transform an IConfiguration annotation. Note that only one of the three parameters testClass, testConstructor
+     * and testMethod will be non-null.
+     * 
+     * @param annotation The annotation that was read from your test class.
+     * @param testClass If the annotation was found on a class, this parameter represents this class (null otherwise).
+     * @param testConstructor If the annotation was found on a constructor, this parameter represents this constructor (null otherwise).
+     * @param testMethod If the annotation was found on a method, this parameter represents this method (null otherwise).
+     */
+    @Override
+    @SuppressWarnings("rawtypes")
+    public void transform(IConfigurationAnnotation annotation, Class testClass, Constructor testConstructor, Method testMethod) {
+        for (IAnnotationTransformer2 annotationXformer : annotationXformers2) {
+            annotationXformer.transform(annotation, testClass, testConstructor, testMethod);
         }
     }
 
@@ -318,7 +412,14 @@ public class ListenerChain
                     methodListeners.add((IInvokedMethodListener) listenerObj);
                 }
                 if (listenerObj instanceof IConfigurationListener2) {
-                    configListeners.add((IConfigurationListener2) listenerObj);
+                    configListeners2.add((IConfigurationListener2) listenerObj);
+                } else if (listenerObj instanceof IConfigurationListener) {
+                    configListeners.add((IConfigurationListener) listenerObj);
+                }
+                if (listenerObj instanceof IAnnotationTransformer2) {
+                    annotationXformers2.add((IAnnotationTransformer2) listenerObj);
+                } else if (listenerObj instanceof IAnnotationTransformer) {
+                	annotationXformers.add((IAnnotationTransformer) listenerObj);
                 }
             } catch (InstantiationException | IllegalAccessException e) {
                 throw new RuntimeException("Unable to instantiate listener: " + listenerTyp.getName(), e);

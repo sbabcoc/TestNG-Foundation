@@ -8,21 +8,16 @@ import org.testng.TestListenerAdapter;
 import org.testng.TestNG;
 import org.testng.annotations.Test;
 
-import com.nordstrom.automation.testng.ExecutionFlowController;
-import com.nordstrom.automation.testng.ListenerChain;
-
 public class ListenerChainTest {
 
     @Test
     public void verifyHappyPath() {
         
-        ExecutionFlowController efc = new ExecutionFlowController();
         ListenerChain lc = new ListenerChain();
         TestListenerAdapter tla = new TestListenerAdapter();
         
         TestNG testNG = new TestNG();
         testNG.setTestClasses(new Class[]{ListenerChainerClass.class});
-        testNG.addListener((ITestNGListener) efc);
         testNG.addListener((ITestNGListener) lc);
         testNG.addListener((ITestNGListener) tla);
         testNG.setGroups("happyPath");
@@ -64,13 +59,11 @@ public class ListenerChainTest {
     @Test
     public void verifyTestFailed() {
         
-        ExecutionFlowController efc = new ExecutionFlowController();
         ListenerChain lc = new ListenerChain();
         TestListenerAdapter tla = new TestListenerAdapter();
         
         TestNG testNG = new TestNG();
         testNG.setTestClasses(new Class[]{ListenerChainerClass.class});
-        testNG.addListener((ITestNGListener) efc);
         testNG.addListener((ITestNGListener) lc);
         testNG.addListener((ITestNGListener) tla);
         testNG.setGroups("testFailed");
@@ -103,13 +96,11 @@ public class ListenerChainTest {
     @Test
     public void verifyTestSkipped() {
         
-        ExecutionFlowController efc = new ExecutionFlowController();
         ListenerChain lc = new ListenerChain();
         TestListenerAdapter tla = new TestListenerAdapter();
         
         TestNG testNG = new TestNG();
         testNG.setTestClasses(new Class[]{ListenerChainerClass.class});
-        testNG.addListener((ITestNGListener) efc);
         testNG.addListener((ITestNGListener) lc);
         testNG.addListener((ITestNGListener) tla);
         testNG.setGroups("testSkipped");
@@ -142,13 +133,11 @@ public class ListenerChainTest {
     @Test
     public void verifyFailAndPass() {
         
-        ExecutionFlowController efc = new ExecutionFlowController();
         ListenerChain lc = new ListenerChain();
         TestListenerAdapter tla = new TestListenerAdapter();
         
         TestNG testNG = new TestNG();
         testNG.setTestClasses(new Class[]{ListenerChainerClass.class});
-        testNG.addListener((ITestNGListener) efc);
         testNG.addListener((ITestNGListener) lc);
         testNG.addListener((ITestNGListener) tla);
         testNG.setGroups("failAndPass");
@@ -181,13 +170,11 @@ public class ListenerChainTest {
     @Test
     public void verifyBeforeFailed() {
         
-        ExecutionFlowController efc = new ExecutionFlowController();
         ListenerChain lc = new ListenerChain();
         TestListenerAdapter tla = new TestListenerAdapter();
         
         TestNG testNG = new TestNG();
         testNG.setTestClasses(new Class[]{ListenerChainerClass.class});
-        testNG.addListener((ITestNGListener) efc);
         testNG.addListener((ITestNGListener) lc);
         testNG.addListener((ITestNGListener) tla);
         testNG.setGroups("beforeFailed");
@@ -217,13 +204,11 @@ public class ListenerChainTest {
     @Test
     public void verifyBeforeSkipped() {
         
-        ExecutionFlowController efc = new ExecutionFlowController();
         ListenerChain lc = new ListenerChain();
         TestListenerAdapter tla = new TestListenerAdapter();
         
         TestNG testNG = new TestNG();
         testNG.setTestClasses(new Class[]{ListenerChainerClass.class});
-        testNG.addListener((ITestNGListener) efc);
         testNG.addListener((ITestNGListener) lc);
         testNG.addListener((ITestNGListener) tla);
         testNG.setGroups("beforeSkipped");
@@ -253,13 +238,11 @@ public class ListenerChainTest {
     @Test
     public void verifyAfterFailed() {
         
-        ExecutionFlowController efc = new ExecutionFlowController();
         ListenerChain lc = new ListenerChain();
         TestListenerAdapter tla = new TestListenerAdapter();
         
         TestNG testNG = new TestNG();
         testNG.setTestClasses(new Class[]{ListenerChainerClass.class});
-        testNG.addListener((ITestNGListener) efc);
         testNG.addListener((ITestNGListener) lc);
         testNG.addListener((ITestNGListener) tla);
         testNG.setGroups("afterFailed");
@@ -292,13 +275,11 @@ public class ListenerChainTest {
     @Test
     public void verifyAfterSkipped() {
         
-        ExecutionFlowController efc = new ExecutionFlowController();
         ListenerChain lc = new ListenerChain();
         TestListenerAdapter tla = new TestListenerAdapter();
         
         TestNG testNG = new TestNG();
         testNG.setTestClasses(new Class[]{ListenerChainerClass.class});
-        testNG.addListener((ITestNGListener) efc);
         testNG.addListener((ITestNGListener) lc);
         testNG.addListener((ITestNGListener) tla);
         testNG.setGroups("afterSkipped");
