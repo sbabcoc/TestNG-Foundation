@@ -55,7 +55,7 @@ import com.nordstrom.automation.testng.LinkedListeners;
 import com.nordstrom.automation.testng.ListenerChain;
  
 @LinkedListeners({DriverManager.class, ExecutionFlowController.class})
-public class ExampleTest implements ListenerChainable {
+public class ExampleTest {
      
     ...
   
