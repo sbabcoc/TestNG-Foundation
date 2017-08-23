@@ -17,8 +17,11 @@ Future releases of **TestNG Foundation** will add automatic retry of failed test
 
 * [IInvokedMethodListenerEx](https://git.nordstrom.net/projects/MFATT/repos/testng-foundation/browse/src/main/java/com/nordstrom/automation/testng/IInvokedMethodListenerEx.java):  
 Test classes that implement the **IInvokedMethodListenerEx** interface are hooked in by the invoked method listener implementation of **ExecutionFlowController**. See the **TestNG Listeners** section above for more details.
-* [ListenerChainable](https://git.nordstrom.net/projects/MFATT/repos/testng-foundation/browse/src/main/java/com/nordstrom/automation/testng/ListenerChainable.java):  
- Test classes that implement the **ListenerChainable** interface get the opportunity to attach listeners to the chain before the **SuiteRunner** starts.
+
+## Annotations
+
+* [LinkedListeners](https://git.nordstrom.net/projects/MFATT/repos/testng-foundation/browse/src/main/java/com/nordstrom/automation/testng/LinkedListeners.java):  
+To attach listeners to an active **ListenerChain**, mark your test class with the **LinkedListeners** annotation.
 
 ## Static Utility Classes
 
@@ -40,26 +43,23 @@ In a Maven project, the preceding file is stored in the <span style="color:blue"
 
 ![com.testng.ITestNGListener](docs/images/META-INF.png)
 
-Once this file is added to your project, <span style="color:blue">ListenerChain</span> will be loaded automatically whenever you run your tests. To request dynamic listener chaining, your test class implements the <span style="color:blue">ListenerChainable</span> interface:
+Once this file is added to your project, <span style="color:blue">ListenerChain</span> will be loaded automatically whenever you run your tests. To link listeners into the chain, mark your test class with the <span style="color:blue">LinkedListeners</span> annotation:
 
-###### Implementing ListenerChainable
+###### LinkedListeners annotation
 ```java
 package com.nordstrom.example;
  
 import com.nordstrom.automation.selenium.listeners.DriverManager;
 import com.nordstrom.automation.testng.ExecutionFlowController;
+import com.nordstrom.automation.testng.LinkedListeners;
 import com.nordstrom.automation.testng.ListenerChain;
-import com.nordstrom.automation.testng.ListenerChainable;
  
+@LinkedListeners({DriverManager.class, ExecutionFlowController.class})
 public class ExampleTest implements ListenerChainable {
      
     ...
   
-    @Override
-    public void attachListeners(ListenerChain listenerChain) {
-        listenerChain.around(DriverManager.class).around(ExecutionFlowController.class);
-    }
 }
 ```
 
-As shown above, we use the **`attachListeners()`** callback to attach <span style="color:blue">DriverManager</span> and <span style="color:blue">ExecutionFlowController</span>. The order in which listener methods are invoked is determined by the order in which listener objects are added to the chain. Listener _before_ methods are invoked in <span style="color:yellowgreen">last-added-first-called</span> order. Listener _after_ methods are invoked in <span style="color:yellowgreen">first-added-first-called</span> order. Only one instance of any given listener class will be included in the chain.
+As shown above, we use the **`@LinkedListeners`** annotation to attach <span style="color:blue">DriverManager</span> and <span style="color:blue">ExecutionFlowController</span>. The order in which listener methods are invoked is determined by the order in which listener objects are added to the chain. Listener _before_ methods are invoked in <span style="color:yellowgreen">last-added-first-called</span> order. Listener _after_ methods are invoked in <span style="color:yellowgreen">first-added-first-called</span> order. Only one instance of any given listener class will be included in the chain.
