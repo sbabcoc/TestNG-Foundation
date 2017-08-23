@@ -2,7 +2,9 @@ package com.nordstrom.automation.testng;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -29,8 +31,8 @@ import org.testng.annotations.IDataProviderAnnotation;
 import org.testng.annotations.IFactoryAnnotation;
 import org.testng.annotations.IListenersAnnotation;
 import org.testng.annotations.ITestAnnotation;
-import org.testng.collections.Lists;
-import org.testng.collections.Sets;
+
+import com.google.common.collect.Lists;
 
 /**
  * This TestNG listener enables the addition of other listeners at runtime and guarantees the order in which they're
@@ -40,33 +42,21 @@ public class ListenerChain
                 implements IAnnotationTransformer3, ISuiteListener, IConfigurationListener2,
                 IInvokedMethodListener2, ITestListener, IMethodInterceptor, IClassListener {
     
-    private Set<Class<?>> markedClasses = Collections.synchronizedSet(Sets.<Class<?>>newHashSet());
-    
+    private Set<Class<?>> markedClasses = Collections.synchronizedSet(new HashSet<>());
     private Set<Class<? extends ITestNGListener>> listenerSet = 
-            Collections.synchronizedSet(Sets.<Class<? extends ITestNGListener>>newHashSet());
+            Collections.synchronizedSet(new HashSet<>());
     
-    private List<IAnnotationTransformer> annotationXformers = 
-            Collections.synchronizedList(Lists.<IAnnotationTransformer>newArrayList());
-    private List<IAnnotationTransformer2> annotationXformers2 = 
-            Collections.synchronizedList(Lists.<IAnnotationTransformer2>newArrayList());
-    private List<IAnnotationTransformer3> annotationXformers3 = 
-            Collections.synchronizedList(Lists.<IAnnotationTransformer3>newArrayList());
-    private List<ISuiteListener> suiteListeners = 
-            Collections.synchronizedList(Lists.<ISuiteListener>newArrayList());
-    private List<IConfigurationListener> configListeners =
-            Collections.synchronizedList(Lists.<IConfigurationListener>newArrayList());
-    private List<IConfigurationListener2> configListeners2 =
-            Collections.synchronizedList(Lists.<IConfigurationListener2>newArrayList());
-    private List<IInvokedMethodListener> methodListeners =
-            Collections.synchronizedList(Lists.<IInvokedMethodListener>newArrayList());
-    private List<IInvokedMethodListener2> methodListeners2 =
-            Collections.synchronizedList(Lists.<IInvokedMethodListener2>newArrayList());
-    private List<ITestListener> testListeners = 
-            Collections.synchronizedList(Lists.<ITestListener>newArrayList());
-    private List<IMethodInterceptor> methodInterceptors = 
-            Collections.synchronizedList(Lists.<IMethodInterceptor>newArrayList());
-    private List<IClassListener> classListeners = 
-            Collections.synchronizedList(Lists.<IClassListener>newArrayList());
+    private List<IAnnotationTransformer> annotationXformers = new ArrayList<>();
+    private List<IAnnotationTransformer2> annotationXformers2 = new ArrayList<>();
+    private List<IAnnotationTransformer3> annotationXformers3 = new ArrayList<>();
+    private List<ISuiteListener> suiteListeners = new ArrayList<>();
+    private List<IConfigurationListener> configListeners = new ArrayList<>();
+    private List<IConfigurationListener2> configListeners2 = new ArrayList<>();
+    private List<IInvokedMethodListener> methodListeners = new ArrayList<>();
+    private List<IInvokedMethodListener2> methodListeners2 = new ArrayList<>();
+    private List<ITestListener> testListeners = new ArrayList<>();
+    private List<IMethodInterceptor> methodInterceptors = new ArrayList<>();
+    private List<IClassListener> classListeners = new ArrayList<>();
 
     /**
      * [IAnnotationTransformer]
@@ -86,14 +76,20 @@ public class ListenerChain
     public void transform(ITestAnnotation annotation, Class testClass, Constructor testCtor, Method testMethod) {
         attachListeners(testClass, testCtor, testMethod);
         
-        for (IAnnotationTransformer annotationXformer : annotationXformers) {
-            annotationXformer.transform(annotation, testClass, testCtor, testMethod);
+        synchronized(annotationXformers) {
+            for (IAnnotationTransformer annotationXformer : annotationXformers) {
+                annotationXformer.transform(annotation, testClass, testCtor, testMethod);
+            }
         }
-        for (IAnnotationTransformer2 annotationXformer : annotationXformers2) {
-            annotationXformer.transform(annotation, testClass, testCtor, testMethod);
+        synchronized(annotationXformers2) {
+            for (IAnnotationTransformer2 annotationXformer : annotationXformers2) {
+                annotationXformer.transform(annotation, testClass, testCtor, testMethod);
+            }
         }
-        for (IAnnotationTransformer3 annotationXformer : annotationXformers3) {
-            annotationXformer.transform(annotation, testClass, testCtor, testMethod);
+        synchronized(annotationXformers3) {
+            for (IAnnotationTransformer3 annotationXformer : annotationXformers3) {
+                annotationXformer.transform(annotation, testClass, testCtor, testMethod);
+            }
         }
     }
 
@@ -116,11 +112,15 @@ public class ListenerChain
         
         attachListeners(testClass, testCtor, testMethod);
 
-        for (IAnnotationTransformer2 annotationXformer : annotationXformers2) {
-            annotationXformer.transform(annotation, testClass, testCtor, testMethod);
+        synchronized(annotationXformers2) {
+            for (IAnnotationTransformer2 annotationXformer : annotationXformers2) {
+                annotationXformer.transform(annotation, testClass, testCtor, testMethod);
+            }
         }
-        for (IAnnotationTransformer3 annotationXformer : annotationXformers3) {
-            annotationXformer.transform(annotation, testClass, testCtor, testMethod);
+        synchronized(annotationXformers3) {
+            for (IAnnotationTransformer3 annotationXformer : annotationXformers3) {
+                annotationXformer.transform(annotation, testClass, testCtor, testMethod);
+            }
         }
     }
 
@@ -135,11 +135,15 @@ public class ListenerChain
     public void transform(IDataProviderAnnotation annotation, Method method) {
         attachListeners(method);
         
-        for (IAnnotationTransformer2 annotationXformer : annotationXformers2) {
-            annotationXformer.transform(annotation, method);
+        synchronized(annotationXformers2) {
+            for (IAnnotationTransformer2 annotationXformer : annotationXformers2) {
+                annotationXformer.transform(annotation, method);
+            }
         }
-        for (IAnnotationTransformer3 annotationXformer : annotationXformers3) {
-            annotationXformer.transform(annotation, method);
+        synchronized(annotationXformers3) {
+            for (IAnnotationTransformer3 annotationXformer : annotationXformers3) {
+                annotationXformer.transform(annotation, method);
+            }
         }
     }
 
@@ -154,11 +158,15 @@ public class ListenerChain
     public void transform(IFactoryAnnotation annotation, Method method) {
         attachListeners(method);
         
-        for (IAnnotationTransformer2 annotationXformer : annotationXformers2) {
-            annotationXformer.transform(annotation, method);
+        synchronized(annotationXformers2) {
+            for (IAnnotationTransformer2 annotationXformer : annotationXformers2) {
+                annotationXformer.transform(annotation, method);
+            }
         }
-        for (IAnnotationTransformer3 annotationXformer : annotationXformers3) {
-            annotationXformer.transform(annotation, method);
+        synchronized(annotationXformers3) {
+            for (IAnnotationTransformer3 annotationXformer : annotationXformers3) {
+                annotationXformer.transform(annotation, method);
+            }
         }
     }
 
@@ -174,8 +182,10 @@ public class ListenerChain
     public void transform(IListenersAnnotation annotation, Class testClass) {
         attachListeners(testClass);
         
-        for (IAnnotationTransformer3 annotationXformer : annotationXformers3) {
-            annotationXformer.transform(annotation, testClass);
+        synchronized(annotationXformers3) {
+            for (IAnnotationTransformer3 annotationXformer : annotationXformers3) {
+                annotationXformer.transform(annotation, testClass);
+            }
         }
     }
     
@@ -187,8 +197,10 @@ public class ListenerChain
      */
     @Override
     public void onStart(ISuite suite) {
-        for (int i = suiteListeners.size() - 1; i > -1; i--) {
-            suiteListeners.get(i).onStart(suite);
+        synchronized(suiteListeners) {
+            for (ISuiteListener suiteListener : Lists.reverse(suiteListeners)) {
+                suiteListener.onStart(suite);
+            }
         }
     }
 
@@ -201,8 +213,10 @@ public class ListenerChain
      */
     @Override
     public void onFinish(ISuite suite) {
-        for (ISuiteListener suiteListener : suiteListeners) {
-            suiteListener.onFinish(suite);
+        synchronized(suiteListeners) {
+            for (ISuiteListener suiteListener : suiteListeners) {
+                suiteListener.onFinish(suite);
+            }
         }
     }
 
@@ -214,11 +228,15 @@ public class ListenerChain
      */
     @Override
     public void onConfigurationSuccess(ITestResult itr) {
-        for (IConfigurationListener configListener : configListeners) {
-            configListener.onConfigurationSuccess(itr);
+        synchronized(configListeners) {
+            for (IConfigurationListener configListener : configListeners) {
+                configListener.onConfigurationSuccess(itr);
+            }
         }
-        for (IConfigurationListener2 configListener : configListeners2) {
-            configListener.onConfigurationSuccess(itr);
+        synchronized(configListeners2) {
+            for (IConfigurationListener2 configListener : configListeners2) {
+                configListener.onConfigurationSuccess(itr);
+            }
         }
     }
 
@@ -230,11 +248,15 @@ public class ListenerChain
      */
     @Override
     public void onConfigurationFailure(ITestResult itr) {
-        for (IConfigurationListener configListener : configListeners) {
-            configListener.onConfigurationFailure(itr);
+        synchronized(configListeners) {
+            for (IConfigurationListener configListener : configListeners) {
+                configListener.onConfigurationFailure(itr);
+            }
         }
-        for (IConfigurationListener2 configListener : configListeners2) {
-            configListener.onConfigurationFailure(itr);
+        synchronized(configListeners2) {
+            for (IConfigurationListener2 configListener : configListeners2) {
+                configListener.onConfigurationFailure(itr);
+            }
         }
     }
 
@@ -246,11 +268,15 @@ public class ListenerChain
      */
     @Override
     public void onConfigurationSkip(ITestResult itr) {
-        for (IConfigurationListener configListener : configListeners) {
-            configListener.onConfigurationSkip(itr);
+        synchronized(configListeners) {
+            for (IConfigurationListener configListener : configListeners) {
+                configListener.onConfigurationSkip(itr);
+            }
         }
-        for (IConfigurationListener2 configListener : configListeners2) {
-            configListener.onConfigurationSkip(itr);
+        synchronized(configListeners2) {
+            for (IConfigurationListener2 configListener : configListeners2) {
+                configListener.onConfigurationSkip(itr);
+            }
         }
     }
 
@@ -262,8 +288,10 @@ public class ListenerChain
      */
     @Override
     public void beforeConfiguration(ITestResult tr) {
-        for (int i = configListeners2.size() - 1; i > -1; i--) {
-            configListeners2.get(i).beforeConfiguration(tr);
+        synchronized(configListeners2) {
+            for (IConfigurationListener2 configListener : Lists.reverse(configListeners2)) {
+                configListener.beforeConfiguration(tr);
+            }
         }
     }
 
@@ -301,11 +329,15 @@ public class ListenerChain
      */
     @Override
     public void beforeInvocation(IInvokedMethod method, ITestResult testResult, ITestContext context) {
-        for (int i = methodListeners.size() - 1; i > -1; i--) {
-            methodListeners.get(i).beforeInvocation(method, testResult);
+        synchronized(methodListeners) {
+            for (IInvokedMethodListener methodListener : Lists.reverse(methodListeners)) {
+                methodListener.beforeInvocation(method, testResult);
+            }
         }
-        for (int i = methodListeners2.size() - 1; i > -1; i--) {
-           methodListeners2.get(i).beforeInvocation(method, testResult, context);
+        synchronized(methodListeners2) {
+            for (IInvokedMethodListener2 methodListener : Lists.reverse(methodListeners2)) {
+                methodListener.beforeInvocation(method, testResult, context);
+            }
         }
     }
 
@@ -319,11 +351,15 @@ public class ListenerChain
      */
     @Override
     public void afterInvocation(IInvokedMethod method, ITestResult testResult, ITestContext context) {
-        for (IInvokedMethodListener methodListener : methodListeners) {
-            methodListener.afterInvocation(method, testResult);
+        synchronized(methodListeners) {
+            for (IInvokedMethodListener methodListener : methodListeners) {
+                methodListener.afterInvocation(method, testResult);
+            }
         }
-        for (IInvokedMethodListener2 methodListener : methodListeners2) {
-            methodListener.afterInvocation(method, testResult, context);
+        synchronized(methodListeners2) {
+            for (IInvokedMethodListener2 methodListener : methodListeners2) {
+                methodListener.afterInvocation(method, testResult, context);
+            }
         }
     }
 
@@ -338,8 +374,10 @@ public class ListenerChain
      */
     @Override
     public void onTestStart(ITestResult result) {
-        for (int i = testListeners.size() - 1; i > -1; i--) {
-            testListeners.get(i).onTestStart(result);
+        synchronized(testListeners) {
+            for (ITestListener testListener : Lists.reverse(testListeners)) {
+                testListener.onTestStart(result);
+            }
         }
     }
 
@@ -352,8 +390,10 @@ public class ListenerChain
      */
     @Override
     public void onTestSuccess(ITestResult result) {
-        for (ITestListener testListener : testListeners) {
-            testListener.onTestSuccess(result);
+        synchronized (testListeners) {
+            for (ITestListener testListener : testListeners) {
+                testListener.onTestSuccess(result);
+            }
         }
     }
 
@@ -366,8 +406,10 @@ public class ListenerChain
      */
     @Override
     public void onTestFailure(ITestResult result) {
-        for (ITestListener testListener : testListeners) {
-            testListener.onTestFailure(result);
+        synchronized (testListeners) {
+            for (ITestListener testListener : testListeners) {
+                testListener.onTestFailure(result);
+            }
         }
     }
 
@@ -380,8 +422,10 @@ public class ListenerChain
      */
     @Override
     public void onTestSkipped(ITestResult result) {
-        for (ITestListener testListener : testListeners) {
-            testListener.onTestSkipped(result);
+        synchronized (testListeners) {
+            for (ITestListener testListener : testListeners) {
+                testListener.onTestSkipped(result);
+            }
         }
     }
 
@@ -396,8 +440,10 @@ public class ListenerChain
      */
     @Override
     public void onTestFailedButWithinSuccessPercentage(ITestResult result) {
-        for (ITestListener testListener : testListeners) {
-            testListener.onTestFailedButWithinSuccessPercentage(result);
+        synchronized (testListeners) {
+            for (ITestListener testListener : testListeners) {
+                testListener.onTestFailedButWithinSuccessPercentage(result);
+            }
         }
     }
 
@@ -410,8 +456,10 @@ public class ListenerChain
      */
     @Override
     public void onStart(ITestContext context) {
-        for (int i = testListeners.size() - 1; i > -1; i--) {
-            testListeners.get(i).onStart(context);
+        synchronized (testListeners) {
+            for (ITestListener testListener : Lists.reverse(testListeners)) {
+                testListener.onStart(context);
+            }
         }
     }
 
@@ -424,8 +472,10 @@ public class ListenerChain
      */
     @Override
     public void onFinish(ITestContext context) {
-        for (ITestListener testListener : testListeners) {
-            testListener.onFinish(context);
+        synchronized (testListeners) {
+            for (ITestListener testListener : testListeners) {
+                testListener.onFinish(context);
+            }
         }
     }
 
@@ -439,8 +489,10 @@ public class ListenerChain
      */
     @Override
     public List<IMethodInstance> intercept(List<IMethodInstance> methods, ITestContext context) {
-        for (IMethodInterceptor interceptor : methodInterceptors) {
-            methods = interceptor.intercept(methods, context);
+        synchronized (methodInterceptors) {
+            for (IMethodInterceptor interceptor : methodInterceptors) {
+                methods = interceptor.intercept(methods, context);
+            }
         }
         return methods;
     }
@@ -455,8 +507,10 @@ public class ListenerChain
      */
     @Override
     public void onBeforeClass(ITestClass testClass) {
-        for (int i = classListeners.size() - 1; i > -1; i--) {
-            classListeners.get(i).onBeforeClass(testClass);
+        synchronized (classListeners) {
+            for (IClassListener classListener : Lists.reverse(classListeners)) {
+                classListener.onBeforeClass(testClass);
+            }
         }
     }
 
@@ -470,8 +524,10 @@ public class ListenerChain
      */
     @Override
     public void onAfterClass(ITestClass testClass) {
-        for (IClassListener classListener : classListeners) {
-            classListener.onAfterClass(testClass);
+        synchronized (classListeners) {
+            for (IClassListener classListener : classListeners) {
+                classListener.onAfterClass(testClass);
+            }
         }
     }
 
@@ -542,39 +598,61 @@ public class ListenerChain
                 ITestNGListener listenerObj = listener.newInstance();
                 
                 if (listenerObj instanceof IAnnotationTransformer3) {
-                    annotationXformers3.add((IAnnotationTransformer3) listenerObj);
+                    synchronized(annotationXformers3) {
+                        annotationXformers3.add((IAnnotationTransformer3) listenerObj);
+                    }
                 } else if (listenerObj instanceof IAnnotationTransformer2) {
-                    annotationXformers2.add((IAnnotationTransformer2) listenerObj);
+                    synchronized(annotationXformers2) {
+                        annotationXformers2.add((IAnnotationTransformer2) listenerObj);
+                    }
                 } else if (listenerObj instanceof IAnnotationTransformer) {
-                    annotationXformers.add((IAnnotationTransformer) listenerObj);
+                    synchronized(annotationXformers) {
+                        annotationXformers.add((IAnnotationTransformer) listenerObj);
+                    }
                 }
                 
                 if (listenerObj instanceof ISuiteListener) {
-                    suiteListeners.add((ISuiteListener) listenerObj);
+                    synchronized(suiteListeners) {
+                        suiteListeners.add((ISuiteListener) listenerObj);
+                    }
                 }
                 
                 if (listenerObj instanceof IConfigurationListener2) {
-                    configListeners2.add((IConfigurationListener2) listenerObj);
+                    synchronized(configListeners2) {
+                        configListeners2.add((IConfigurationListener2) listenerObj);
+                    }
                 } else if (listenerObj instanceof IConfigurationListener) {
-                    configListeners.add((IConfigurationListener) listenerObj);
+                    synchronized(configListeners) {
+                        configListeners.add((IConfigurationListener) listenerObj);
+                    }
                 }
                 
                 if (listenerObj instanceof IInvokedMethodListener2) {
-                    methodListeners2.add((IInvokedMethodListener2) listenerObj);
+                    synchronized(methodListeners2) {
+                        methodListeners2.add((IInvokedMethodListener2) listenerObj);
+                    }
                 } else if (listenerObj instanceof IInvokedMethodListener) {
-                    methodListeners.add((IInvokedMethodListener) listenerObj);
+                    synchronized(methodListeners) {
+                        methodListeners.add((IInvokedMethodListener) listenerObj);
+                    }
                 }
                 
                 if (listenerObj instanceof ITestListener) {
-                    testListeners.add((ITestListener) listenerObj);
+                    synchronized(testListeners) {
+                        testListeners.add((ITestListener) listenerObj);
+                    }
                 }
                 
                 if (listenerObj instanceof IMethodInterceptor) {
-                    methodInterceptors.add((IMethodInterceptor) listenerObj);
+                    synchronized(methodInterceptors) {
+                        methodInterceptors.add((IMethodInterceptor) listenerObj);
+                    }
                 }
                 
                 if (listenerObj instanceof IClassListener) {
-                    classListeners.add((IClassListener) listenerObj);
+                    synchronized(classListeners) {
+                        classListeners.add((IClassListener) listenerObj);
+                    }
                 }
             } catch (InstantiationException | IllegalAccessException e) {
                 throw new RuntimeException("Unable to instantiate listener: " + listener.getName(), e);
