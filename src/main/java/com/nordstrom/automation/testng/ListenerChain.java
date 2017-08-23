@@ -8,22 +8,26 @@ import java.util.Set;
 
 import org.testng.IAnnotationTransformer;
 import org.testng.IAnnotationTransformer2;
+import org.testng.IAnnotationTransformer3;
 import org.testng.IClassListener;
 import org.testng.IConfigurationListener;
 import org.testng.IConfigurationListener2;
 import org.testng.IInvokedMethod;
 import org.testng.IInvokedMethodListener;
+import org.testng.IInvokedMethodListener2;
+import org.testng.IMethodInstance;
+import org.testng.IMethodInterceptor;
 import org.testng.ISuite;
 import org.testng.ISuiteListener;
 import org.testng.ITestClass;
 import org.testng.ITestContext;
 import org.testng.ITestListener;
 import org.testng.ITestNGListener;
-import org.testng.ITestNGMethod;
 import org.testng.ITestResult;
 import org.testng.annotations.IConfigurationAnnotation;
 import org.testng.annotations.IDataProviderAnnotation;
 import org.testng.annotations.IFactoryAnnotation;
+import org.testng.annotations.IListenersAnnotation;
 import org.testng.annotations.ITestAnnotation;
 import org.testng.collections.Lists;
 import org.testng.collections.Sets;
@@ -32,27 +36,150 @@ import org.testng.collections.Sets;
  * This TestNG listener enables the addition of other listeners at runtime and guarantees the order in which they're
  * invoked. This is similar in behavior to a JUnit rule chain.
  */
-public class ListenerChain implements ISuiteListener, ITestListener, IClassListener,
-                IInvokedMethodListener, IConfigurationListener2, IAnnotationTransformer2 {
+public class ListenerChain
+                implements IAnnotationTransformer3, ISuiteListener, IConfigurationListener2,
+                IInvokedMethodListener2, ITestListener, IMethodInterceptor, IClassListener {
     
-    private Set<Class<? extends ITestNGListener>> allListeners = 
+    private Set<Class<?>> markedClasses = Collections.synchronizedSet(Sets.<Class<?>>newHashSet());
+    
+    private Set<Class<? extends ITestNGListener>> listenerSet = 
             Collections.synchronizedSet(Sets.<Class<? extends ITestNGListener>>newHashSet());
     
-    private List<ISuiteListener> suiteListeners = Collections.synchronizedList(Lists.<ISuiteListener>newArrayList());
-    private List<ITestListener> testListeners = Collections.synchronizedList(Lists.<ITestListener>newArrayList());
-    private List<IClassListener> classListeners = Collections.synchronizedList(Lists.<IClassListener>newArrayList());
-    private List<IInvokedMethodListener> methodListeners =
-            Collections.synchronizedList(Lists.<IInvokedMethodListener>newArrayList());
-    private List<IConfigurationListener> configListeners =
-            Collections.synchronizedList(Lists.<IConfigurationListener>newArrayList());
-    private List<IConfigurationListener2> configListeners2 =
-            Collections.synchronizedList(Lists.<IConfigurationListener2>newArrayList());
     private List<IAnnotationTransformer> annotationXformers = 
             Collections.synchronizedList(Lists.<IAnnotationTransformer>newArrayList());
     private List<IAnnotationTransformer2> annotationXformers2 = 
             Collections.synchronizedList(Lists.<IAnnotationTransformer2>newArrayList());
+    private List<IAnnotationTransformer3> annotationXformers3 = 
+            Collections.synchronizedList(Lists.<IAnnotationTransformer3>newArrayList());
+    private List<ISuiteListener> suiteListeners = 
+            Collections.synchronizedList(Lists.<ISuiteListener>newArrayList());
+    private List<IConfigurationListener> configListeners =
+            Collections.synchronizedList(Lists.<IConfigurationListener>newArrayList());
+    private List<IConfigurationListener2> configListeners2 =
+            Collections.synchronizedList(Lists.<IConfigurationListener2>newArrayList());
+    private List<IInvokedMethodListener> methodListeners =
+            Collections.synchronizedList(Lists.<IInvokedMethodListener>newArrayList());
+    private List<IInvokedMethodListener2> methodListeners2 =
+            Collections.synchronizedList(Lists.<IInvokedMethodListener2>newArrayList());
+    private List<ITestListener> testListeners = 
+            Collections.synchronizedList(Lists.<ITestListener>newArrayList());
+    private List<IMethodInterceptor> methodInterceptors = 
+            Collections.synchronizedList(Lists.<IMethodInterceptor>newArrayList());
+    private List<IClassListener> classListeners = 
+            Collections.synchronizedList(Lists.<IClassListener>newArrayList());
 
-    /** 
+    /**
+     * [IAnnotationTransformer]
+     * This method will be invoked by TestNG to give you a chance to modify a TestNG annotation read from your test
+     * classes. You can change the values you need by calling any of the setters on the ITest interface. Note that
+     * only one of the three parameters testClass, testCtor and testMethod will be non-null.
+     * 
+     * @param annotation The annotation that was read from your test class.
+     * @param testClass If the annotation was found on a class, this parameter represents this class (null otherwise).
+     * @param testCtor If the annotation was found on a constructor, this parameter represents this constructor (null
+     *        otherwise).
+     * @param testMethod If the annotation was found on a method, this parameter represents this method (null
+     *        otherwise).
+     */
+    @Override
+    @SuppressWarnings("rawtypes")
+    public void transform(ITestAnnotation annotation, Class testClass, Constructor testCtor, Method testMethod) {
+        attachListeners(testClass, testCtor, testMethod);
+        
+        for (IAnnotationTransformer annotationXformer : annotationXformers) {
+            annotationXformer.transform(annotation, testClass, testCtor, testMethod);
+        }
+        for (IAnnotationTransformer2 annotationXformer : annotationXformers2) {
+            annotationXformer.transform(annotation, testClass, testCtor, testMethod);
+        }
+        for (IAnnotationTransformer3 annotationXformer : annotationXformers3) {
+            annotationXformer.transform(annotation, testClass, testCtor, testMethod);
+        }
+    }
+
+    /**
+     * [IAnnotationTransformer2]
+     * Transform an IConfiguration annotation. Note that only one of the three parameters testClass, testCtor and
+     * testMethod will be non-null.
+     * 
+     * @param annotation The annotation that was read from your test class.
+     * @param testClass If the annotation was found on a class, this parameter represents this class (null otherwise).
+     * @param testCtor If the annotation was found on a constructor, this parameter represents this constructor (null
+     *        otherwise).
+     * @param testMethod If the annotation was found on a method, this parameter represents this method (null
+     *        otherwise).
+     */
+    @Override
+    @SuppressWarnings("rawtypes")
+    public void transform(IConfigurationAnnotation annotation, Class testClass,
+                    Constructor testCtor, Method testMethod) {
+        
+        attachListeners(testClass, testCtor, testMethod);
+
+        for (IAnnotationTransformer2 annotationXformer : annotationXformers2) {
+            annotationXformer.transform(annotation, testClass, testCtor, testMethod);
+        }
+        for (IAnnotationTransformer3 annotationXformer : annotationXformers3) {
+            annotationXformer.transform(annotation, testClass, testCtor, testMethod);
+        }
+    }
+
+    /**
+     * [IAnnotationTransformer2]
+     * Transform an IDataProvider annotation.
+     * 
+     * @param annotation The data provider annotation.
+     * @param method The method annotated with the IDataProvider annotation.
+     */
+    @Override
+    public void transform(IDataProviderAnnotation annotation, Method method) {
+        attachListeners(method);
+        
+        for (IAnnotationTransformer2 annotationXformer : annotationXformers2) {
+            annotationXformer.transform(annotation, method);
+        }
+        for (IAnnotationTransformer3 annotationXformer : annotationXformers3) {
+            annotationXformer.transform(annotation, method);
+        }
+    }
+
+    /**
+     * [IAnnotationTransformer2]
+     * Transform an IFactory annotation.
+     * 
+     * @param annotation The factory annotation.
+     * @param method The method annotated with the IFactory annotation.
+     */
+    @Override
+    public void transform(IFactoryAnnotation annotation, Method method) {
+        attachListeners(method);
+        
+        for (IAnnotationTransformer2 annotationXformer : annotationXformers2) {
+            annotationXformer.transform(annotation, method);
+        }
+        for (IAnnotationTransformer3 annotationXformer : annotationXformers3) {
+            annotationXformer.transform(annotation, method);
+        }
+    }
+
+    /**
+     * [IAnnotationTransformer3]
+     * Transform a Listeners annotation.
+     * 
+     * @param annotation The listeners annotation.
+     * @param testClass The test class annotated with the Listeners annotation.
+     */
+    @Override
+    @SuppressWarnings("rawtypes")
+    public void transform(IListenersAnnotation annotation, Class testClass) {
+        attachListeners(testClass);
+        
+        for (IAnnotationTransformer3 annotationXformer : annotationXformers3) {
+            annotationXformer.transform(annotation, testClass);
+        }
+    }
+    
+    /**
      * [ISuiteListener]
      * This method is invoked before the SuiteRunner starts.
      * 
@@ -60,18 +187,6 @@ public class ListenerChain implements ISuiteListener, ITestListener, IClassListe
      */
     @Override
     public void onStart(ISuite suite) {
-        Set<ListenerChainable> chainables = Sets.newHashSet();
-        for (ITestNGMethod method : suite.getAllMethods()) {
-            Object instance = method.getInstance();
-            if (instance instanceof ListenerChainable) {
-                chainables.add((ListenerChainable) instance);
-            }
-        }
-        
-        for (ListenerChainable chainable : chainables) {
-            chainable.attachListeners(this);
-        }
-        
         for (int i = suiteListeners.size() - 1; i > -1; i--) {
             suiteListeners.get(i).onStart(suite);
         }
@@ -88,6 +203,127 @@ public class ListenerChain implements ISuiteListener, ITestListener, IClassListe
     public void onFinish(ISuite suite) {
         for (ISuiteListener suiteListener : suiteListeners) {
             suiteListener.onFinish(suite);
+        }
+    }
+
+    /**
+     * [IConfigurationListener]
+     * Invoked whenever a configuration method succeeded.
+     * 
+     * @param itr test result object for the associated configuration method
+     */
+    @Override
+    public void onConfigurationSuccess(ITestResult itr) {
+        for (IConfigurationListener configListener : configListeners) {
+            configListener.onConfigurationSuccess(itr);
+        }
+        for (IConfigurationListener configListener : configListeners2) {
+            configListener.onConfigurationSuccess(itr);
+        }
+    }
+
+    /**
+     * [IConfigurationListener]
+     * Invoked whenever a configuration method failed.
+     * 
+     * @param itr test result object for the associated configuration method
+     */
+    @Override
+    public void onConfigurationFailure(ITestResult itr) {
+        for (IConfigurationListener configListener : configListeners) {
+            configListener.onConfigurationFailure(itr);
+        }
+        for (IConfigurationListener configListener : configListeners2) {
+            configListener.onConfigurationFailure(itr);
+        }
+    }
+
+    /**
+     * [IConfigurationListener]
+     * Invoked whenever a configuration method was skipped.
+     * 
+     * @param itr test result object for the associated configuration method
+     */
+    @Override
+    public void onConfigurationSkip(ITestResult itr) {
+        for (IConfigurationListener configListener : configListeners) {
+            configListener.onConfigurationSkip(itr);
+        }
+        for (IConfigurationListener configListener : configListeners2) {
+            configListener.onConfigurationSkip(itr);
+        }
+    }
+
+    /**
+     * [IConfigurationListener2]
+     * Invoked before a configuration method is invoked.
+     * 
+     * @param tr test result object for the associated configuration method
+     */
+    @Override
+    public void beforeConfiguration(ITestResult tr) {
+        for (int i = configListeners2.size() - 1; i > -1; i--) {
+            configListeners2.get(i).beforeConfiguration(tr);
+        }
+    }
+
+    /**
+     * [IInvokedMethodListener]
+     * Invoked before each test or configuration method is invoked by TestNG
+     * 
+     * @param method TestNG representation of the method that's about to be invoked
+     * @param testResult test result object for the method that's about to be invoked
+     */
+    @Override
+    public void beforeInvocation(IInvokedMethod method, ITestResult testResult) {
+        // NOTE: This method will never be called
+    }
+
+    /**
+     * [IInvokedMethodListener]
+     * Invoked after each test or configuration method is invoked by TestNG
+     * 
+     * @param method TestNG representation of the method that's just been invoked
+     * @param testResult test result object for the method that's just been invoked
+     */
+    @Override
+    public void afterInvocation(IInvokedMethod method, ITestResult testResult) {
+        // NOTE: This method will never be called
+    }
+    
+    /**
+     * [IInvokedMethodListener2]
+     * Invoked before each test or configuration method is invoked by TestNG
+     * 
+     * @param method TestNG representation of the method that's about to be invoked
+     * @param testResult test result object for the method that's about to be invoked
+     * @param context test context
+     */
+    @Override
+    public void beforeInvocation(IInvokedMethod method, ITestResult testResult, ITestContext context) {
+        for (int i = methodListeners.size() - 1; i > -1; i--) {
+            methodListeners.get(i).beforeInvocation(method, testResult);
+        }
+        for (int i = methodListeners2.size() - 1; i > -1; i--) {
+           methodListeners2.get(i).beforeInvocation(method, testResult, context);
+        }
+    }
+
+    /**
+     * [IInvokedMethodListener2]
+     * Invoked after each test or configuration method is invoked by TestNG
+     * 
+     * @param method TestNG representation of the method that's just been invoked
+     * @param testResult test result object for the method that's just been invoked
+     * @param context text context
+     */
+    @Override
+    public void afterInvocation(IInvokedMethod method, ITestResult testResult, ITestContext context) {
+        for (IInvokedMethodListener methodListener : methodListeners) {
+            methodListener.afterInvocation(method, testResult);
+        }
+        for (IInvokedMethodListener2 methodListener : methodListeners2) {
+            methodListener.afterInvocation(method, testResult, context);
         }
     }
 
@@ -194,6 +430,22 @@ public class ListenerChain implements ISuiteListener, ITestListener, IClassListe
     }
 
     /**
+     * [IMethodInterceptor]
+     * Invoked to enable alteration of the list of test methods that TestNG is about to run.
+     * 
+     * @param methods list of test methods.
+     * @param context test context.
+     * @return the list of test methods to run.
+     */
+    @Override
+    public List<IMethodInstance> intercept(List<IMethodInstance> methods, ITestContext context) {
+        for (IMethodInterceptor interceptor : methodInterceptors) {
+            methods = interceptor.intercept(methods, context);
+        }
+        return methods;
+    }
+
+    /**
      * [IClassListener]
      * Invoked after the test class is instantiated and before
      * {@link org.testng.annotations.BeforeClass &#64;BeforeClass} 
@@ -224,168 +476,55 @@ public class ListenerChain implements ISuiteListener, ITestListener, IClassListe
     }
 
     /**
-     * [IInvokedMethodListener]
-     * Invoked before each test or configuration method is invoked by TestNG
+     * Attach linked listeners that are active on the test class that contains the specified test method.
      * 
-     * @param method TestNG representation of the method that's about to be invoked
-     * @param testResult test result object for the method that's about to be invoked
+     * @param testMethod test method
      */
-    @Override
-    public void beforeInvocation(IInvokedMethod method, ITestResult testResult) {
-        for (int i = methodListeners.size() - 1; i > -1; i--) {
-            methodListeners.get(i).beforeInvocation(method, testResult);
-        }
+    private void attachListeners(Method testMethod) {
+        attachListeners(testMethod.getDeclaringClass());
     }
-
+    
     /**
-     * [IInvokedMethodListener]
-     * Invoked after each test or configuration method is invoked by TestNG
+     * Attach linked listeners that are active on the test class defined by the specified test context. Note that only
+     * one of the three parameters testClass, testCtor and testMethod will be non-null.
      * 
-     * @param method TestNG representation of the method that's just been invoked
-     * @param testResult test result object for the method that's just been invoked
+     * @param testClass If the annotation was found on a class, this parameter represents this class (null otherwise).
+     * @param testCtor If the annotation was found on a constructor, this parameter represents this constructor (null
+     *        otherwise).
+     * @param testMethod If the annotation was found on a method, this parameter represents this method (null
+     *        otherwise).
      */
-    @Override
-    public void afterInvocation(IInvokedMethod method, ITestResult testResult) {
-        for (IInvokedMethodListener methodListener : methodListeners) {
-            methodListener.afterInvocation(method, testResult);
+    private void attachListeners(Class<?> testClass, Constructor<?> testCtor, Method testMethod) {
+        if (testClass != null) {
+            attachListeners(testClass);
+        } else if (testCtor != null) {
+            attachListeners(testCtor.getDeclaringClass());
+        } else {
+            attachListeners(testMethod.getDeclaringClass());
         }
     }
     
     /**
-     * [IConfigurationListener]
-     * Invoked whenever a configuration method succeeded.
+     * Attach linked listeners that are active on the specified test class.
      * 
-     * @param itr test result object for the associated configuration method
+     * @param testClass test class
      */
-    @Override
-    public void onConfigurationSuccess(ITestResult itr) {
-        for (IConfigurationListener configListener : configListeners) {
-            configListener.onConfigurationSuccess(itr);
-        }
-        for (IConfigurationListener configListener : configListeners2) {
-            configListener.onConfigurationSuccess(itr);
+    private void attachListeners(Class<?> testClass) {
+        LinkedListeners annotation = testClass.getAnnotation(LinkedListeners.class);
+        if (null != annotation) {
+            Class<?> markedClass = testClass;
+            while (null == markedClass.getDeclaredAnnotation(LinkedListeners.class)) {
+                markedClass = markedClass.getSuperclass();
+            }
+            if ( ! markedClasses.contains(markedClass)) {
+                markedClasses.add(markedClass);
+                for (Class<? extends ITestNGListener> listener : annotation.value()) {
+                    attachListener(listener);
+                }
+            }
         }
     }
-
-    /**
-     * [IConfigurationListener]
-     * Invoked whenever a configuration method failed.
-     * 
-     * @param itr test result object for the associated configuration method
-     */
-    @Override
-    public void onConfigurationFailure(ITestResult itr) {
-        for (IConfigurationListener configListener : configListeners) {
-            configListener.onConfigurationFailure(itr);
-        }
-        for (IConfigurationListener configListener : configListeners2) {
-            configListener.onConfigurationFailure(itr);
-        }
-    }
-
-    /**
-     * [IConfigurationListener]
-     * Invoked whenever a configuration method was skipped.
-     * 
-     * @param itr test result object for the associated configuration method
-     */
-    @Override
-    public void onConfigurationSkip(ITestResult itr) {
-        for (IConfigurationListener configListener : configListeners) {
-            configListener.onConfigurationSkip(itr);
-        }
-        for (IConfigurationListener configListener : configListeners2) {
-            configListener.onConfigurationSkip(itr);
-        }
-    }
-
-    /**
-     * [IConfigurationListener2]
-     * Invoked before a configuration method is invoked.
-     * 
-     * @param tr test result object for the associated configuration method
-     */
-    @Override
-    public void beforeConfiguration(ITestResult tr) {
-        for (int i = configListeners2.size() - 1; i > -1; i--) {
-            configListeners2.get(i).beforeConfiguration(tr);
-        }
-    }
-
-    /**
-     * [IAnnotationTransformer]
-     * This method will be invoked by TestNG to give you a chance to modify a TestNG annotation read from your test
-     * classes. You can change the values you need by calling any of the setters on the ITest interface. Note that
-     * only one of the three parameters testClass, testConstructor and testMethod will be non-null.
-     * 
-     * @param annotation The annotation that was read from your test class.
-     * @param testClass If the annotation was found on a class, this parameter represents this class
-     *        (null otherwise).
-     * @param testConstructor If the annotation was found on a constructor, this parameter
-     *        represents this constructor (null otherwise).
-     * @param testMethod If the annotation was found on a method, this parameter represents this
-     *        method (null otherwise).
-     */
-    @Override
-    @SuppressWarnings("rawtypes")
-    public void transform(ITestAnnotation annotation, Class testClass, Constructor testConstructor, Method testMethod) {
-        for (IAnnotationTransformer annotationXformer : annotationXformers) {
-            annotationXformer.transform(annotation, testClass, testConstructor, testMethod);
-        }
-        for (IAnnotationTransformer2 annotationXformer : annotationXformers2) {
-            annotationXformer.transform(annotation, testClass, testConstructor, testMethod);
-        }
-    }
-
-    /**
-     * [IAnnotationTransformer2]
-     * Transform an IDataProvider annotation.
-     * 
-     * @param annotation The data provider annotation
-     * @param method The method annotated with the IDataProvider annotation.
-     */
-    @Override
-    public void transform(IDataProviderAnnotation annotation, Method method) {
-        for (IAnnotationTransformer2 annotationXformer : annotationXformers2) {
-            annotationXformer.transform(annotation, method);
-        }
-    }
-
-    /**
-     * [IAnnotationTransformer2]
-     * Transform an IFactory annotation.
-     * 
-     * @param annotation The factory annotation.
-     * @param method The method annotated with the IFactory annotation.
-     */
-    @Override
-    public void transform(IFactoryAnnotation annotation, Method method) {
-        for (IAnnotationTransformer2 annotationXformer : annotationXformers2) {
-            annotationXformer.transform(annotation, method);
-        }
-    }
-
-    /**
-     * [IAnnotationTransformer2] Transform an IConfiguration annotation. Note that only one of the
-     * three parameters testClass, testConstructor and testMethod will be non-null.
-     * 
-     * @param annotation The annotation that was read from your test class.
-     * @param testClass If the annotation was found on a class, this parameter represents this class
-     *        (null otherwise).
-     * @param testConstructor If the annotation was found on a constructor, this parameter
-     *        represents this constructor (null otherwise).
-     * @param testMethod If the annotation was found on a method, this parameter represents this
-     *        method (null otherwise).
-     */
-    @Override
-    @SuppressWarnings("rawtypes")
-    public void transform(IConfigurationAnnotation annotation, Class testClass, Constructor testConstructor,
-                    Method testMethod) {
-        for (IAnnotationTransformer2 annotationXformer : annotationXformers2) {
-            annotationXformer.transform(annotation, testClass, testConstructor, testMethod);
-        }
-    }
-
+    
     /**
      * Wrap the current listener chain with an instance of the specified listener class.<br>
      * <b>NOTE</b>: The order in which listener methods are invoked is determined by the
@@ -394,41 +533,52 @@ public class ListenerChain implements ISuiteListener, ITestListener, IClassListe
      * in first-added-first-called order.<br>
      * <b>NOTE</b>: Only one instance of any given listener class will be included in the chain.
      * 
-     * @param listenerTyp listener class to add to the chain
-     * @return {@code this} (the target instance of {@link ListenerChain})
+     * @param listener listener class to add to the chain
      */
-    public ListenerChain around(Class<? extends ITestNGListener> listenerTyp) {
-        if (!allListeners.contains(listenerTyp)) {
-            allListeners.add(listenerTyp);
+    private void attachListener(Class<? extends ITestNGListener> listener) {
+        if ( ! listenerSet.contains(listener)) {
+            listenerSet.add(listener);
             try {
-                ITestNGListener listenerObj = listenerTyp.newInstance();
+                ITestNGListener listenerObj = listener.newInstance();
+                
+                if (listenerObj instanceof IAnnotationTransformer3) {
+                    annotationXformers3.add((IAnnotationTransformer3) listenerObj);
+                } else if (listenerObj instanceof IAnnotationTransformer2) {
+                    annotationXformers2.add((IAnnotationTransformer2) listenerObj);
+                } else if (listenerObj instanceof IAnnotationTransformer) {
+                    annotationXformers.add((IAnnotationTransformer) listenerObj);
+                }
+                
                 if (listenerObj instanceof ISuiteListener) {
                     suiteListeners.add((ISuiteListener) listenerObj);
                 }
-                if (listenerObj instanceof ITestListener) {
-                    testListeners.add((ITestListener) listenerObj);
-                }
-                if (listenerObj instanceof IClassListener) {
-                    classListeners.add((IClassListener) listenerObj);
-                }
-                if (listenerObj instanceof IInvokedMethodListener) {
-                    methodListeners.add((IInvokedMethodListener) listenerObj);
-                }
+                
                 if (listenerObj instanceof IConfigurationListener2) {
                     configListeners2.add((IConfigurationListener2) listenerObj);
                 } else if (listenerObj instanceof IConfigurationListener) {
                     configListeners.add((IConfigurationListener) listenerObj);
                 }
-                if (listenerObj instanceof IAnnotationTransformer2) {
-                    annotationXformers2.add((IAnnotationTransformer2) listenerObj);
-                } else if (listenerObj instanceof IAnnotationTransformer) {
-                	annotationXformers.add((IAnnotationTransformer) listenerObj);
+                
+                if (listenerObj instanceof IInvokedMethodListener2) {
+                    methodListeners2.add((IInvokedMethodListener2) listenerObj);
+                } else if (listenerObj instanceof IInvokedMethodListener) {
+                    methodListeners.add((IInvokedMethodListener) listenerObj);
+                }
+                
+                if (listenerObj instanceof ITestListener) {
+                    testListeners.add((ITestListener) listenerObj);
+                }
+                
+                if (listenerObj instanceof IMethodInterceptor) {
+                    methodInterceptors.add((IMethodInterceptor) listenerObj);
+                }
+                
+                if (listenerObj instanceof IClassListener) {
+                    classListeners.add((IClassListener) listenerObj);
                 }
             } catch (InstantiationException | IllegalAccessException e) {
-                throw new RuntimeException("Unable to instantiate listener: " + listenerTyp.getName(), e);
+                throw new RuntimeException("Unable to instantiate listener: " + listener.getName(), e);
             }
         }
-        return this;
     }
-
 }

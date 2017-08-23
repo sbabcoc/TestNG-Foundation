@@ -1,22 +1,34 @@
 package com.nordstrom.automation.testng;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
+import org.testng.IAnnotationTransformer3;
 import org.testng.IClassListener;
 import org.testng.IConfigurationListener2;
 import org.testng.IInvokedMethod;
 import org.testng.IInvokedMethodListener;
+import org.testng.IMethodInstance;
+import org.testng.IMethodInterceptor;
 import org.testng.ISuite;
 import org.testng.ISuiteListener;
 import org.testng.ITestClass;
 import org.testng.ITestContext;
 import org.testng.ITestListener;
 import org.testng.ITestResult;
+import org.testng.annotations.IConfigurationAnnotation;
+import org.testng.annotations.IDataProviderAnnotation;
+import org.testng.annotations.IFactoryAnnotation;
+import org.testng.annotations.IListenersAnnotation;
+import org.testng.annotations.ITestAnnotation;
 import org.testng.collections.Sets;
 
 public class ChainedListener
-        implements ISuiteListener, ITestListener, IClassListener, IInvokedMethodListener, IConfigurationListener2 {
+                implements IAnnotationTransformer3, ISuiteListener, IConfigurationListener2,
+                IInvokedMethodListener, ITestListener, IMethodInterceptor, IClassListener {
     
     static Set<String> configSuccess = Collections.synchronizedSet(Sets.<String>newHashSet());
     static Set<String> configFailure = Collections.synchronizedSet(Sets.<String>newHashSet());
@@ -43,6 +55,14 @@ public class ChainedListener
     
     static Set<String> suiteBegun = Collections.synchronizedSet(Sets.<String>newHashSet());
     static Set<String> suiteEnded = Collections.synchronizedSet(Sets.<String>newHashSet());
+    
+    static Set<String> xformTest = Collections.synchronizedSet(Sets.<String>newHashSet());
+    static Set<String> xformConfig = Collections.synchronizedSet(Sets.<String>newHashSet());
+    static Set<String> xformProvider = Collections.synchronizedSet(Sets.<String>newHashSet());
+    static Set<String> xformFactory = Collections.synchronizedSet(Sets.<String>newHashSet());
+    static Set<String> xformListeners = Collections.synchronizedSet(Sets.<String>newHashSet());
+    
+    static Set<String> interceptor = Collections.synchronizedSet(Sets.<String>newHashSet());
 
     @Override
     public void onConfigurationSuccess(ITestResult itr) {
@@ -140,5 +160,55 @@ public class ChainedListener
     public void onFinish(ISuite suite) {
         suiteEnded.add(suite.getName());
     }
+
+    @SuppressWarnings("rawtypes")
+    @Override
+    public void transform(ITestAnnotation annotation, Class testClass, Constructor testCtor,
+                    Method testMethod) {
+        
+        if (testClass != null) {
+            xformTest.add("class: " + testClass.getSimpleName());
+        } else if (testCtor != null) {
+            xformTest.add("ctor: " + testCtor.getName());
+        } else {
+            xformTest.add("method: " + testMethod.getName());
+        }
+    }
+
+    @SuppressWarnings("rawtypes")
+    @Override
+    public void transform(IConfigurationAnnotation annotation, Class testClass,
+                    Constructor testCtor, Method testMethod) {
+        
+        if (testClass != null) {
+            xformConfig.add("class: " + testClass.getSimpleName());
+        } else if (testCtor != null) {
+            xformConfig.add("ctor: " + testCtor.getName());
+        } else {
+            xformConfig.add("method: " + testMethod.getName());
+        }
+    }
+
+    @Override
+    public void transform(IDataProviderAnnotation annotation, Method method) {
+        xformProvider.add(method.getName());
+    }
+
+    @Override
+    public void transform(IFactoryAnnotation annotation, Method method) {
+        xformFactory.add(method.getName());
+    }
+
+    @SuppressWarnings("rawtypes")
+    @Override
+    public void transform(IListenersAnnotation annotation, Class testClass) {
+        xformListeners.add(testClass.getSimpleName());
+    }
     
+    @Override
+    public List<IMethodInstance> intercept(List<IMethodInstance> methods, ITestContext context) {
+        interceptor.add(context.getName());
+        return methods;
+    }
+
 }

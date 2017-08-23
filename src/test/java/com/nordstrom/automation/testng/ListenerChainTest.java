@@ -3,6 +3,10 @@ package com.nordstrom.automation.testng;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
 import org.testng.ITestNGListener;
 import org.testng.TestListenerAdapter;
 import org.testng.TestNG;
@@ -17,7 +21,7 @@ public class ListenerChainTest {
         TestListenerAdapter tla = new TestListenerAdapter();
         
         TestNG testNG = new TestNG();
-        testNG.setTestClasses(new Class[]{ListenerChainerClass.class});
+        testNG.setTestClasses(new Class[]{ListenerChainerClass.class, ListenerChainerFactory.class});
         testNG.addListener((ITestNGListener) lc);
         testNG.addListener((ITestNGListener) tla);
         testNG.setGroups("happyPath");
@@ -54,6 +58,24 @@ public class ListenerChainTest {
         assertTrue(ChainedListener.suiteBegun.contains("Command line suite"));
         assertTrue(ChainedListener.suiteEnded.contains("Command line suite"));
         
+        Set<String> expectTests = new HashSet<>(Arrays.asList("method: testSkipped",
+                        "method: happyPath", "method: beforeSuccess", "method: beforeSkipped",
+                        "method: skipBeforeFailed", "method: skipBeforeSkipped",
+                        "method: testAfterSkipped", "method: productTest", "method: failAndPass",
+                        "method: afterSuccess", "method: afterFailure",
+                        "class: ListenerChainerClass", "method: testAfterFailed",
+                        "method: beforeFailure", "method: afterSkipped", "method: testFailed"));
+        Set<String> expectConfigs = new HashSet<>(Arrays.asList("method: afterSuccess",
+                        "method: afterFailure", "method: beforeSuccess", "method: beforeFailure",
+                        "method: beforeSkipped", "method: afterSkipped"));
+        
+        assertEquals(ChainedListener.xformTest, expectTests);
+        assertEquals(ChainedListener.xformConfig, expectConfigs);
+        assertTrue(ChainedListener.xformProvider.contains("dataProvider"));
+        assertTrue(ChainedListener.xformFactory.contains("createInstances"));
+        assertTrue(ChainedListener.xformListeners.contains("ListenerChainerClass"));
+        
+        assertTrue(ChainedListener.interceptor.contains("Command line test"));
     }
     
     @Test
