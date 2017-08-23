@@ -217,7 +217,7 @@ public class ListenerChain
         for (IConfigurationListener configListener : configListeners) {
             configListener.onConfigurationSuccess(itr);
         }
-        for (IConfigurationListener configListener : configListeners2) {
+        for (IConfigurationListener2 configListener : configListeners2) {
             configListener.onConfigurationSuccess(itr);
         }
     }
@@ -233,7 +233,7 @@ public class ListenerChain
         for (IConfigurationListener configListener : configListeners) {
             configListener.onConfigurationFailure(itr);
         }
-        for (IConfigurationListener configListener : configListeners2) {
+        for (IConfigurationListener2 configListener : configListeners2) {
             configListener.onConfigurationFailure(itr);
         }
     }
@@ -249,7 +249,7 @@ public class ListenerChain
         for (IConfigurationListener configListener : configListeners) {
             configListener.onConfigurationSkip(itr);
         }
-        for (IConfigurationListener configListener : configListeners2) {
+        for (IConfigurationListener2 configListener : configListeners2) {
             configListener.onConfigurationSkip(itr);
         }
     }
