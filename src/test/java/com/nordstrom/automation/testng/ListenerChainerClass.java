@@ -8,14 +8,25 @@ import java.lang.reflect.Method;
 import org.testng.SkipException;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.DataProvider;
+import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
-import com.nordstrom.automation.testng.ListenerChain;
-import com.nordstrom.automation.testng.ListenerChainable;
-
-class ListenerChainerClass implements ListenerChainable {
+@Test
+@Listeners
+@LinkedListeners({ChainedListener.class, ExecutionFlowController.class})
+class ListenerChainerClass {
     
     private int invokeCount;
+    
+    @Test
+    public ListenerChainerClass() {
+    }
+    
+    @DataProvider(name = "data")
+    public Object[][] dataProvider() {
+        return new Object[][] {{"data"}};
+    }
     
     @BeforeMethod(groups = {"happyPath", "testFailed", "testSkipped", "failAndPass", "afterFailed", "afterSkipped"})
     public void beforeSuccess(Method method) {
@@ -34,8 +45,8 @@ class ListenerChainerClass implements ListenerChainable {
         throw new SkipException("beforeSkipped");
     }
     
-    @Test(groups = {"happyPath"})
-    public void happyPath() {
+    @Test(groups = {"happyPath"}, dataProvider = "data")
+    public void happyPath(String data) {
         System.out.println("happyPath");
         assertTrue(true);
     }
@@ -97,11 +108,6 @@ class ListenerChainerClass implements ListenerChainable {
     public void afterSkipped(Method method) {
         System.out.println("afterSkipped");
         throw new SkipException("afterSkipped");
-    }
-    
-    @Override
-    public void attachListeners(ListenerChain listenerChain) {
-        listenerChain.around(ChainedListener.class);
     }
     
 }
