@@ -35,6 +35,8 @@ public class TestNGConfig extends SettingsCore<TestNGConfig.TestNGSettings> {
             return defaultValue;
         }
 	}
+	
+	private static final ThreadLocal<TestNGConfig> testNGConfig = new ThreadLocal<>();
 
     public TestNGConfig() throws ConfigurationException, IOException {
         super(TestNGSettings.class);
@@ -56,19 +58,28 @@ public class TestNGConfig extends SettingsCore<TestNGConfig.TestNGSettings> {
      * @return TestNG configuration object
      */
     public static TestNGConfig getConfig(ITestResult testResult) {
-        if (testResult == null) throw new NullPointerException("Test result object must be non-null");
+        if (testResult == null) {
+            return getTestNGConfig();
+        }
         if (testResult.getAttribute(TESTNG_CONFIG) == null) {
             synchronized (TESTNG_CONFIG) {
                 if (testResult.getAttribute(TESTNG_CONFIG) == null) {
-                    try {
-                        testResult.setAttribute(TESTNG_CONFIG, new TestNGConfig());
-                    } catch (ConfigurationException | IOException e) {
-                        throw new RuntimeException("Failed to instantiate settings", e);
-                    }
+                    testResult.setAttribute(TESTNG_CONFIG, getTestNGConfig());
                 }
             }
         }
         return (TestNGConfig) testResult.getAttribute(TESTNG_CONFIG);
+    }
+    
+    private static TestNGConfig getTestNGConfig() {
+        if (testNGConfig.get() == null) {
+            try {
+                testNGConfig.set(new TestNGConfig());
+            } catch (ConfigurationException | IOException e) {
+                throw new RuntimeException("Failed to instantiate settings", e);
+            }
+        }
+        return testNGConfig.get();
     }
     
     @Override
