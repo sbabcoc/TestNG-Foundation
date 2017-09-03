@@ -61,14 +61,15 @@ public class TestNGConfig extends SettingsCore<TestNGConfig.TestNGSettings> {
         if (testResult == null) {
             return getTestNGConfig();
         }
-        if (testResult.getAttribute(TESTNG_CONFIG) == null) {
-            synchronized (TESTNG_CONFIG) {
-                if (testResult.getAttribute(TESTNG_CONFIG) == null) {
-                    testResult.setAttribute(TESTNG_CONFIG, getTestNGConfig());
-                }
-            }
+        
+        TestNGConfig config = (TestNGConfig) testResult.getAttribute(TESTNG_CONFIG);
+        
+        if (config == null) {
+            config = getTestNGConfig();
+            testResult.setAttribute(TESTNG_CONFIG, config);
         }
-        return (TestNGConfig) testResult.getAttribute(TESTNG_CONFIG);
+        
+        return config;
     }
     
     private static TestNGConfig getTestNGConfig() {
