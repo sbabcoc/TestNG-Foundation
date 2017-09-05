@@ -96,23 +96,23 @@ public class ExecutionFlowController implements IInvokedMethodListener, IMethodI
         return methods;
     }
 
-	@Override
+    @Override
     @SuppressWarnings("rawtypes")
     public void transform(ITestAnnotation annotation, Class testClass, Constructor testConstructor, Method testMethod) {
-		// if @Test for test method
+        // if @Test for test method
         if (testMethod != null) {
-        	// get TestNG Foundation configuration
-        	TestNGConfig config = TestNGConfig.getConfig();
-        	// if default test timeout is defined
-        	if (config.containsKey(TestNGSettings.TEST_TIMEOUT.key())) {
-        		// get default test timeout
-            	long defaultTimeout = config.getLong(TestNGSettings.TEST_TIMEOUT.key());
-            	// if current timeout is less than default
-            	if (defaultTimeout > annotation.getTimeOut()) {
-            		// set test timeout interval
-            		annotation.setTimeOut(defaultTimeout);
-            	}
-        	}
+            // get TestNG Foundation configuration
+            TestNGConfig config = TestNGConfig.getConfig();
+            // if default test timeout is defined
+            if (config.containsKey(TestNGSettings.TEST_TIMEOUT.key())) {
+                // get default test timeout
+                long defaultTimeout = config.getLong(TestNGSettings.TEST_TIMEOUT.key());
+                // if current timeout is less than default
+                if (defaultTimeout > annotation.getTimeOut()) {
+                    // set test timeout interval
+                    annotation.setTimeOut(defaultTimeout);
+                }
+            }
         }
     }
     

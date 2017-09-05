@@ -9,11 +9,11 @@ import org.testng.Reporter;
 import com.nordstrom.automation.settings.SettingsCore;
 
 public class TestNGConfig extends SettingsCore<TestNGConfig.TestNGSettings> {
-	
+    
     private static final String SETTINGS_FILE = "testng.properties";
     private static final String TESTNG_CONFIG = "TESTNG_CONFIG";
     
-	public enum TestNGSettings implements SettingsCore.SettingsAPI {
+    public enum TestNGSettings implements SettingsCore.SettingsAPI {
         /** name: <b>testng.timeout.test</b> <br> default: {@code null} */
         TEST_TIMEOUT("testng.timeout.test", null);
 
@@ -34,9 +34,9 @@ public class TestNGConfig extends SettingsCore<TestNGConfig.TestNGSettings> {
         public String val() {
             return defaultValue;
         }
-	}
-	
-	private static final ThreadLocal<TestNGConfig> testNGConfig = new ThreadLocal<>();
+    }
+    
+    private static final ThreadLocal<TestNGConfig> testNGConfig = new ThreadLocal<>();
 
     public TestNGConfig() throws ConfigurationException, IOException {
         super(TestNGSettings.class);
@@ -61,14 +61,15 @@ public class TestNGConfig extends SettingsCore<TestNGConfig.TestNGSettings> {
         if (testResult == null) {
             return getTestNGConfig();
         }
-        if (testResult.getAttribute(TESTNG_CONFIG) == null) {
-            synchronized (TESTNG_CONFIG) {
-                if (testResult.getAttribute(TESTNG_CONFIG) == null) {
-                    testResult.setAttribute(TESTNG_CONFIG, getTestNGConfig());
-                }
-            }
+        
+        TestNGConfig config = (TestNGConfig) testResult.getAttribute(TESTNG_CONFIG);
+        
+        if (config == null) {
+            config = getTestNGConfig();
+            testResult.setAttribute(TESTNG_CONFIG, config);
         }
-        return (TestNGConfig) testResult.getAttribute(TESTNG_CONFIG);
+        
+        return config;
     }
     
     private static TestNGConfig getTestNGConfig() {
