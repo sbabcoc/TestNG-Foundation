@@ -27,7 +27,7 @@ public class ListenerChainTest {
         testNG.setGroups("happyPath");
         testNG.run();
         
-        assertEquals(tla.getPassedTests().size(), 1, "Incorrect passed test count");
+        assertEquals(tla.getPassedTests().size(), 2, "Incorrect passed test count");
         assertEquals(tla.getFailedTests().size(), 0, "Incorrect failed test count");
         assertEquals(tla.getSkippedTests().size(), 0, "Incorrect skipped test count");
         assertEquals(tla.getFailedButWithinSuccessPercentageTests().size(), 0, "Incorrect curve-graded success count");
@@ -64,7 +64,8 @@ public class ListenerChainTest {
                         "method: testAfterSkipped", "method: productTest", "method: failAndPass",
                         "method: afterSuccess", "method: afterFailure",
                         "class: ListenerChainerClass", "method: testAfterFailed",
-                        "method: beforeFailure", "method: afterSkipped", "method: testFailed"));
+                        "method: beforeFailure", "method: afterSkipped", "method: testFailed",
+                        "method: testAttachedListener"));
         Set<String> expectConfigs = new HashSet<>(Arrays.asList("method: afterSuccess",
                         "method: afterFailure", "method: beforeSuccess", "method: beforeFailure",
                         "method: beforeSkipped", "method: afterSkipped"));

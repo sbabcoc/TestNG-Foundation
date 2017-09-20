@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 
 import org.testng.IAnnotationTransformer;
@@ -46,6 +48,7 @@ public class ListenerChain
     private Set<Class<? extends ITestNGListener>> listenerSet = 
             Collections.synchronizedSet(new HashSet<>());
     
+    private List<ITestNGListener> listeners = new ArrayList<>();
     private List<IAnnotationTransformer> annotationXformers = new ArrayList<>();
     private List<IAnnotationTransformer2> annotationXformers2 = new ArrayList<>();
     private List<IAnnotationTransformer3> annotationXformers3 = new ArrayList<>();
@@ -57,6 +60,8 @@ public class ListenerChain
     private List<ITestListener> testListeners = new ArrayList<>();
     private List<IMethodInterceptor> methodInterceptors = new ArrayList<>();
     private List<IClassListener> classListeners = new ArrayList<>();
+    
+    private static final String LISTENER_CHAIN = "ListenerChain";
 
     /**
      * [IAnnotationTransformer]
@@ -197,6 +202,8 @@ public class ListenerChain
      */
     @Override
     public void onStart(ISuite suite) {
+        suite.setAttribute(getClass().getSimpleName(), this);
+        
         synchronized(suiteListeners) {
             for (ISuiteListener suiteListener : Lists.reverse(suiteListeners)) {
                 suiteListener.onStart(suite);
@@ -530,6 +537,49 @@ public class ListenerChain
             }
         }
     }
+    
+    /**
+     * Get reference to an instance of the specified listener type.
+     * 
+     * @param result TestNG test result object
+     * @param listenerType listener type
+     * @return optional listener instance
+     */
+    public static Optional<ITestNGListener> getAttachedListener(ITestResult result, Class<? extends ITestNGListener> listenerType) {
+        Objects.requireNonNull(result, "[result] must be non-null");
+        return getAttachedListener(result.getTestContext(), listenerType);
+    }
+    
+    /**
+     * Get reference to an instance of the specified listener type.
+     * 
+     * @param context TestNG test context object
+     * @param listenerType listener type
+     * @return optional listener instance
+     */
+    public static Optional<ITestNGListener> getAttachedListener(ITestContext context, Class<? extends ITestNGListener> listenerType) {
+        Objects.requireNonNull(context, "[context] must be non-null");
+        return getAttachedListener(context.getSuite(), listenerType);
+    }
+    
+    /**
+     * Get reference to an instance of the specified listener type.
+     * 
+     * @param suite TestNG suite object
+     * @param listenerType listener type
+     * @return optional listener instance
+     */
+    public static Optional<ITestNGListener> getAttachedListener(ISuite suite, Class<? extends ITestNGListener> listenerType) {
+        Objects.requireNonNull(suite, "[suite] must be non-null");
+        Objects.requireNonNull(listenerType, "[listenerType] must be non-null");
+        ListenerChain chain = (ListenerChain) suite.getAttribute(LISTENER_CHAIN);
+        for (ITestNGListener listener : chain.listeners) {
+            if (listenerType.isAssignableFrom(listener.getClass())) {
+                return Optional.of(listener);
+            }
+        }
+        return Optional.empty();
+    }
 
     /**
      * Attach linked listeners that are active on the test class that contains the specified test method.
@@ -596,6 +646,10 @@ public class ListenerChain
             listenerSet.add(listener);
             try {
                 ITestNGListener listenerObj = listener.newInstance();
+                
+                synchronized(listeners) {
+                    listeners.add(listenerObj);
+                }
                 
                 if (listenerObj instanceof IAnnotationTransformer3) {
                     synchronized(annotationXformers3) {

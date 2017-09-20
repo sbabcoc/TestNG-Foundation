@@ -4,7 +4,11 @@ import static org.testng.Assert.assertTrue;
 import static org.testng.Assert.fail;
 
 import java.lang.reflect.Method;
+import java.util.Optional;
 
+import org.testng.ITestNGListener;
+import org.testng.ITestResult;
+import org.testng.Reporter;
 import org.testng.SkipException;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
@@ -12,6 +16,10 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
+/**
+ * This test class is driven by {@link ListenerChainTest}. Attempts to run the tests in this class without specifying
+ * a group will typically fail, because this results in execution of tests that are intended to fail "unexpectedly".
+ */
 @Test
 @Listeners
 @LinkedListeners({ChainedListener.class, ExecutionFlowController.class})
@@ -108,6 +116,13 @@ class ListenerChainerClass {
     public void afterSkipped(Method method) {
         System.out.println("afterSkipped");
         throw new SkipException("afterSkipped");
+    }
+    
+    @Test(groups = {"happyPath"})
+    public void testAttachedListener() {
+        ITestResult result = Reporter.getCurrentTestResult();
+        Optional<ITestNGListener> optional = ListenerChain.getAttachedListener(result, ChainedListener.class);
+        assertTrue(optional.isPresent());
     }
     
 }
