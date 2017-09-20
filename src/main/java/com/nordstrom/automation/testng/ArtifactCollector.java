@@ -5,6 +5,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.Optional;
 
 import org.testng.ITestContext;
 import org.testng.ITestListener;
@@ -60,15 +61,16 @@ public class ArtifactCollector<T extends ArtifactType> implements ITestListener 
      * Capture artifact from the current test result context.
      * 
      * @param testResult TestNG test result object
+     * @return path at which the captured artifact was stored
      */
-    public void captureArtifact(ITestResult testResult) {
+    public Optional<Path> captureArtifact(ITestResult testResult) {
         if (! provider.canGetArtifact(testResult)) {
-            return;
+            return Optional.empty();
         }
         
         byte[] artifact = provider.getArtifact(testResult);
         if (artifact.length == 0) {
-            return;
+            return Optional.empty();
         }
         
         Path collectionPath = getCollectionPath(testResult);
@@ -78,7 +80,7 @@ public class ArtifactCollector<T extends ArtifactType> implements ITestListener 
             } catch (IOException e) {
                 String messageTemplate = "Unable to create collection directory ({}); no artifact was captured";
                 provider.getLogger().info(messageTemplate, collectionPath, e);
-                return;
+                return Optional.empty();
             }
         }
         
@@ -90,7 +92,7 @@ public class ArtifactCollector<T extends ArtifactType> implements ITestListener 
                             provider.getArtifactExtension());
         } catch (IOException e) {
             provider.getLogger().info("Unable to get output path; no artifact was captured", e);
-            return;
+            return Optional.empty();
         }
         
         try {
@@ -98,8 +100,10 @@ public class ArtifactCollector<T extends ArtifactType> implements ITestListener 
             Files.write(artifactPath, artifact);
         } catch (IOException e) {
             provider.getLogger().info("I/O error saving to ({}); no artifact was captured", artifactPath, e);
-            return;
+            return Optional.empty();
         }
+        
+        return Optional.of(artifactPath);
     }
     
     /**
