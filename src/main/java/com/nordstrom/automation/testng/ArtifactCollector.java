@@ -79,7 +79,7 @@ public class ArtifactCollector<T extends ArtifactType> implements ITestListener 
                 Files.createDirectories(collectionPath);
             } catch (IOException e) {
                 String messageTemplate = "Unable to create collection directory ({}); no artifact was captured";
-                provider.getLogger().info(messageTemplate, collectionPath, e);
+                provider.getLogger().warn(messageTemplate, collectionPath, e);
                 return Optional.empty();
             }
         }
@@ -91,7 +91,7 @@ public class ArtifactCollector<T extends ArtifactType> implements ITestListener 
                             getArtifactBaseName(testResult), 
                             provider.getArtifactExtension());
         } catch (IOException e) {
-            provider.getLogger().info("Unable to get output path; no artifact was captured", e);
+            provider.getLogger().warn("Unable to get output path; no artifact was captured", e);
             return Optional.empty();
         }
         
@@ -99,7 +99,7 @@ public class ArtifactCollector<T extends ArtifactType> implements ITestListener 
             provider.getLogger().info("Saving captured artifact to ({}).", artifactPath);
             Files.write(artifactPath, artifact);
         } catch (IOException e) {
-            provider.getLogger().info("I/O error saving to ({}); no artifact was captured", artifactPath, e);
+            provider.getLogger().warn("I/O error saving to ({}); no artifact was captured", artifactPath, e);
             return Optional.empty();
         }
         
