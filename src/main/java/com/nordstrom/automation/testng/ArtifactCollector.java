@@ -56,6 +56,11 @@ public class ArtifactCollector<T extends ArtifactType> implements ITestListener 
         // nothing to do here
     }
     
+    /**
+     * Capture artifact from the current test result context.
+     * 
+     * @param testResult TestNG test result object
+     */
     public void captureArtifact(ITestResult testResult) {
         if (! provider.canGetArtifact(testResult)) {
             return;
@@ -69,7 +74,7 @@ public class ArtifactCollector<T extends ArtifactType> implements ITestListener 
         Path collectionPath = getCollectionPath(testResult);
         if (!collectionPath.toFile().exists()) {
             try {
-                Files.createDirectory(collectionPath);
+                Files.createDirectories(collectionPath);
             } catch (IOException e) {
                 String messageTemplate = "Unable to create collection directory ({}); no artifact was captured";
                 provider.getLogger().info(messageTemplate, collectionPath, e);
@@ -97,6 +102,12 @@ public class ArtifactCollector<T extends ArtifactType> implements ITestListener 
         }
     }
     
+    /**
+     * Get path of directory at which to store artifacts.
+     * 
+     * @param testResult TestNG test result object
+     * @return path of artifact storage directory
+     */
     private Path getCollectionPath(ITestResult testResult) {
         ITestContext testContext = testResult.getTestContext();
         String outputDirectory = testContext.getOutputDirectory();
@@ -104,6 +115,16 @@ public class ArtifactCollector<T extends ArtifactType> implements ITestListener 
         return collectionPath.resolve(provider.getArtifactPath());
     }
     
+    /**
+     * Get base name for artifact files for the specified test result.
+     * <br><br>
+     * <b>NOTE</b>: The base name is derived from the name of the current test.
+     * If the method is parameterized, a hash code is computed from the parameter
+     * values and appended to the base name as an 8-digit hexadecimal integer.
+     * 
+     * @param testResult TestNG test result object
+     * @return artifact file base name
+     */
     private String getArtifactBaseName(ITestResult testResult) {
         Object[] parameters = testResult.getParameters();
         if (parameters.length == 0) {
