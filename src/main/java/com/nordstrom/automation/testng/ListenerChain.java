@@ -202,7 +202,7 @@ public class ListenerChain
      */
     @Override
     public void onStart(ISuite suite) {
-        suite.setAttribute(getClass().getSimpleName(), this);
+        suite.setAttribute(LISTENER_CHAIN, this);
         
         synchronized(suiteListeners) {
             for (ISuiteListener suiteListener : Lists.reverse(suiteListeners)) {
