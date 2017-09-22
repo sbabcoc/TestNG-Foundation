@@ -13,6 +13,13 @@ import org.testng.ITestResult;
 
 import com.nordstrom.common.file.PathUtils;
 
+/**
+ * This TestNG {@link ITestListener test listener} that serves as the foundation for artifact-capturing test listeners.
+ * This is a generic class, with the artifact-specific implementation provided by implementations of the {@link
+ * ArtifactType} interface.
+ * 
+ * @param <T> scenario-specific artifact capture type
+ */
 public class ArtifactCollector<T extends ArtifactType> implements ITestListener {
     
     private final T provider;
@@ -116,7 +123,7 @@ public class ArtifactCollector<T extends ArtifactType> implements ITestListener 
         ITestContext testContext = testResult.getTestContext();
         String outputDirectory = testContext.getOutputDirectory();
         Path collectionPath = Paths.get(outputDirectory);
-        return collectionPath.resolve(provider.getArtifactPath());
+        return collectionPath.resolve(provider.getArtifactPath(null));
     }
     
     /**

@@ -2,7 +2,7 @@ package com.nordstrom.automation.testng;
 
 import org.testng.annotations.Factory;
 
-public class ListenerChainerFactory {
+public class ListenerChainTestFactory {
     public int invokeCount;
 
     @Factory

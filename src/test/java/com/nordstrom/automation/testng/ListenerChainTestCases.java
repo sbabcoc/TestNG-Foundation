@@ -23,12 +23,12 @@ import org.testng.annotations.Test;
 @Test
 @Listeners
 @LinkedListeners({ChainedListener.class, ExecutionFlowController.class})
-class ListenerChainerClass {
+class ListenerChainTestCases {
     
     private int invokeCount;
     
     @Test
-    public ListenerChainerClass() {
+    public ListenerChainTestCases() {
     }
     
     @DataProvider(name = "data")

@@ -21,7 +21,7 @@ public class ListenerChainTest {
         TestListenerAdapter tla = new TestListenerAdapter();
         
         TestNG testNG = new TestNG();
-        testNG.setTestClasses(new Class[]{ListenerChainerClass.class, ListenerChainerFactory.class});
+        testNG.setTestClasses(new Class[]{ListenerChainTestCases.class, ListenerChainTestFactory.class});
         testNG.addListener((ITestNGListener) lc);
         testNG.addListener((ITestNGListener) tla);
         testNG.setGroups("happyPath");
@@ -49,8 +49,8 @@ public class ListenerChainTest {
         assertTrue(ChainedListener.testStarted.contains("happyPath"));
         assertTrue(ChainedListener.testSuccess.contains("happyPath"));
         
-        assertTrue(ChainedListener.beforeClass.contains("ListenerChainerClass"));
-        assertTrue(ChainedListener.afterClass.contains("ListenerChainerClass"));
+        assertTrue(ChainedListener.beforeClass.contains("ListenerChainTestCases"));
+        assertTrue(ChainedListener.afterClass.contains("ListenerChainTestCases"));
         
         assertTrue(ChainedListener.testsBegun.contains("Command line test"));
         assertTrue(ChainedListener.testsEnded.contains("Command line test"));
@@ -63,7 +63,7 @@ public class ListenerChainTest {
                         "method: skipBeforeFailed", "method: skipBeforeSkipped",
                         "method: testAfterSkipped", "method: productTest", "method: failAndPass",
                         "method: afterSuccess", "method: afterFailure",
-                        "class: ListenerChainerClass", "method: testAfterFailed",
+                        "class: ListenerChainTestCases", "method: testAfterFailed",
                         "method: beforeFailure", "method: afterSkipped", "method: testFailed",
                         "method: testAttachedListener"));
         Set<String> expectConfigs = new HashSet<>(Arrays.asList("method: afterSuccess",
@@ -74,7 +74,7 @@ public class ListenerChainTest {
         assertEquals(ChainedListener.xformConfig, expectConfigs);
         assertTrue(ChainedListener.xformProvider.contains("dataProvider"));
         assertTrue(ChainedListener.xformFactory.contains("createInstances"));
-        assertTrue(ChainedListener.xformListeners.contains("ListenerChainerClass"));
+        assertTrue(ChainedListener.xformListeners.contains("ListenerChainTestCases"));
         
         assertTrue(ChainedListener.interceptor.contains("Command line test"));
     }
@@ -86,7 +86,7 @@ public class ListenerChainTest {
         TestListenerAdapter tla = new TestListenerAdapter();
         
         TestNG testNG = new TestNG();
-        testNG.setTestClasses(new Class[]{ListenerChainerClass.class});
+        testNG.setTestClasses(new Class[]{ListenerChainTestCases.class});
         testNG.addListener((ITestNGListener) lc);
         testNG.addListener((ITestNGListener) tla);
         testNG.setGroups("testFailed");
@@ -123,7 +123,7 @@ public class ListenerChainTest {
         TestListenerAdapter tla = new TestListenerAdapter();
         
         TestNG testNG = new TestNG();
-        testNG.setTestClasses(new Class[]{ListenerChainerClass.class});
+        testNG.setTestClasses(new Class[]{ListenerChainTestCases.class});
         testNG.addListener((ITestNGListener) lc);
         testNG.addListener((ITestNGListener) tla);
         testNG.setGroups("testSkipped");
@@ -160,7 +160,7 @@ public class ListenerChainTest {
         TestListenerAdapter tla = new TestListenerAdapter();
         
         TestNG testNG = new TestNG();
-        testNG.setTestClasses(new Class[]{ListenerChainerClass.class});
+        testNG.setTestClasses(new Class[]{ListenerChainTestCases.class});
         testNG.addListener((ITestNGListener) lc);
         testNG.addListener((ITestNGListener) tla);
         testNG.setGroups("failAndPass");
@@ -197,7 +197,7 @@ public class ListenerChainTest {
         TestListenerAdapter tla = new TestListenerAdapter();
         
         TestNG testNG = new TestNG();
-        testNG.setTestClasses(new Class[]{ListenerChainerClass.class});
+        testNG.setTestClasses(new Class[]{ListenerChainTestCases.class});
         testNG.addListener((ITestNGListener) lc);
         testNG.addListener((ITestNGListener) tla);
         testNG.setGroups("beforeFailed");
@@ -231,7 +231,7 @@ public class ListenerChainTest {
         TestListenerAdapter tla = new TestListenerAdapter();
         
         TestNG testNG = new TestNG();
-        testNG.setTestClasses(new Class[]{ListenerChainerClass.class});
+        testNG.setTestClasses(new Class[]{ListenerChainTestCases.class});
         testNG.addListener((ITestNGListener) lc);
         testNG.addListener((ITestNGListener) tla);
         testNG.setGroups("beforeSkipped");
@@ -265,7 +265,7 @@ public class ListenerChainTest {
         TestListenerAdapter tla = new TestListenerAdapter();
         
         TestNG testNG = new TestNG();
-        testNG.setTestClasses(new Class[]{ListenerChainerClass.class});
+        testNG.setTestClasses(new Class[]{ListenerChainTestCases.class});
         testNG.addListener((ITestNGListener) lc);
         testNG.addListener((ITestNGListener) tla);
         testNG.setGroups("afterFailed");
@@ -302,7 +302,7 @@ public class ListenerChainTest {
         TestListenerAdapter tla = new TestListenerAdapter();
         
         TestNG testNG = new TestNG();
-        testNG.setTestClasses(new Class[]{ListenerChainerClass.class});
+        testNG.setTestClasses(new Class[]{ListenerChainTestCases.class});
         testNG.addListener((ITestNGListener) lc);
         testNG.addListener((ITestNGListener) tla);
         testNG.setGroups("afterSkipped");
