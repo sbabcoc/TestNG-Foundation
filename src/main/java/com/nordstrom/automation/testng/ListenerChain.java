@@ -574,7 +574,7 @@ public class ListenerChain
         Objects.requireNonNull(listenerType, "[listenerType] must be non-null");
         ListenerChain chain = (ListenerChain) suite.getAttribute(LISTENER_CHAIN);
         for (ITestNGListener listener : chain.listeners) {
-            if (listenerType.isAssignableFrom(listener.getClass())) {
+            if (listener.getClass() == listenerType) {
                 return Optional.of(listener);
             }
         }
