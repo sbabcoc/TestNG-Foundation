@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import org.testng.ITestContext;
@@ -22,6 +24,8 @@ import com.nordstrom.common.file.PathUtils;
  */
 public class ArtifactCollector<T extends ArtifactType> implements ITestListener {
     
+    private static final String ARTIFACT_PATHS = "ArtifactPaths";
+    
     private final T provider;
     
     public ArtifactCollector(T provider) {
@@ -29,58 +33,58 @@ public class ArtifactCollector<T extends ArtifactType> implements ITestListener 
     }
 
     @Override
-    public void onFinish(ITestContext arg0) {
+    public void onFinish(ITestContext context) {
         // nothing to do here
     }
 
     @Override
-    public void onStart(ITestContext arg0) {
+    public void onStart(ITestContext context) {
         // nothing to do here
     }
 
     @Override
-    public void onTestFailedButWithinSuccessPercentage(ITestResult arg0) {
+    public void onTestFailedButWithinSuccessPercentage(ITestResult result) {
+        captureArtifact(result);
+    }
+
+    @Override
+    public void onTestFailure(ITestResult result) {
+        captureArtifact(result);
+    }
+
+    @Override
+    public void onTestSkipped(ITestResult result) {
+        // nothing to do here
+
+    }
+
+    @Override
+    public void onTestStart(ITestResult result) {
         // nothing to do here
     }
 
     @Override
-    public void onTestFailure(ITestResult testResult) {
-        captureArtifact(testResult);
-    }
-
-    @Override
-    public void onTestSkipped(ITestResult arg0) {
-        // nothing to do here
-
-    }
-
-    @Override
-    public void onTestStart(ITestResult arg0) {
-        // nothing to do here
-    }
-
-    @Override
-    public void onTestSuccess(ITestResult arg0) {
+    public void onTestSuccess(ITestResult result) {
         // nothing to do here
     }
     
     /**
      * Capture artifact from the current test result context.
      * 
-     * @param testResult TestNG test result object
-     * @return path at which the captured artifact was stored
+     * @param result TestNG test result object
+     * @return (optional) path at which the captured artifact was stored
      */
-    public Optional<Path> captureArtifact(ITestResult testResult) {
-        if (! provider.canGetArtifact(testResult)) {
+    public Optional<Path> captureArtifact(ITestResult result) {
+        if (! provider.canGetArtifact(result)) {
             return Optional.empty();
         }
         
-        byte[] artifact = provider.getArtifact(testResult);
+        byte[] artifact = provider.getArtifact(result);
         if (artifact.length == 0) {
             return Optional.empty();
         }
         
-        Path collectionPath = getCollectionPath(testResult);
+        Path collectionPath = getCollectionPath(result);
         if (!collectionPath.toFile().exists()) {
             try {
                 Files.createDirectories(collectionPath);
@@ -95,7 +99,7 @@ public class ArtifactCollector<T extends ArtifactType> implements ITestListener 
         try {
             artifactPath = PathUtils.getNextPath(
                             collectionPath, 
-                            getArtifactBaseName(testResult), 
+                            getArtifactBaseName(result), 
                             provider.getArtifactExtension());
         } catch (IOException e) {
             provider.getLogger().warn("Unable to get output path; no artifact was captured", e);
@@ -110,17 +114,18 @@ public class ArtifactCollector<T extends ArtifactType> implements ITestListener 
             return Optional.empty();
         }
         
+        recordArtifactPath(artifactPath, result);
         return Optional.of(artifactPath);
     }
     
     /**
      * Get path of directory at which to store artifacts.
      * 
-     * @param testResult TestNG test result object
+     * @param result TestNG test result object
      * @return path of artifact storage directory
      */
-    private Path getCollectionPath(ITestResult testResult) {
-        ITestContext testContext = testResult.getTestContext();
+    private Path getCollectionPath(ITestResult result) {
+        ITestContext testContext = result.getTestContext();
         String outputDirectory = testContext.getOutputDirectory();
         Path collectionPath = Paths.get(outputDirectory);
         return collectionPath.resolve(provider.getArtifactPath(null));
@@ -133,17 +138,48 @@ public class ArtifactCollector<T extends ArtifactType> implements ITestListener 
      * If the method is parameterized, a hash code is computed from the parameter
      * values and appended to the base name as an 8-digit hexadecimal integer.
      * 
-     * @param testResult TestNG test result object
+     * @param result TestNG test result object
      * @return artifact file base name
      */
-    private String getArtifactBaseName(ITestResult testResult) {
-        Object[] parameters = testResult.getParameters();
+    private String getArtifactBaseName(ITestResult result) {
+        Object[] parameters = result.getParameters();
         if (parameters.length == 0) {
-            return testResult.getName();
+            return result.getName();
         } else {
             int hashcode = Arrays.deepHashCode(parameters);
             String hashStr = String.format("%08X", hashcode);
-            return testResult.getName() + "-" + hashStr;
+            return result.getName() + "-" + hashStr;
+        }
+    }
+    
+    /**
+     * Record the path at which the specified artifact was store in the indicated test result.
+     * @param artifactPath path at which the captured artifact was stored 
+     * @param result TestNG test result object
+     */
+    private static void recordArtifactPath(Path artifactPath, ITestResult result) {
+        @SuppressWarnings("unchecked")
+        List<Path> artifactPaths = (List<Path>) result.getAttribute(ARTIFACT_PATHS);
+        if (artifactPaths == null) {
+            artifactPaths = new ArrayList<>();
+            result.setAttribute(ARTIFACT_PATHS, artifactPaths);
+        }
+        artifactPaths.add(artifactPath);
+    }
+    
+    /**
+     * Retrieve the paths of artifacts that were stored in the indicated test result.
+     * 
+     * @param result TestNG test result object
+     * @return (optional) list of artifact paths
+     */
+    public static Optional<List<Path>> retrieveArtifactPaths(ITestResult result) {
+        @SuppressWarnings("unchecked")
+        List<Path> artifactPaths = (List<Path>) result.getAttribute(ARTIFACT_PATHS);
+        if (artifactPaths != null) {
+            return Optional.of(artifactPaths);
+        } else {
+            return Optional.empty();
         }
     }
 
