@@ -29,7 +29,7 @@ public class ArtifactCollectorTestCases {
     public void testCanNotCapture() {
         System.out.println("canNotCapture");
         ITestResult result = Reporter.getCurrentTestResult();
-        UnitTestArtifact.setCanGet(result, false);
+        UnitTestArtifact.disableCapture(result);
         fail("canNotCapture");
     }
     
@@ -37,7 +37,7 @@ public class ArtifactCollectorTestCases {
     public void testWillNotCapture() {
         System.out.println("willNotCapture");
         ITestResult result = Reporter.getCurrentTestResult();
-        UnitTestArtifact.setWillGet(result, false);
+        UnitTestArtifact.crippleCapture(result);
         fail("willNotCapture");
     }
     

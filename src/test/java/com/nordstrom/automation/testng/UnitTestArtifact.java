@@ -6,8 +6,8 @@ import org.testng.ITestResult;
 
 public class UnitTestArtifact implements ArtifactType {
     
-    private static final String CAN_GET = "CanGet";
-    private static final String WILL_GET = "WillGet";
+    private static final String CAPTURE_DISABLED = "CaptureDisabled";
+    private static final String CAPTURE_CRIPPLED = "CaptureCrippled";
     private static final String CAPTURE_STATE = "CaptureState";
     
     private static final String EXTENSION = "txt";
@@ -50,22 +50,20 @@ public class UnitTestArtifact implements ArtifactType {
         return EXTENSION;
     }
     
-    static void setCanGet(ITestResult result, boolean canGet) {
-        result.setAttribute(CAN_GET, Boolean.valueOf(canGet));
+    static void disableCapture(ITestResult result) {
+        result.setAttribute(CAPTURE_DISABLED, Boolean.TRUE);
     }
     
     static boolean canGet(ITestResult result) {
-        Object canGet = result.getAttribute(CAN_GET);
-        return (canGet != null) ? ((Boolean) canGet).booleanValue() : true;
+        return (null == result.getAttribute(CAPTURE_DISABLED));
     }
 
-    static void setWillGet(ITestResult result, boolean willGet) {
-        result.setAttribute(WILL_GET, Boolean.valueOf(willGet));
+    static void crippleCapture(ITestResult result) {
+        result.setAttribute(CAPTURE_CRIPPLED, Boolean.TRUE);
     }
     
     static boolean willGet(ITestResult result) {
-        Object willGet = result.getAttribute(WILL_GET);
-        return (willGet != null) ? ((Boolean) willGet).booleanValue() : true;
+        return (null == result.getAttribute(CAPTURE_CRIPPLED));
     }
 
     static void setCaptureState(ITestResult result, CaptureState state) {
