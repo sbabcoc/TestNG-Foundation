@@ -116,11 +116,4 @@ public class ExecutionFlowController implements IInvokedMethodListener, IMethodI
         }
     }
     
-    public static void adjustTimeout(long adjust, ITestResult testResult) {
-        long timeout = testResult.getMethod().getTimeOut();
-        if (timeout > 0) {
-            testResult.getMethod().setTimeOut(timeout + adjust);
-        }
-    }
-
 }
