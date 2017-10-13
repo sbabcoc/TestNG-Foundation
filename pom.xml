@@ -7,7 +7,7 @@
   <packaging>jar</packaging>
 
   <name>TestNG Foundation</name>
-  <description>This is the foundation framework for TestNG automation via Selenium WebDriver and RESTeasy</description>
+  <description>This is the foundation framework for TestNG automation</description>
   <url>https://git.nordstrom.net/projects/MFATT/repos/testng-foundation/browse</url>
 
   <properties>
