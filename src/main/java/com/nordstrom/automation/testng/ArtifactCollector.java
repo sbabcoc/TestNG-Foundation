@@ -80,7 +80,7 @@ public class ArtifactCollector<T extends ArtifactType> implements ITestListener 
         }
         
         byte[] artifact = provider.getArtifact(result);
-        if (artifact.length == 0) {
+        if ((artifact == null) || (artifact.length == 0)) {
             return Optional.empty();
         }
         
