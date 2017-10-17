@@ -1,6 +1,6 @@
 # INTRODUCTION
 
-**TestNG Foundation** is a lightweight collection of TestNG listeners, interfaces, and static utility classes that supplement and augment the functionality provided by the TestNG API. The facilities provided by **TestNG Foundation** include two types of runtime listener hooks and automatic test context attribute propagation.
+**TestNG Foundation** is a lightweight collection of TestNG listeners, interfaces, and static utility classes that supplement and augment the functionality provided by the TestNG API. The facilities provided by **TestNG Foundation** include two types of runtime listener hooks, test artifact capture, and automatic test context attribute propagation.
 
 Future releases of **TestNG Foundation** will add automatic retry of failed tests, test execution timeout management, and target platform support. See [ExecutionFlowController](https://git.nordstrom.net/projects/MFATT/repos/testng-foundation/browse/src/main/java/com/nordstrom/automation/testng/ExecutionFlowController.java) for more information.
 
@@ -49,7 +49,7 @@ public class MyArtifactType implements ArtifactType {
 
     @Override
     public byte[] getArtifact(ITestResult result) {
-            return String.format(ARTIFACT, result.getName()).getBytes().clone();
+        return String.format(ARTIFACT, result.getName()).getBytes().clone();
     }
 
     @Override
@@ -69,7 +69,7 @@ public class MyArtifactType implements ArtifactType {
 }
 ```
 
-###### Creating a scenario-specific artifact capture listener
+###### Creating a type-specific artifact collector
 ```java
 package com.nordstrom.example;
 
@@ -77,17 +77,19 @@ import com.nordstrom.automation.testng.ArtifactCollector;
 
 public class MyArtifactCapture extends ArtifactCollector<MyArtifactType> {
     
-    public UnitTestCapture() {
+    public MyArtifactCapture() {
         super(new MyArtifactType());
     }
     
 }
 ```
 
+The preceding code is an example of how the artifact type definition is assigned as the type parameter in a subclass of **ArtifactCollector**. Because TestNG listeners are specified solely by their class, type-specific artifact collectors must be declared this way.
+
 ## Annotations
 
 * [LinkedListeners](https://git.nordstrom.net/projects/MFATT/repos/testng-foundation/browse/src/main/java/com/nordstrom/automation/testng/LinkedListeners.java):  
-To attach listeners to an active **ListenerChain**, mark your test class with the **LinkedListeners** annotation.
+To attach listeners to an active **ListenerChain**, mark your test class with the **`@LinkedListeners`** annotation.
 
 ## Static Utility Classes
 
@@ -98,7 +100,7 @@ To attach listeners to an active **ListenerChain**, mark your test class with th
 
 ## **ExecutionFlowController**, **ListenerChain**, and the **ServiceLoader**
 
-If **ExecutionFlowController** is the only listener you need, or if the order in which your listeners are invoked is inconsequential, the TestNG **@Listeners** annotation is a perfectly fine method to activate your listeners. However, if you need to activate multiple listeners that must be invoked in a specific order, use **ListenerChain** and activate it via the **ServiceLoader** as described in the [**TestNG** documentation](http://testng.org/doc/documentation-main.html#listeners-service-loader):
+If **ExecutionFlowController** is the only listener you need, or if the order in which your listeners are invoked is inconsequential, the TestNG **`@Listeners`** annotation is a perfectly fine method to activate your listeners. However, if you need to activate multiple listeners that must be invoked in a specific order, use **ListenerChain** and activate it via the **ServiceLoader** as described in the [**TestNG** documentation](http://testng.org/doc/documentation-main.html#listeners-service-loader):
 
 ###### org.testng.ITestNGListener
 ```
@@ -109,23 +111,23 @@ In a Maven project, the preceding file is stored in the <span style="color:blue"
 
 ![com.testng.ITestNGListener](docs/images/META-INF.png)
 
-Once this file is added to your project, <span style="color:blue">ListenerChain</span> will be loaded automatically whenever you run your tests. To link listeners into the chain, mark your test class with the <span style="color:blue">LinkedListeners</span> annotation:
+Once this file is added to your project, <span style="color:blue">ListenerChain</span> will be loaded automatically whenever you run your tests. To link listeners into the chain, mark your test class with the **`@LinkedListeners`** annotation:
 
 ###### LinkedListeners annotation
 ```java
 package com.nordstrom.example;
  
-import com.nordstrom.automation.selenium.listeners.DriverManager;
+import com.nordstrom.automation.selenium.listeners.DriverListener;
 import com.nordstrom.automation.testng.ExecutionFlowController;
 import com.nordstrom.automation.testng.LinkedListeners;
 import com.nordstrom.automation.testng.ListenerChain;
  
-@LinkedListeners({DriverManager.class, ExecutionFlowController.class})
+@LinkedListeners({DriverListener.class, ExecutionFlowController.class})
 public class ExampleTest {
-     
+    
     ...
-  
+    
 }
 ```
 
-As shown above, we use the **`@LinkedListeners`** annotation to attach <span style="color:blue">DriverManager</span> and <span style="color:blue">ExecutionFlowController</span>. The order in which listener methods are invoked is determined by the order in which listener objects are added to the chain. Listener _before_ methods are invoked in <span style="color:yellowgreen">last-added-first-called</span> order. Listener _after_ methods are invoked in <span style="color:yellowgreen">first-added-first-called</span> order. Only one instance of any given listener class will be included in the chain.
+As shown above, we use the **`@LinkedListeners`** annotation to attach <span style="color:blue">DriverListener</span> and <span style="color:blue">ExecutionFlowController</span>. The order in which listener methods are invoked is determined by the order in which listener objects are added to the chain. Listener _before_ methods are invoked in <span style="color:yellowgreen">last-added-first-called</span> order. Listener _after_ methods are invoked in <span style="color:yellowgreen">first-added-first-called</span> order. Only one instance of any given listener class will be included in the chain.
