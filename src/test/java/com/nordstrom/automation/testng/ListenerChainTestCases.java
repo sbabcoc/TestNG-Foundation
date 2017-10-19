@@ -6,7 +6,6 @@ import static org.testng.Assert.fail;
 import java.lang.reflect.Method;
 import java.util.Optional;
 
-import org.testng.ITestNGListener;
 import org.testng.ITestResult;
 import org.testng.Reporter;
 import org.testng.SkipException;
@@ -121,7 +120,7 @@ class ListenerChainTestCases {
     @Test(groups = {"happyPath"})
     public void testAttachedListener() {
         ITestResult result = Reporter.getCurrentTestResult();
-        Optional<ITestNGListener> optional = ListenerChain.getAttachedListener(result, ChainedListener.class);
+        Optional<ChainedListener> optional = ListenerChain.getAttachedListener(result, ChainedListener.class);
         assertTrue(optional.isPresent());
     }
     
