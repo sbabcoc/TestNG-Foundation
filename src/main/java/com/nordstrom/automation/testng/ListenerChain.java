@@ -541,11 +541,12 @@ public class ListenerChain
     /**
      * Get reference to an instance of the specified listener type.
      * 
+     * @param <T> listener type
      * @param result TestNG test result object
      * @param listenerType listener type
      * @return optional listener instance
      */
-    public static Optional<ITestNGListener> getAttachedListener(ITestResult result, Class<? extends ITestNGListener> listenerType) {
+    public static <T extends ITestNGListener> Optional<T> getAttachedListener(ITestResult result, Class<T> listenerType) {
         Objects.requireNonNull(result, "[result] must be non-null");
         return getAttachedListener(result.getTestContext(), listenerType);
     }
@@ -553,11 +554,12 @@ public class ListenerChain
     /**
      * Get reference to an instance of the specified listener type.
      * 
+     * @param <T> listener type
      * @param context TestNG test context object
      * @param listenerType listener type
      * @return optional listener instance
      */
-    public static Optional<ITestNGListener> getAttachedListener(ITestContext context, Class<? extends ITestNGListener> listenerType) {
+    public static <T extends ITestNGListener> Optional<T> getAttachedListener(ITestContext context, Class<T> listenerType) {
         Objects.requireNonNull(context, "[context] must be non-null");
         return getAttachedListener(context.getSuite(), listenerType);
     }
@@ -565,17 +567,19 @@ public class ListenerChain
     /**
      * Get reference to an instance of the specified listener type.
      * 
+     * @param <T> listener type
      * @param suite TestNG suite object
      * @param listenerType listener type
      * @return optional listener instance
      */
-    public static Optional<ITestNGListener> getAttachedListener(ISuite suite, Class<? extends ITestNGListener> listenerType) {
+    @SuppressWarnings("unchecked")
+    public static <T extends ITestNGListener> Optional<T> getAttachedListener(ISuite suite, Class<T> listenerType) {
         Objects.requireNonNull(suite, "[suite] must be non-null");
         Objects.requireNonNull(listenerType, "[listenerType] must be non-null");
         ListenerChain chain = (ListenerChain) suite.getAttribute(LISTENER_CHAIN);
         for (ITestNGListener listener : chain.listeners) {
             if (listener.getClass() == listenerType) {
-                return Optional.of(listener);
+                return Optional.of((T) listener);
             }
         }
         return Optional.empty();

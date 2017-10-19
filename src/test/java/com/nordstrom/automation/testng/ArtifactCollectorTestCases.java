@@ -5,7 +5,6 @@ import static org.testng.Assert.fail;
 
 import java.util.Optional;
 
-import org.testng.ITestNGListener;
 import org.testng.ITestResult;
 import org.testng.Reporter;
 import org.testng.annotations.Test;
@@ -49,8 +48,8 @@ public class ArtifactCollectorTestCases {
     
     private UnitTestCapture getListener() {
         ITestResult result = Reporter.getCurrentTestResult();
-        Optional<ITestNGListener> optional = ListenerChain.getAttachedListener(result, UnitTestCapture.class);
-        return (UnitTestCapture) optional.get();
+        Optional<UnitTestCapture> optional = ListenerChain.getAttachedListener(result, UnitTestCapture.class);
+        return optional.get();
     }
     
 }
