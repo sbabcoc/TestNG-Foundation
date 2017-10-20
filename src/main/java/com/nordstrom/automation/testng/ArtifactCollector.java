@@ -28,6 +28,11 @@ public class ArtifactCollector<T extends ArtifactType> implements ITestListener 
     
     private final T provider;
     
+    /**
+     * Compose this artifact collector with a type-specific artifact implementation.
+     * 
+     * @param provider artifact implementation for this collector
+     */
     public ArtifactCollector(T provider) {
         this.provider = provider;
     }
@@ -141,7 +146,7 @@ public class ArtifactCollector<T extends ArtifactType> implements ITestListener 
      * @param result TestNG test result object
      * @return artifact file base name
      */
-    private String getArtifactBaseName(ITestResult result) {
+    private static String getArtifactBaseName(ITestResult result) {
         Object[] parameters = result.getParameters();
         if (parameters.length == 0) {
             return result.getName();

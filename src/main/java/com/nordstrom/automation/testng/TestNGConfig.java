@@ -8,11 +8,24 @@ import org.testng.Reporter;
 
 import com.nordstrom.automation.settings.SettingsCore;
 
+/**
+ * This class declares the settings and methods related to TestNG configuration.
+ * 
+ * @see TestNGSettings
+ */
 public class TestNGConfig extends SettingsCore<TestNGConfig.TestNGSettings> {
     
     private static final String SETTINGS_FILE = "testng.properties";
     private static final String TESTNG_CONFIG = "TESTNG_CONFIG";
     
+    /**
+     * This enumeration declares the settings that enable you to control the parameters
+     * used by <b>TestNG Foundation</b>.
+     * <p>
+     * Each setting is defined by a constant name and System property key. Many settings
+     * also define default values. Note that all of these settings can be overridden via
+     * the {@code testng.properties} file and System property declarations.
+     */
     public enum TestNGSettings implements SettingsCore.SettingsAPI {
         /** name: <b>testng.timeout.test</b> <br> default: {@code null} */
         TEST_TIMEOUT("testng.timeout.test", null);
@@ -38,6 +51,12 @@ public class TestNGConfig extends SettingsCore<TestNGConfig.TestNGSettings> {
     
     private static final ThreadLocal<TestNGConfig> testNGConfig = new ThreadLocal<>();
 
+    /**
+     * Instantiate a <b>TestNG Foundation</b> configuration object.
+     * 
+     * @throws ConfigurationException If a failure is encountered while initializing this configuration object.
+     * @throws IOException If a failure is encountered while reading from a configuration input stream.
+     */
     public TestNGConfig() throws ConfigurationException, IOException {
         super(TestNGSettings.class);
     }

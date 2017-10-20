@@ -9,9 +9,18 @@ import java.lang.annotation.Target;
 
 import org.testng.ITestNGListener;
 
+/**
+ * This annotation enables test class implementors to specify an array of TestNG listeners to attach to the {@link 
+ * ListenerChain}. An example of this annotation is found in {@link ListenerChainTestCases}.
+ */
 @Retention(RUNTIME)
 @Target({TYPE})
 @Inherited
 public @interface LinkedListeners {
+    /**
+     * Get the array of TestNG listener classes specified in this annotation.
+     * 
+     * @return array of listener classes (may be empty)
+     */
     Class<? extends ITestNGListener>[] value() default {};
 }
