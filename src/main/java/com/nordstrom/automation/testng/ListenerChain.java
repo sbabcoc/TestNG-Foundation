@@ -546,7 +546,9 @@ public class ListenerChain
      * @param listenerType listener type
      * @return optional listener instance
      */
-    public static <T extends ITestNGListener> Optional<T> getAttachedListener(ITestResult result, Class<T> listenerType) {
+    public static <T extends ITestNGListener> Optional<T>
+            getAttachedListener(ITestResult result, Class<T> listenerType) {
+        
         Objects.requireNonNull(result, "[result] must be non-null");
         return getAttachedListener(result.getTestContext(), listenerType);
     }
@@ -559,7 +561,9 @@ public class ListenerChain
      * @param listenerType listener type
      * @return optional listener instance
      */
-    public static <T extends ITestNGListener> Optional<T> getAttachedListener(ITestContext context, Class<T> listenerType) {
+    public static <T extends ITestNGListener> Optional<T>
+            getAttachedListener(ITestContext context, Class<T> listenerType) {
+        
         Objects.requireNonNull(context, "[context] must be non-null");
         return getAttachedListener(context.getSuite(), listenerType);
     }
@@ -573,7 +577,9 @@ public class ListenerChain
      * @return optional listener instance
      */
     @SuppressWarnings("unchecked")
-    public static <T extends ITestNGListener> Optional<T> getAttachedListener(ISuite suite, Class<T> listenerType) {
+    public static <T extends ITestNGListener> Optional<T>
+            getAttachedListener(ISuite suite, Class<T> listenerType) {
+        
         Objects.requireNonNull(suite, "[suite] must be non-null");
         Objects.requireNonNull(listenerType, "[listenerType] must be non-null");
         ListenerChain chain = (ListenerChain) suite.getAttribute(LISTENER_CHAIN);
