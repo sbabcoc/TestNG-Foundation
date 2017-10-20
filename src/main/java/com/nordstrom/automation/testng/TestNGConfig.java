@@ -7,6 +7,7 @@ import org.testng.ITestResult;
 import org.testng.Reporter;
 
 import com.nordstrom.automation.settings.SettingsCore;
+import com.nordstrom.common.base.UncheckedThrow;
 
 /**
  * This class declares the settings and methods related to TestNG configuration.
@@ -49,7 +50,16 @@ public class TestNGConfig extends SettingsCore<TestNGConfig.TestNGSettings> {
         }
     }
     
-    private static final ThreadLocal<TestNGConfig> testNGConfig = new ThreadLocal<>();
+    private static final ThreadLocal<TestNGConfig> testNGConfig = new InheritableThreadLocal<TestNGConfig>() {
+        @Override
+        protected TestNGConfig initialValue() {
+            try {
+                return new TestNGConfig();
+            } catch (ConfigurationException | IOException e) {
+                throw UncheckedThrow.throwUnchecked(e);
+            }
+        }
+    };
 
     /**
      * Instantiate a <b>TestNG Foundation</b> configuration object.
@@ -78,28 +88,17 @@ public class TestNGConfig extends SettingsCore<TestNGConfig.TestNGSettings> {
      */
     public static TestNGConfig getConfig(ITestResult testResult) {
         if (testResult == null) {
-            return getTestNGConfig();
+            return testNGConfig.get();
         }
         
         TestNGConfig config = (TestNGConfig) testResult.getAttribute(TESTNG_CONFIG);
         
         if (config == null) {
-            config = getTestNGConfig();
+            config = testNGConfig.get();
             testResult.setAttribute(TESTNG_CONFIG, config);
         }
         
         return config;
-    }
-    
-    private static TestNGConfig getTestNGConfig() {
-        if (testNGConfig.get() == null) {
-            try {
-                testNGConfig.set(new TestNGConfig());
-            } catch (ConfigurationException | IOException e) {
-                throw new RuntimeException("Failed to instantiate settings", e);
-            }
-        }
-        return testNGConfig.get();
     }
     
     @Override
