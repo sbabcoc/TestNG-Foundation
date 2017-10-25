@@ -133,7 +133,7 @@ public class ArtifactCollector<T extends ArtifactType> implements ITestListener 
         ITestContext testContext = result.getTestContext();
         String outputDirectory = testContext.getOutputDirectory();
         Path collectionPath = Paths.get(outputDirectory);
-        return collectionPath.resolve(provider.getArtifactPath(null));
+        return collectionPath.resolve(provider.getArtifactPath(result));
     }
     
     /**
