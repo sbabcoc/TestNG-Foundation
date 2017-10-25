@@ -27,7 +27,6 @@ Classes that implement the **ArtifactType** interface provide the artifact-speci
 package com.nordstrom.example;
 
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,7 +36,7 @@ import com.nordstrom.automation.testng.ArtifactType;
 
 public class MyArtifactType implements ArtifactType {
     
-    private static final Path ARTIFACT_PATH = Paths.get("artifacts");
+    private static final String ARTIFACT_PATH = "artifacts";
     private static final String EXTENSION = "txt";
     private static final String ARTIFACT = "This text artifact was captured for '%s'";
     private static final Logger LOGGER = LoggerFactory.getLogger(MyArtifactType.class);
@@ -54,7 +53,7 @@ public class MyArtifactType implements ArtifactType {
 
     @Override
     public Path getArtifactPath(ITestResult result) {
-        return ARTIFACT_PATH;
+        return ArtifactType.super.getArtifactPath(result).resolve(ARTIFACT_PATH);
     }
     
     @Override
