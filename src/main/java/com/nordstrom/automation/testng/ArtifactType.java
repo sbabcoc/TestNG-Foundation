@@ -1,17 +1,73 @@
 package com.nordstrom.automation.testng;
 
 import java.nio.file.Path;
-import java.nio.file.Paths;
-
 import org.slf4j.Logger;
 import org.testng.ITestResult;
+
+import com.nordstrom.common.file.PathUtils;
 
 /**
  * This interface defines the contract fulfilled by artifact capture providers. Instances of this interface supply the
  * scenario-specify implementation for artifact capture through the {@link ArtifactCollector} listener.
  * <br><br>
+ * <b>IMPLEMENTING ARTIFACTTYPE</b>
+ * <pre><code>
+ * package com.nordstrom.example;
  * 
+ * import java.nio.file.Path;
  * 
+ * import org.slf4j.Logger;
+ * import org.slf4j.LoggerFactory;
+ * import org.testng.ITestResult;
+ * 
+ * import com.nordstrom.automation.testng.ArtifactType;
+ * 
+ * public class MyArtifactType implements ArtifactType {
+ *     
+ *     private static final String ARTIFACT_PATH = "artifacts";
+ *     private static final String EXTENSION = "txt";
+ *     private static final String ARTIFACT = "This text artifact was captured for '%s'";
+ *     private static final Logger LOGGER = LoggerFactory.getLogger(MyArtifactType.class);
+ * 
+ *     &#64;Override
+ *     public boolean canGetArtifact(ITestResult result) {
+ *         return true;
+ *     }
+ * 
+ *     &#64;Override
+ *     public byte[] getArtifact(ITestResult result) {
+ *         return String.format(ARTIFACT, result.getName()).getBytes().clone();
+ *     }
+ *     
+ *     &#64;Override
+ *     public Page getArtifactPath(ITestResult result) {
+ *         return ArtifactType.super.getArtifactPath(result).resolve(ARTIFACT_PATH);
+ *     }
+ * 
+ *     &#64;Override
+ *     public String getArtifactExtension() {
+ *         return EXTENSION;
+ *     }
+ *     
+ *     &#64;Override
+ *     public Logger getLogger() {
+ *         return LOGGER;
+ *     }
+ * }
+ * </code></pre>
+ * <b>CREATING A TYPE-SPECIFIC ARTIFACT COLLECTOR</b>
+ * <pre><code>
+ * package com.nordstrom.example;
+ * 
+ * import com.nordstrom.automation.testng.ArtifactCollector;
+ * 
+ * public class MyArtifactCapture extends ArtifactCollector<MyArtifactType> {
+ *     
+ *     public MyArtifactCapture() {
+ *         super(new MyArtifactType());
+ *     }
+ * }
+ * </code></pre>
  */
 public interface ArtifactType {
     
@@ -45,7 +101,11 @@ public interface ArtifactType {
      * @return artifact storage path
      */
     default Path getArtifactPath(ITestResult result) {
-        return Paths.get("");
+        if (result != null) {
+            return PathUtils.ReportsDirectory.getPathForObject(result.getInstance());
+        } else {
+            return PathUtils.ReportsDirectory.ARTIFACT.getPath();
+        }
     }
     
     /**
