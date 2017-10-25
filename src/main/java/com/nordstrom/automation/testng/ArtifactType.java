@@ -27,7 +27,7 @@ import com.nordstrom.common.file.PathUtils;
  *     private static final String ARTIFACT_PATH = "artifacts";
  *     private static final String EXTENSION = "txt";
  *     private static final String ARTIFACT = "This text artifact was captured for '%s'";
- *     private static final Logger LOGGER = LoggerFactory.getLogger(UnitTestArtifact.class);
+ *     private static final Logger LOGGER = LoggerFactory.getLogger(MyArtifactType.class);
  * 
  *     &#64;Override
  *     public boolean canGetArtifact(ITestResult result) {
