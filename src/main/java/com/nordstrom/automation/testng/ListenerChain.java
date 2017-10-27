@@ -652,7 +652,8 @@ public class ListenerChain
      * @param listener listener class to add to the chain
      */
     private void attachListener(Class<? extends ITestNGListener> listener) {
-        if ( ! listenerSet.contains(listener)) {
+        // squid:S2175
+        if ( ! listenerSet.contains(listener)) {    //NOSONAR
             listenerSet.add(listener);
             try {
                 ITestNGListener listenerObj = listener.newInstance();
