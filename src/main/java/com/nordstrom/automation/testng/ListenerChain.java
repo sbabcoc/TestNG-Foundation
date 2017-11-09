@@ -432,6 +432,7 @@ public class ListenerChain
     public void onTestSkipped(ITestResult result) {
         
         // >>>>> ENTER workaround for TestNG bug
+        // https://github.com/cbeust/testng/issues/1602
         ITestContext context = result.getTestContext();
         IInvokedMethod method = new InvokedMethod(
                         result.getTestClass(), result.getMethod(), System.currentTimeMillis(), result);
