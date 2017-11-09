@@ -1,10 +1,10 @@
 package com.nordstrom.automation.testng;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import org.testng.ITestResult;
-import org.testng.collections.Maps;
 
 /**
  * This utility class provides basic management for properties associated with specific tests.<br>
@@ -28,7 +28,7 @@ public final class PropertyManager {
      * @return map of test result attributes
      */
     public static Map<String, Object> extractAttributes(ITestResult testResult) {
-        Map<String, Object> result = Maps.newHashMap();
+        Map<String, Object> result = new HashMap<>();
         for (String thisName : testResult.getAttributeNames()) {
             result.put(thisName, testResult.getAttribute(thisName));
         }

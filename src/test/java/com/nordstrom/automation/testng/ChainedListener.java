@@ -3,6 +3,7 @@ package com.nordstrom.automation.testng;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -24,45 +25,44 @@ import org.testng.annotations.IDataProviderAnnotation;
 import org.testng.annotations.IFactoryAnnotation;
 import org.testng.annotations.IListenersAnnotation;
 import org.testng.annotations.ITestAnnotation;
-import org.testng.collections.Sets;
 
 public class ChainedListener
                 implements IAnnotationTransformer3, ISuiteListener, IConfigurationListener2,
                 IInvokedMethodListener, ITestListener, IMethodInterceptor, IClassListener {
     
-    static Set<String> configSuccess = Collections.synchronizedSet(Sets.<String>newHashSet());
-    static Set<String> configFailure = Collections.synchronizedSet(Sets.<String>newHashSet());
-    static Set<String> configSkipped = Collections.synchronizedSet(Sets.<String>newHashSet());
-    static Set<String> beforeConfig = Collections.synchronizedSet(Sets.<String>newHashSet());
+    static Set<String> configSuccess = Collections.synchronizedSet(new HashSet<>());
+    static Set<String> configFailure = Collections.synchronizedSet(new HashSet<>());
+    static Set<String> configSkipped = Collections.synchronizedSet(new HashSet<>());
+    static Set<String> beforeConfig = Collections.synchronizedSet(new HashSet<>());
     
-    static Set<String> beforeMethodBefore = Collections.synchronizedSet(Sets.<String>newHashSet());
-    static Set<String> beforeMethodAfter = Collections.synchronizedSet(Sets.<String>newHashSet());
-    static Set<String> testMethodBefore = Collections.synchronizedSet(Sets.<String>newHashSet());
-    static Set<String> testMethodAfter = Collections.synchronizedSet(Sets.<String>newHashSet());
-    static Set<String> afterMethodBefore = Collections.synchronizedSet(Sets.<String>newHashSet());
-    static Set<String> afterMethodAfter = Collections.synchronizedSet(Sets.<String>newHashSet());
+    static Set<String> beforeMethodBefore = Collections.synchronizedSet(new HashSet<>());
+    static Set<String> beforeMethodAfter = Collections.synchronizedSet(new HashSet<>());
+    static Set<String> testMethodBefore = Collections.synchronizedSet(new HashSet<>());
+    static Set<String> testMethodAfter = Collections.synchronizedSet(new HashSet<>());
+    static Set<String> afterMethodBefore = Collections.synchronizedSet(new HashSet<>());
+    static Set<String> afterMethodAfter = Collections.synchronizedSet(new HashSet<>());
     
-    static Set<String> beforeClass = Collections.synchronizedSet(Sets.<String>newHashSet());
-    static Set<String> afterClass = Collections.synchronizedSet(Sets.<String>newHashSet());
+    static Set<String> beforeClass = Collections.synchronizedSet(new HashSet<>());
+    static Set<String> afterClass = Collections.synchronizedSet(new HashSet<>());
     
-    static Set<String> testStarted = Collections.synchronizedSet(Sets.<String>newHashSet());
-    static Set<String> testSuccess = Collections.synchronizedSet(Sets.<String>newHashSet());
-    static Set<String> testFailure = Collections.synchronizedSet(Sets.<String>newHashSet());
-    static Set<String> testSkipped = Collections.synchronizedSet(Sets.<String>newHashSet());
-    static Set<String> testCurved = Collections.synchronizedSet(Sets.<String>newHashSet());
-    static Set<String> testsBegun = Collections.synchronizedSet(Sets.<String>newHashSet());
-    static Set<String> testsEnded = Collections.synchronizedSet(Sets.<String>newHashSet());
+    static Set<String> testStarted = Collections.synchronizedSet(new HashSet<>());
+    static Set<String> testSuccess = Collections.synchronizedSet(new HashSet<>());
+    static Set<String> testFailure = Collections.synchronizedSet(new HashSet<>());
+    static Set<String> testSkipped = Collections.synchronizedSet(new HashSet<>());
+    static Set<String> testCurved = Collections.synchronizedSet(new HashSet<>());
+    static Set<String> testsBegun = Collections.synchronizedSet(new HashSet<>());
+    static Set<String> testsEnded = Collections.synchronizedSet(new HashSet<>());
     
-    static Set<String> suiteBegun = Collections.synchronizedSet(Sets.<String>newHashSet());
-    static Set<String> suiteEnded = Collections.synchronizedSet(Sets.<String>newHashSet());
+    static Set<String> suiteBegun = Collections.synchronizedSet(new HashSet<>());
+    static Set<String> suiteEnded = Collections.synchronizedSet(new HashSet<>());
     
-    static Set<String> xformTest = Collections.synchronizedSet(Sets.<String>newHashSet());
-    static Set<String> xformConfig = Collections.synchronizedSet(Sets.<String>newHashSet());
-    static Set<String> xformProvider = Collections.synchronizedSet(Sets.<String>newHashSet());
-    static Set<String> xformFactory = Collections.synchronizedSet(Sets.<String>newHashSet());
-    static Set<String> xformListeners = Collections.synchronizedSet(Sets.<String>newHashSet());
+    static Set<String> xformTest = Collections.synchronizedSet(new HashSet<>());
+    static Set<String> xformConfig = Collections.synchronizedSet(new HashSet<>());
+    static Set<String> xformProvider = Collections.synchronizedSet(new HashSet<>());
+    static Set<String> xformFactory = Collections.synchronizedSet(new HashSet<>());
+    static Set<String> xformListeners = Collections.synchronizedSet(new HashSet<>());
     
-    static Set<String> interceptor = Collections.synchronizedSet(Sets.<String>newHashSet());
+    static Set<String> interceptor = Collections.synchronizedSet(new HashSet<>());
 
     @Override
     public void onConfigurationSuccess(ITestResult itr) {
