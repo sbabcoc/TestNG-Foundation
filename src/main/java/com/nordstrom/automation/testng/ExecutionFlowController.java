@@ -2,6 +2,7 @@ package com.nordstrom.automation.testng;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -13,7 +14,6 @@ import org.testng.IMethodInterceptor;
 import org.testng.ITestContext;
 import org.testng.ITestResult;
 import org.testng.annotations.ITestAnnotation;
-
 import com.nordstrom.automation.testng.TestNGConfig.TestNGSettings;
 
 /**
@@ -53,7 +53,13 @@ import com.nordstrom.automation.testng.TestNGConfig.TestNGSettings;
  */
 public class ExecutionFlowController implements IInvokedMethodListener, IMethodInterceptor, IAnnotationTransformer {
     
-    protected static final ThreadLocal<Map<String, Object>> fromBefore = new InheritableThreadLocal<>();
+    protected static final ThreadLocal<Map<String, Object>> fromBefore = new InheritableThreadLocal<Map<String, Object>>() {
+        @Override
+        public Map<String, Object> initialValue() {
+            return new HashMap<>();
+        }
+    };
+    
     protected static final ThreadLocal<Map<String, Object>> fromMethod = new InheritableThreadLocal<>();
 
     @Override
@@ -63,7 +69,10 @@ public class ExecutionFlowController implements IInvokedMethodListener, IMethodI
         }
         
         if (method.getTestMethod().isBeforeMethodConfiguration()) {
-            fromBefore.set(PropertyManager.extractAttributes(testResult));
+            // merge with attributes from prior methods
+            Map<String, Object> attributes = fromBefore.get();
+            attributes.putAll(PropertyManager.extractAttributes(testResult));
+            fromBefore.set(attributes);
         } else if (method.isTestMethod()) {
             fromMethod.set(PropertyManager.extractAttributes(testResult));
         } else if (method.getTestMethod().isAfterMethodConfiguration()) {
@@ -115,5 +124,4 @@ public class ExecutionFlowController implements IInvokedMethodListener, IMethodI
             }
         }
     }
-    
 }

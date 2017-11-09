@@ -33,6 +33,7 @@ import org.testng.annotations.IDataProviderAnnotation;
 import org.testng.annotations.IFactoryAnnotation;
 import org.testng.annotations.IListenersAnnotation;
 import org.testng.annotations.ITestAnnotation;
+import org.testng.internal.InvokedMethod;
 
 import com.google.common.collect.Lists;
 
@@ -429,6 +430,16 @@ public class ListenerChain
      */
     @Override
     public void onTestSkipped(ITestResult result) {
+        
+        // >>>>> ENTER workaround for TestNG bug
+        // https://github.com/cbeust/testng/issues/1602
+        ITestContext context = result.getTestContext();
+        IInvokedMethod method = new InvokedMethod(
+                        result.getTestClass(), result.getMethod(), System.currentTimeMillis(), result);
+        
+        beforeInvocation(method, result, context);
+        // <<<<< LEAVE workaround for TestNG bug
+        
         synchronized (testListeners) {
             for (ITestListener testListener : testListeners) {
                 testListener.onTestSkipped(result);
