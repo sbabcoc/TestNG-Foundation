@@ -22,7 +22,7 @@
     <settings.version>0.2.0.2</settings.version>
     <sonar.language>java</sonar.language>
     <jacoco.version>0.7.9</jacoco.version>
-    <guava.version>23.0</guava.version>
+    <guava.version>21.0</guava.version>
   </properties>
 
   <distributionManagement>
