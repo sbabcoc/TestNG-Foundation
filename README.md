@@ -4,24 +4,24 @@
 
 **TestNG Foundation** is a lightweight collection of TestNG listeners, interfaces, and static utility classes that supplement and augment the functionality provided by the TestNG API. The facilities provided by **TestNG Foundation** include two types of runtime listener hooks, test artifact capture, and automatic test context attribute propagation.
 
-Future releases of **TestNG Foundation** will add automatic retry of failed tests, test execution timeout management, and target platform support. See [ExecutionFlowController](https://git.nordstrom.net/projects/MFATT/repos/testng-foundation/browse/src/main/java/com/nordstrom/automation/testng/ExecutionFlowController.java) for more information.
+Future releases of **TestNG Foundation** will add automatic retry of failed tests, test execution timeout management, and target platform support. See [ExecutionFlowController](https://github.com/Nordstrom/TestNG-Foundation/blob/master/src/main/java/com/nordstrom/automation/testng/ExecutionFlowController.java) for more information.
 
 ## TestNG Listeners
 
-* [ExecutionFlowController](https://git.nordstrom.net/projects/MFATT/repos/testng-foundation/browse/src/main/java/com/nordstrom/automation/testng/ExecutionFlowController.java):  
+* [ExecutionFlowController](https://github.com/Nordstrom/TestNG-Foundation/blob/master/src/main/java/com/nordstrom/automation/testng/ExecutionFlowController.java):  
 **ExecutionFlowController** is a TestNG listener that propagates test context attributes:  
  [_before_ method] → [test method] → [_after_ method]  
  For test classes that implement the **IInvokedMethodListenerEx** interface, **ExecutionFlowController** forwards calls from its own invoked method listener implementation to the corresponding methods in the test class. In-bound attribute propagation is performed before forwarding the `beforeInvocation(IInvokedMethod, ITestResult)` call, and out-bound attribute propagation is performed after forwarding the `afterInvocation(IInvokedMethod, ITestResult)` call.
-* [ListenerChain](https://git.nordstrom.net/projects/MFATT/repos/testng-foundation/browse/src/main/java/com/nordstrom/automation/testng/ListenerChain.java):  
+* [ListenerChain](https://github.com/Nordstrom/TestNG-Foundation/blob/master/src/main/java/com/nordstrom/automation/testng/ListenerChain.java):  
 **ListenerChain** is a TestNG listener that enables you to add other listeners at runtime and guarantees the order in which they're invoked. This is similar in behavior to a JUnit rule chain. **ListenerChain** also provides static methods that enable you to acquire references to listeners that are linked into the chain.
-* [ArtifactCollector](https://git.nordstrom.net/projects/MFATT/repos/testng-foundation/browse/src/main/java/com/nordstrom/automation/testng/ArtifactCollector.java):  
+* [ArtifactCollector](https://github.com/Nordstrom/TestNG-Foundation/blob/master/src/main/java/com/nordstrom/automation/testng/ArtifactCollector.java):  
 **ArtifactCollector** is a TestNG [test listener](http://javadox.com/org.testng/testng/6.8/org/testng/ITestListener.html) that serves as the foundation for artifact-capturing test listeners. This is a generic class, with the artifact-specific implementation provided by instances of the **ArtifactType** interface. See the **Interfaces** section below for more details.
 
 ## Interfaces
 
-* [IInvokedMethodListenerEx](https://git.nordstrom.net/projects/MFATT/repos/testng-foundation/browse/src/main/java/com/nordstrom/automation/testng/IInvokedMethodListenerEx.java):  
+* [IInvokedMethodListenerEx](https://github.com/Nordstrom/TestNG-Foundation/blob/master/src/main/java/com/nordstrom/automation/testng/IInvokedMethodListenerEx.java):  
 Test classes that implement the **IInvokedMethodListenerEx** interface are hooked in by the invoked method listener implementation of **ExecutionFlowController**. See the **TestNG Listeners** section above for more details.
-* [ArtifactType](https://git.nordstrom.net/projects/MFATT/repos/testng-foundation/browse/src/main/java/com/nordstrom/automation/testng/ArtifactType.java):  
+* [ArtifactType](https://github.com/Nordstrom/TestNG-Foundation/blob/master/src/main/java/com/nordstrom/automation/testng/ArtifactType.java):  
 Classes that implement the **ArtifactType** interface provide the artifact-specific methods used by the **ArtifactCollector** listener to capture and store test-related artifacts. The unit tests for this project include a reference implementation (**UnitTestArtifact**) provides a basic outline for a scenario-specific artifact provider. This artifact provider is specified as the superclass type parameter in the **UnitTestCapture** listener, which is a lightweight extension of **ArtifactCollector**. The most basic example is shown below:
 
 ###### Implementing ArtifactType
@@ -89,12 +89,12 @@ The preceding code is an example of how the artifact type definition is assigned
 
 ## Annotations
 
-* [LinkedListeners](https://git.nordstrom.net/projects/MFATT/repos/testng-foundation/browse/src/main/java/com/nordstrom/automation/testng/LinkedListeners.java):  
+* [LinkedListeners](https://github.com/Nordstrom/TestNG-Foundation/blob/master/src/main/java/com/nordstrom/automation/testng/LinkedListeners.java):  
 To attach listeners to an active **ListenerChain**, mark your test class with the **`@LinkedListeners`** annotation.
 
 ## Static Utility Classes
 
-* [PropertyManager](https://git.nordstrom.net/projects/MFATT/repos/testng-foundation/browse/src/main/java/com/nordstrom/automation/testng/PropertyManager.java):  
+* [PropertyManager](https://github.com/Nordstrom/TestNG-Foundation/blob/master/src/main/java/com/nordstrom/automation/testng/PropertyManager.java):  
 **PropertyManager** contains two static methods used to propagate attributes from one test context to another:
   * `extractAttributes()` - Extracts all of the attributes of the specified test context into a map.
   * `injectAttributes()` - Injects all of the entries of the specified map into the specified test context as attributes.
