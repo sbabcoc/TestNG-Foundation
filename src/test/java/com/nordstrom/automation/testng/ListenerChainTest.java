@@ -65,7 +65,7 @@ public class ListenerChainTest {
                         "method: afterSuccess", "method: afterFailure",
                         "class: ListenerChainTestCases", "method: testAfterFailed",
                         "method: beforeFailure", "method: afterSkipped", "method: testFailed",
-                        "method: testAttachedListener"));
+                        "method: testAttachedListeners"));
         Set<String> expectConfigs = new HashSet<>(Arrays.asList("method: afterSuccess",
                         "method: afterFailure", "method: beforeSuccess", "method: beforeFailure",
                         "method: beforeSkipped", "method: afterSkipped"));
