@@ -5,9 +5,11 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.ServiceLoader;
 import java.util.Set;
 
 import org.testng.IAnnotationTransformer;
@@ -63,6 +65,13 @@ public class ListenerChain
     private List<IClassListener> classListeners = new ArrayList<>();
     
     private static final String LISTENER_CHAIN = "ListenerChain";
+    
+    public ListenerChain() {
+        Iterator<LinkedListener> iterator = ServiceLoader.load(LinkedListener.class).iterator();
+        while (iterator.hasNext()) {
+            attachListener(null, iterator.next());
+        }
+    }
 
     /**
      * [IAnnotationTransformer]
@@ -646,7 +655,7 @@ public class ListenerChain
             if ( ! markedClasses.contains(markedClass)) {
                 markedClasses.add(markedClass);
                 for (Class<? extends ITestNGListener> listener : annotation.value()) {
-                    attachListener(listener);
+                    attachListener(listener, null);
                 }
             }
         }
@@ -660,78 +669,94 @@ public class ListenerChain
      * in first-added-first-called order.<br>
      * <b>NOTE</b>: Only one instance of any given listener class will be included in the chain.
      * 
-     * @param listener listener class to add to the chain
+     * @param listenerTyp listener class to add to the chain (may be 'null')
+     * @param listenerObj listener object to add to the chain (may be 'null')
      */
-    private void attachListener(Class<? extends ITestNGListener> listener) {
-        // squid:S2175
-        if ( ! listenerSet.contains(listener)) {    //NOSONAR
-            listenerSet.add(listener);
-            try {
-                ITestNGListener listenerObj = listener.newInstance();
-                
-                synchronized(listeners) {
-                    listeners.add(listenerObj);
+    private void attachListener(Class<? extends ITestNGListener> listenerTyp, ITestNGListener listenerObj) {
+        Class<? extends ITestNGListener> type;
+        ITestNGListener object;
+        
+        if ((listenerTyp == null) && (listenerObj == null)) {
+            throw new IllegalArgumentException("Neither [listenerTyp] nor [listenerObj] was specified");
+        } else if (listenerObj != null) {
+            object = listenerObj;
+            type = listenerObj.getClass();
+        } else {
+            object = null;
+            type = listenerTyp;
+        }
+        
+        if ( ! listenerSet.contains(type)) {
+            listenerSet.add(type);
+            
+            if (object == null) {
+                try {
+                    object = type.newInstance();
+                } catch (InstantiationException | IllegalAccessException e) {
+                    throw new RuntimeException("Unable to instantiate listener: " + type.getName(), e);
                 }
-                
-                if (listenerObj instanceof IAnnotationTransformer3) {
-                    synchronized(annotationXformers3) {
-                        annotationXformers3.add((IAnnotationTransformer3) listenerObj);
-                    }
-                } else if (listenerObj instanceof IAnnotationTransformer2) {
-                    synchronized(annotationXformers2) {
-                        annotationXformers2.add((IAnnotationTransformer2) listenerObj);
-                    }
-                } else if (listenerObj instanceof IAnnotationTransformer) {
-                    synchronized(annotationXformers) {
-                        annotationXformers.add((IAnnotationTransformer) listenerObj);
-                    }
+            }
+            
+            synchronized(listeners) {
+                listeners.add(object);
+            }
+            
+            if (object instanceof IAnnotationTransformer3) {
+                synchronized(annotationXformers3) {
+                    annotationXformers3.add((IAnnotationTransformer3) object);
                 }
-                
-                if (listenerObj instanceof ISuiteListener) {
-                    synchronized(suiteListeners) {
-                        suiteListeners.add((ISuiteListener) listenerObj);
-                    }
+            } else if (object instanceof IAnnotationTransformer2) {
+                synchronized(annotationXformers2) {
+                    annotationXformers2.add((IAnnotationTransformer2) object);
                 }
-                
-                if (listenerObj instanceof IConfigurationListener2) {
-                    synchronized(configListeners2) {
-                        configListeners2.add((IConfigurationListener2) listenerObj);
-                    }
-                } else if (listenerObj instanceof IConfigurationListener) {
-                    synchronized(configListeners) {
-                        configListeners.add((IConfigurationListener) listenerObj);
-                    }
+            } else if (object instanceof IAnnotationTransformer) {
+                synchronized(annotationXformers) {
+                    annotationXformers.add((IAnnotationTransformer) object);
                 }
-                
-                if (listenerObj instanceof IInvokedMethodListener2) {
-                    synchronized(methodListeners2) {
-                        methodListeners2.add((IInvokedMethodListener2) listenerObj);
-                    }
-                } else if (listenerObj instanceof IInvokedMethodListener) {
-                    synchronized(methodListeners) {
-                        methodListeners.add((IInvokedMethodListener) listenerObj);
-                    }
+            }
+            
+            if (object instanceof ISuiteListener) {
+                synchronized(suiteListeners) {
+                    suiteListeners.add((ISuiteListener) object);
                 }
-                
-                if (listenerObj instanceof ITestListener) {
-                    synchronized(testListeners) {
-                        testListeners.add((ITestListener) listenerObj);
-                    }
+            }
+            
+            if (object instanceof IConfigurationListener2) {
+                synchronized(configListeners2) {
+                    configListeners2.add((IConfigurationListener2) object);
                 }
-                
-                if (listenerObj instanceof IMethodInterceptor) {
-                    synchronized(methodInterceptors) {
-                        methodInterceptors.add((IMethodInterceptor) listenerObj);
-                    }
+            } else if (object instanceof IConfigurationListener) {
+                synchronized(configListeners) {
+                    configListeners.add((IConfigurationListener) object);
                 }
-                
-                if (listenerObj instanceof IClassListener) {
-                    synchronized(classListeners) {
-                        classListeners.add((IClassListener) listenerObj);
-                    }
+            }
+            
+            if (object instanceof IInvokedMethodListener2) {
+                synchronized(methodListeners2) {
+                    methodListeners2.add((IInvokedMethodListener2) object);
                 }
-            } catch (InstantiationException | IllegalAccessException e) {
-                throw new RuntimeException("Unable to instantiate listener: " + listener.getName(), e);
+            } else if (object instanceof IInvokedMethodListener) {
+                synchronized(methodListeners) {
+                    methodListeners.add((IInvokedMethodListener) object);
+                }
+            }
+            
+            if (object instanceof ITestListener) {
+                synchronized(testListeners) {
+                    testListeners.add((ITestListener) object);
+                }
+            }
+            
+            if (object instanceof IMethodInterceptor) {
+                synchronized(methodInterceptors) {
+                    methodInterceptors.add((IMethodInterceptor) object);
+                }
+            }
+            
+            if (object instanceof IClassListener) {
+                synchronized(classListeners) {
+                    classListeners.add((IClassListener) object);
+                }
             }
         }
     }

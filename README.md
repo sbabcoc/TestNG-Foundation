@@ -19,6 +19,8 @@ Future releases of **TestNG Foundation** will add automatic retry of failed test
 
 ## Interfaces
 
+* [LinkedListener](https://github.com/Nordstrom/TestNG-Foundation/blob/master/src/main/java/com/nordstrom/automation/testng/LinkedListener.java):  
+This is a marker interface for listeners that can be linked to the **ListenerChain** via its service loader.
 * [IInvokedMethodListenerEx](https://github.com/Nordstrom/TestNG-Foundation/blob/master/src/main/java/com/nordstrom/automation/testng/IInvokedMethodListenerEx.java):  
 Test classes that implement the **IInvokedMethodListenerEx** interface are hooked in by the invoked method listener implementation of **ExecutionFlowController**. See the **TestNG Listeners** section above for more details.
 * [ArtifactType](https://github.com/Nordstrom/TestNG-Foundation/blob/master/src/main/java/com/nordstrom/automation/testng/ArtifactType.java):  
@@ -26,7 +28,7 @@ Classes that implement the **ArtifactType** interface provide the artifact-speci
 
 ###### Implementing ArtifactType
 ```java
-package com.nordstrom.example;
+package com.example;
 
 import java.nio.file.Path;
 
@@ -72,7 +74,7 @@ public class MyArtifactType implements ArtifactType {
 
 ###### Creating a type-specific artifact collector
 ```java
-package com.nordstrom.example;
+package com.example;
 
 import com.nordstrom.automation.testng.ArtifactCollector;
 
@@ -108,15 +110,64 @@ If **ExecutionFlowController** is the only listener you need, or if the order in
 com.nordstrom.automation.testng.ListenerChain
 ```
 
-In a Maven project, the preceding file is stored in the <span style="color:blue">src/main/resources</span> folder:
+In a Maven project, the preceding file is stored in the **_src/main/resources_** folder:
 
 ![com.testng.ITestNGListener](docs/images/META-INF.png)
 
-Once this file is added to your project, <span style="color:blue">ListenerChain</span> will be loaded automatically whenever you run your tests. To link listeners into the chain, mark your test class with the **`@LinkedListeners`** annotation:
+Once this file is added to your project, **ListenerChain** will be loaded automatically whenever you run your tests. To link listeners into the chain, you have two options:
+
+1. Specify listeners to attach via the **ListenerChain** service loader.
+2. Mark your test class with the **`@LinkedListeners`** annotation.
+
+These options are not mutually exclusive; you can freely apply both within the same project.
+
+### Specifying listeners to attach via the **ListenerChain** service loader
+
+Listeners that you wish to attach via the **ListenerChain** service loader must implement the **LinkedListener** interface: 
+
+###### Service-loaded listener example
+```java
+package com.example
+
+import org.testng.IClassListener;
+
+import com.nordstrom.automation.testng.LinkedListener;
+
+public class ServiceLoadedListener implements IClassListener, LinkedListener {
+
+    @Override
+    public void onBeforeClass(ITestClass testClass) {
+        ...
+    }
+
+    @Override
+    public void onAfterClass(ITestClass testClass) {
+        ...
+    }
+}
+
+```
+
+To specify the listener(s) you wish to attach via the **ListenerChain** service loader, create a file at location <pre>META-INF/services/com.nordstrom.automation.testng.LinkedListener</pre> and indicate the listener(s) you want to be linked in:
+
+###### com.nordstrom.automation.testng.LinkedListener
+```
+com.example.ServiceLoadedListener
+```
+
+In a Maven project, the preceding file is stored in the **_src/main/resources_** folder:
+
+![com.testng.ITestNGListener](docs/images/META-INF-2.png)
+
+Once this file is added to your project, the constructor of **ListenerChain** will attach each of the indicated listeners in the specified order. 
+
+### Marking your test class with the **`@LinkedListeners`** annotation
+
+With the **`@LinkedListeners`** annotation, you specify one or more listener types to attach to the **ListenerChain**:
 
 ###### LinkedListeners annotation
 ```java
-package com.nordstrom.example;
+package com.example;
  
 import com.nordstrom.automation.selenium.listeners.DriverListener;
 import com.nordstrom.automation.testng.ExecutionFlowController;
@@ -131,4 +182,4 @@ public class ExampleTest {
 }
 ```
 
-As shown above, we use the **`@LinkedListeners`** annotation to attach <span style="color:blue">DriverListener</span> and <span style="color:blue">ExecutionFlowController</span>. The order in which listener methods are invoked is determined by the order in which listener objects are added to the chain. Listener _before_ methods are invoked in <span style="color:yellowgreen">last-added-first-called</span> order. Listener _after_ methods are invoked in <span style="color:yellowgreen">first-added-first-called</span> order. Only one instance of any given listener class will be included in the chain.
+As shown above, we use the **`@LinkedListeners`** annotation to attach **DriverListener** and **ExecutionFlowController**. The order in which listener methods are invoked is determined by the order in which listener objects are added to the chain. Listener _before_ methods are invoked in **_last-added-first-called_** order. Listener _after_ methods are invoked in **_first-added-first-called_** order. Only one instance of any given listener class will be included in the chain.

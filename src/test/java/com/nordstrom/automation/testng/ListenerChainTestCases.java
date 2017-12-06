@@ -118,10 +118,13 @@ class ListenerChainTestCases {
     }
     
     @Test(groups = {"happyPath"})
-    public void testAttachedListener() {
+    public void testAttachedListeners() {
+        System.out.println("testAttachedListeners");
         ITestResult result = Reporter.getCurrentTestResult();
-        Optional<ChainedListener> optional = ListenerChain.getAttachedListener(result, ChainedListener.class);
-        assertTrue(optional.isPresent());
+        Optional<ChainedListener> optChained = ListenerChain.getAttachedListener(result, ChainedListener.class);
+        assertTrue(optChained.isPresent());
+        Optional<ServiceLoadedListener> optService = ListenerChain.getAttachedListener(result, ServiceLoadedListener.class);
+        assertTrue(optService.isPresent());
     }
     
 }
