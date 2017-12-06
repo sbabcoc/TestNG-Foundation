@@ -148,7 +148,7 @@ public class ServiceLoadedListener implements IClassListener, LinkedListener {
 
 ```
 
-To specify the listener(s) you wish to attach via the **ListenerChain** service loader, create a file at location <pre>META-INF/services/com.nordstrom.automation.testng.LinkedListener</pre> and indicate the listener(s) you want to be linked in:
+To specify the listener(s) you wish to attach via the **ListenerChain** service loader, create a file at location `META-INF/services/com.nordstrom.automation.testng.LinkedListener` and indicate the listener(s) you want to be linked in:
 
 ###### com.nordstrom.automation.testng.LinkedListener
 ```
