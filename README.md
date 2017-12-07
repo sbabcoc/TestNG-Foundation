@@ -160,7 +160,7 @@ In a Maven project, the preceding file is stored in the **_src/main/resources_**
 
 ![com.testng.ITestNGListener](docs/images/META-INF-2.png)
 
-Once this file is added to your project, the constructor of **ListenerChain** will attach each of the indicated listeners in the specified order. 
+In this example, we've specified a single listener (**ServiceLoadedListener**) that should be attached via the **ListenerChain** service loader. If additional listeners had been specified, each of them would be attached in the order they're specified.
 
 ### Marking your test class with the **`@LinkedListeners`** annotation
 
