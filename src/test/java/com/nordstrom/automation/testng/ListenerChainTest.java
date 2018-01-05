@@ -1,16 +1,16 @@
 package com.nordstrom.automation.testng;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
+import org.testng.ITestNGListener;
+import org.testng.TestListenerAdapter;
+import org.testng.TestNG;
+import org.testng.annotations.Test;
 
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.testng.ITestNGListener;
-import org.testng.TestListenerAdapter;
-import org.testng.TestNG;
-import org.testng.annotations.Test;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
 
 public class ListenerChainTest {
 
@@ -330,6 +330,20 @@ public class ListenerChainTest {
         assertTrue(ChainedListener.testStarted.contains("testAfterSkipped"));
         assertTrue(ChainedListener.testSuccess.contains("testAfterSkipped"));
         
+    }
+
+    @Test
+    public void verifyConstructorFactory(){
+        ListenerChain lc = new ListenerChain();
+        TestListenerAdapter tla = new TestListenerAdapter();
+
+        TestNG testNG = new TestNG();
+        testNG.setTestClasses(new Class[]{ConstructorFactory.class});
+        testNG.addListener((ITestNGListener) lc);
+        testNG.addListener((ITestNGListener) tla);
+        testNG.run();
+
+        assertEquals(tla.getPassedTests().size(), 3, "Incorrect passed test count");
     }
     
 }
