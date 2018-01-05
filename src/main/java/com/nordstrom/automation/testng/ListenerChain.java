@@ -1,43 +1,14 @@
 package com.nordstrom.automation.testng;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.ServiceLoader;
-import java.util.Set;
-
-import org.testng.IAnnotationTransformer;
-import org.testng.IAnnotationTransformer2;
-import org.testng.IAnnotationTransformer3;
-import org.testng.IClassListener;
-import org.testng.IConfigurationListener;
-import org.testng.IConfigurationListener2;
-import org.testng.IInvokedMethod;
-import org.testng.IInvokedMethodListener;
-import org.testng.IInvokedMethodListener2;
-import org.testng.IMethodInstance;
-import org.testng.IMethodInterceptor;
-import org.testng.ISuite;
-import org.testng.ISuiteListener;
-import org.testng.ITestClass;
-import org.testng.ITestContext;
-import org.testng.ITestListener;
-import org.testng.ITestNGListener;
-import org.testng.ITestResult;
-import org.testng.annotations.IConfigurationAnnotation;
-import org.testng.annotations.IDataProviderAnnotation;
-import org.testng.annotations.IFactoryAnnotation;
-import org.testng.annotations.IListenersAnnotation;
-import org.testng.annotations.ITestAnnotation;
+import com.google.common.collect.Lists;
+import org.testng.*;
+import org.testng.annotations.*;
 import org.testng.internal.InvokedMethod;
 
-import com.google.common.collect.Lists;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
+import java.util.*;
+import java.util.Optional;
 
 /**
  * This TestNG listener enables the addition of other listeners at runtime and guarantees the order in which they're
@@ -171,7 +142,10 @@ public class ListenerChain
      */
     @Override
     public void transform(IFactoryAnnotation annotation, Method method) {
-        attachListeners(method);
+        if(method != null)
+            attachListeners(method);
+        else
+            attachListeners(annotation.getDataProviderClass());
         
         synchronized(annotationXformers2) {
             for (IAnnotationTransformer2 annotationXformer : annotationXformers2) {
