@@ -1,16 +1,16 @@
 package com.nordstrom.automation.testng;
 
-import org.testng.ITestNGListener;
-import org.testng.TestListenerAdapter;
-import org.testng.TestNG;
-import org.testng.annotations.Test;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
+import org.testng.ITestNGListener;
+import org.testng.TestListenerAdapter;
+import org.testng.TestNG;
+import org.testng.annotations.Test;
 
 public class ListenerChainTest {
 
