@@ -30,39 +30,39 @@ public class ChainedListener
                 implements IAnnotationTransformer3, ISuiteListener, IConfigurationListener2,
                 IInvokedMethodListener, ITestListener, IMethodInterceptor, IClassListener {
     
-    static Set<String> configSuccess = Collections.synchronizedSet(new HashSet<>());
-    static Set<String> configFailure = Collections.synchronizedSet(new HashSet<>());
-    static Set<String> configSkipped = Collections.synchronizedSet(new HashSet<>());
-    static Set<String> beforeConfig = Collections.synchronizedSet(new HashSet<>());
+    Set<String> configSuccess = Collections.synchronizedSet(new HashSet<>());
+    Set<String> configFailure = Collections.synchronizedSet(new HashSet<>());
+    Set<String> configSkipped = Collections.synchronizedSet(new HashSet<>());
+    Set<String> beforeConfig = Collections.synchronizedSet(new HashSet<>());
     
-    static Set<String> beforeMethodBefore = Collections.synchronizedSet(new HashSet<>());
-    static Set<String> beforeMethodAfter = Collections.synchronizedSet(new HashSet<>());
-    static Set<String> testMethodBefore = Collections.synchronizedSet(new HashSet<>());
-    static Set<String> testMethodAfter = Collections.synchronizedSet(new HashSet<>());
-    static Set<String> afterMethodBefore = Collections.synchronizedSet(new HashSet<>());
-    static Set<String> afterMethodAfter = Collections.synchronizedSet(new HashSet<>());
+    Set<String> beforeMethodBefore = Collections.synchronizedSet(new HashSet<>());
+    Set<String> beforeMethodAfter = Collections.synchronizedSet(new HashSet<>());
+    Set<String> testMethodBefore = Collections.synchronizedSet(new HashSet<>());
+    Set<String> testMethodAfter = Collections.synchronizedSet(new HashSet<>());
+    Set<String> afterMethodBefore = Collections.synchronizedSet(new HashSet<>());
+    Set<String> afterMethodAfter = Collections.synchronizedSet(new HashSet<>());
     
-    static Set<String> beforeClass = Collections.synchronizedSet(new HashSet<>());
-    static Set<String> afterClass = Collections.synchronizedSet(new HashSet<>());
+    Set<String> beforeClass = Collections.synchronizedSet(new HashSet<>());
+    Set<String> afterClass = Collections.synchronizedSet(new HashSet<>());
     
-    static Set<String> testStarted = Collections.synchronizedSet(new HashSet<>());
-    static Set<String> testSuccess = Collections.synchronizedSet(new HashSet<>());
-    static Set<String> testFailure = Collections.synchronizedSet(new HashSet<>());
-    static Set<String> testSkipped = Collections.synchronizedSet(new HashSet<>());
-    static Set<String> testCurved = Collections.synchronizedSet(new HashSet<>());
-    static Set<String> testsBegun = Collections.synchronizedSet(new HashSet<>());
-    static Set<String> testsEnded = Collections.synchronizedSet(new HashSet<>());
+    Set<String> testStarted = Collections.synchronizedSet(new HashSet<>());
+    Set<String> testSuccess = Collections.synchronizedSet(new HashSet<>());
+    Set<String> testFailure = Collections.synchronizedSet(new HashSet<>());
+    Set<String> testSkipped = Collections.synchronizedSet(new HashSet<>());
+    Set<String> testCurved = Collections.synchronizedSet(new HashSet<>());
+    Set<String> testsBegun = Collections.synchronizedSet(new HashSet<>());
+    Set<String> testsEnded = Collections.synchronizedSet(new HashSet<>());
     
-    static Set<String> suiteBegun = Collections.synchronizedSet(new HashSet<>());
-    static Set<String> suiteEnded = Collections.synchronizedSet(new HashSet<>());
+    Set<String> suiteBegun = Collections.synchronizedSet(new HashSet<>());
+    Set<String> suiteEnded = Collections.synchronizedSet(new HashSet<>());
     
-    static Set<String> xformTest = Collections.synchronizedSet(new HashSet<>());
-    static Set<String> xformConfig = Collections.synchronizedSet(new HashSet<>());
-    static Set<String> xformProvider = Collections.synchronizedSet(new HashSet<>());
-    static Set<String> xformFactory = Collections.synchronizedSet(new HashSet<>());
-    static Set<String> xformListeners = Collections.synchronizedSet(new HashSet<>());
+    Set<String> xformTest = Collections.synchronizedSet(new HashSet<>());
+    Set<String> xformConfig = Collections.synchronizedSet(new HashSet<>());
+    Set<String> xformProvider = Collections.synchronizedSet(new HashSet<>());
+    Set<String> xformFactory = Collections.synchronizedSet(new HashSet<>());
+    Set<String> xformListeners = Collections.synchronizedSet(new HashSet<>());
     
-    static Set<String> interceptor = Collections.synchronizedSet(new HashSet<>());
+    Set<String> interceptor = Collections.synchronizedSet(new HashSet<>());
 
     @Override
     public void onConfigurationSuccess(ITestResult itr) {
@@ -191,18 +191,22 @@ public class ChainedListener
 
     @Override
     public void transform(IDataProviderAnnotation annotation, Method method) {
-        xformProvider.add(method.getName());
+        xformProvider.add("method: " + method.getName());
     }
 
     @Override
     public void transform(IFactoryAnnotation annotation, Method method) {
-        xformFactory.add(method.getName());
+        if (method != null) {
+            xformFactory.add("method: " + method.getName());
+        } else {
+            xformFactory.add("ctor: (unknown)");
+        }
     }
 
     @SuppressWarnings("rawtypes")
     @Override
     public void transform(IListenersAnnotation annotation, Class testClass) {
-        xformListeners.add(testClass.getSimpleName());
+        xformListeners.add("class: " + testClass.getSimpleName());
     }
     
     @Override

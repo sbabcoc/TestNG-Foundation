@@ -1,14 +1,43 @@
 package com.nordstrom.automation.testng;
 
-import com.google.common.collect.Lists;
-import org.testng.*;
-import org.testng.annotations.*;
-import org.testng.internal.InvokedMethod;
-
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;     
+import java.util.HashSet;     
+import java.util.Iterator;        
+import java.util.List;        
+import java.util.Objects;     
 import java.util.Optional;
+import java.util.ServiceLoader;       
+import java.util.Set;     
+      
+import org.testng.IAnnotationTransformer;     
+import org.testng.IAnnotationTransformer2;        
+import org.testng.IAnnotationTransformer3;        
+import org.testng.IClassListener;     
+import org.testng.IConfigurationListener;     
+import org.testng.IConfigurationListener2;        
+import org.testng.IInvokedMethod;     
+import org.testng.IInvokedMethodListener;     
+import org.testng.IInvokedMethodListener2;        
+import org.testng.IMethodInstance;        
+import org.testng.IMethodInterceptor;     
+import org.testng.ISuite;     
+import org.testng.ISuiteListener;     
+import org.testng.ITestClass;     
+import org.testng.ITestContext;       
+import org.testng.ITestListener;      
+import org.testng.ITestNGListener;        
+import org.testng.ITestResult;        
+import org.testng.annotations.IConfigurationAnnotation;       
+import org.testng.annotations.IDataProviderAnnotation;        
+import org.testng.annotations.IFactoryAnnotation;     
+import org.testng.annotations.IListenersAnnotation;       
+import org.testng.annotations.ITestAnnotation;        
+import org.testng.internal.InvokedMethod;     
+      
+import com.google.common.collect.Lists;
 
 /**
  * This TestNG listener enables the addition of other listeners at runtime and guarantees the order in which they're
@@ -142,10 +171,7 @@ public class ListenerChain
      */
     @Override
     public void transform(IFactoryAnnotation annotation, Method method) {
-        if(method != null)
-            attachListeners(method);
-        else
-            attachListeners(annotation.getDataProviderClass());
+        attachListeners(method);
         
         synchronized(annotationXformers2) {
             for (IAnnotationTransformer2 annotationXformer : annotationXformers2) {
@@ -570,14 +596,26 @@ public class ListenerChain
      * @param listenerType listener type
      * @return optional listener instance
      */
-    @SuppressWarnings("unchecked")
     public static <T extends ITestNGListener> Optional<T>
             getAttachedListener(ISuite suite, Class<T> listenerType) {
         
         Objects.requireNonNull(suite, "[suite] must be non-null");
         Objects.requireNonNull(listenerType, "[listenerType] must be non-null");
         ListenerChain chain = (ListenerChain) suite.getAttribute(LISTENER_CHAIN);
-        for (ITestNGListener listener : chain.listeners) {
+        Objects.requireNonNull(chain, "Specified suite has no ListenerChain");
+        return chain.getAttachedListener(listenerType);
+    }
+
+    /**
+     * Get reference to an instance of the specified listener type.
+     * 
+     * @param <T> listener type
+     * @param listenerType listener type
+     * @return optional listener instance
+     */
+    @SuppressWarnings("unchecked")
+    public <T extends ITestNGListener> Optional<T> getAttachedListener(Class<T> listenerType) {
+        for (ITestNGListener listener : listeners) {
             if (listener.getClass() == listenerType) {
                 return Optional.of((T) listener);
             }
@@ -591,7 +629,9 @@ public class ListenerChain
      * @param testMethod test method
      */
     private void attachListeners(Method testMethod) {
-        attachListeners(testMethod.getDeclaringClass());
+        if (testMethod != null) {
+            processLinkedListeners(testMethod.getDeclaringClass());
+        }
     }
     
     /**
@@ -606,11 +646,11 @@ public class ListenerChain
      */
     private void attachListeners(Class<?> testClass, Constructor<?> testCtor, Method testMethod) {
         if (testClass != null) {
-            attachListeners(testClass);
+            processLinkedListeners(testClass);
         } else if (testCtor != null) {
-            attachListeners(testCtor.getDeclaringClass());
-        } else {
-            attachListeners(testMethod.getDeclaringClass());
+            processLinkedListeners(testCtor.getDeclaringClass());
+        } else if (testMethod != null) {
+            processLinkedListeners(testMethod.getDeclaringClass());
         }
     }
     
@@ -620,6 +660,19 @@ public class ListenerChain
      * @param testClass test class
      */
     private void attachListeners(Class<?> testClass) {
+        if (testClass != null) {
+            processLinkedListeners(testClass);
+        }
+    }
+    
+    /**
+     * Process the {@link LinkedListeners} annotation of the specified test class.
+     * 
+     * @param testClass test class
+     */
+    private void processLinkedListeners(Class<?> testClass) {
+        Objects.requireNonNull(testClass, "[testClass] must be non-null");
+        
         LinkedListeners annotation = testClass.getAnnotation(LinkedListeners.class);
         if (null != annotation) {
             Class<?> markedClass = testClass;
