@@ -27,6 +27,8 @@ public class ListenerChainTest {
         testNG.setGroups("happyPath");
         testNG.run();
         
+        ChainedListener chainedListener = lc.getAttachedListener(ChainedListener.class).get();
+        
         assertEquals(tla.getPassedTests().size(), 2, "Incorrect passed test count");
         assertEquals(tla.getFailedTests().size(), 0, "Incorrect failed test count");
         assertEquals(tla.getSkippedTests().size(), 0, "Incorrect skipped test count");
@@ -34,29 +36,29 @@ public class ListenerChainTest {
         assertEquals(tla.getConfigurationFailures().size(), 0, "Incorrect configuration method failure count");
         assertEquals(tla.getConfigurationSkips().size(), 0, "Incorrect configuration method skip count");
         
-        assertTrue(ChainedListener.configSuccess.contains("beforeSuccess"));
-        assertTrue(ChainedListener.configSuccess.contains("afterSuccess"));
-        assertTrue(ChainedListener.beforeConfig.contains("beforeSuccess"));
-        assertTrue(ChainedListener.beforeConfig.contains("afterSuccess"));
+        assertTrue(chainedListener.configSuccess.contains("beforeSuccess"));
+        assertTrue(chainedListener.configSuccess.contains("afterSuccess"));
+        assertTrue(chainedListener.beforeConfig.contains("beforeSuccess"));
+        assertTrue(chainedListener.beforeConfig.contains("afterSuccess"));
         
-        assertTrue(ChainedListener.beforeMethodBefore.contains("beforeSuccess"));
-        assertTrue(ChainedListener.beforeMethodAfter.contains("beforeSuccess"));
-        assertTrue(ChainedListener.testMethodBefore.contains("happyPath"));
-        assertTrue(ChainedListener.testMethodAfter.contains("happyPath"));
-        assertTrue(ChainedListener.afterMethodBefore.contains("afterSuccess"));
-        assertTrue(ChainedListener.afterMethodAfter.contains("afterSuccess"));
+        assertTrue(chainedListener.beforeMethodBefore.contains("beforeSuccess"));
+        assertTrue(chainedListener.beforeMethodAfter.contains("beforeSuccess"));
+        assertTrue(chainedListener.testMethodBefore.contains("happyPath"));
+        assertTrue(chainedListener.testMethodAfter.contains("happyPath"));
+        assertTrue(chainedListener.afterMethodBefore.contains("afterSuccess"));
+        assertTrue(chainedListener.afterMethodAfter.contains("afterSuccess"));
         
-        assertTrue(ChainedListener.testStarted.contains("happyPath"));
-        assertTrue(ChainedListener.testSuccess.contains("happyPath"));
+        assertTrue(chainedListener.testStarted.contains("happyPath"));
+        assertTrue(chainedListener.testSuccess.contains("happyPath"));
         
-        assertTrue(ChainedListener.beforeClass.contains("ListenerChainTestCases"));
-        assertTrue(ChainedListener.afterClass.contains("ListenerChainTestCases"));
+        assertTrue(chainedListener.beforeClass.contains("ListenerChainTestCases"));
+        assertTrue(chainedListener.afterClass.contains("ListenerChainTestCases"));
         
-        assertTrue(ChainedListener.testsBegun.contains("Command line test"));
-        assertTrue(ChainedListener.testsEnded.contains("Command line test"));
+        assertTrue(chainedListener.testsBegun.contains("Command line test"));
+        assertTrue(chainedListener.testsEnded.contains("Command line test"));
         
-        assertTrue(ChainedListener.suiteBegun.contains("Command line suite"));
-        assertTrue(ChainedListener.suiteEnded.contains("Command line suite"));
+        assertTrue(chainedListener.suiteBegun.contains("Command line suite"));
+        assertTrue(chainedListener.suiteEnded.contains("Command line suite"));
         
         Set<String> expectTests = new HashSet<>(Arrays.asList("method: testSkipped",
                         "method: happyPath", "method: beforeSuccess", "method: beforeSkipped",
@@ -70,13 +72,13 @@ public class ListenerChainTest {
                         "method: afterFailure", "method: beforeSuccess", "method: beforeFailure",
                         "method: beforeSkipped", "method: afterSkipped"));
         
-        assertEquals(ChainedListener.xformTest, expectTests);
-        assertEquals(ChainedListener.xformConfig, expectConfigs);
-        assertTrue(ChainedListener.xformProvider.contains("dataProvider"));
-        assertTrue(ChainedListener.xformFactory.contains("createInstances"));
-        assertTrue(ChainedListener.xformListeners.contains("ListenerChainTestCases"));
+        assertEquals(chainedListener.xformTest, expectTests);
+        assertEquals(chainedListener.xformConfig, expectConfigs);
+        assertTrue(chainedListener.xformProvider.contains("method: dataProvider"));
+        assertTrue(chainedListener.xformFactory.contains("method: createInstances"));
+        assertTrue(chainedListener.xformListeners.contains("class: ListenerChainTestCases"));
         
-        assertTrue(ChainedListener.interceptor.contains("Command line test"));
+        assertTrue(chainedListener.interceptor.contains("Command line test"));
     }
     
     @Test
@@ -92,6 +94,8 @@ public class ListenerChainTest {
         testNG.setGroups("testFailed");
         testNG.run();
         
+        ChainedListener chainedListener = lc.getAttachedListener(ChainedListener.class).get();
+        
         assertEquals(tla.getPassedTests().size(), 0, "Incorrect passed test count");
         assertEquals(tla.getFailedTests().size(), 1, "Incorrect failed test count");
         assertEquals(tla.getSkippedTests().size(), 0, "Incorrect skipped test count");
@@ -99,20 +103,20 @@ public class ListenerChainTest {
         assertEquals(tla.getConfigurationFailures().size(), 0, "Incorrect configuration method failure count");
         assertEquals(tla.getConfigurationSkips().size(), 0, "Incorrect configuration method skip count");
         
-        assertTrue(ChainedListener.configSuccess.contains("beforeSuccess"));
-        assertTrue(ChainedListener.configSuccess.contains("afterSuccess"));
-        assertTrue(ChainedListener.beforeConfig.contains("beforeSuccess"));
-        assertTrue(ChainedListener.beforeConfig.contains("afterSuccess"));
+        assertTrue(chainedListener.configSuccess.contains("beforeSuccess"));
+        assertTrue(chainedListener.configSuccess.contains("afterSuccess"));
+        assertTrue(chainedListener.beforeConfig.contains("beforeSuccess"));
+        assertTrue(chainedListener.beforeConfig.contains("afterSuccess"));
         
-        assertTrue(ChainedListener.beforeMethodBefore.contains("beforeSuccess"));
-        assertTrue(ChainedListener.beforeMethodAfter.contains("beforeSuccess"));
-        assertTrue(ChainedListener.testMethodBefore.contains("testFailed"));
-        assertTrue(ChainedListener.testMethodAfter.contains("testFailed"));
-        assertTrue(ChainedListener.afterMethodBefore.contains("afterSuccess"));
-        assertTrue(ChainedListener.afterMethodAfter.contains("afterSuccess"));
+        assertTrue(chainedListener.beforeMethodBefore.contains("beforeSuccess"));
+        assertTrue(chainedListener.beforeMethodAfter.contains("beforeSuccess"));
+        assertTrue(chainedListener.testMethodBefore.contains("testFailed"));
+        assertTrue(chainedListener.testMethodAfter.contains("testFailed"));
+        assertTrue(chainedListener.afterMethodBefore.contains("afterSuccess"));
+        assertTrue(chainedListener.afterMethodAfter.contains("afterSuccess"));
         
-        assertTrue(ChainedListener.testStarted.contains("testFailed"));
-        assertTrue(ChainedListener.testFailure.contains("testFailed"));
+        assertTrue(chainedListener.testStarted.contains("testFailed"));
+        assertTrue(chainedListener.testFailure.contains("testFailed"));
         
     }
     
@@ -129,6 +133,8 @@ public class ListenerChainTest {
         testNG.setGroups("testSkipped");
         testNG.run();
         
+        ChainedListener chainedListener = lc.getAttachedListener(ChainedListener.class).get();
+        
         assertEquals(tla.getPassedTests().size(), 0, "Incorrect passed test count");
         assertEquals(tla.getFailedTests().size(), 0, "Incorrect failed test count");
         assertEquals(tla.getSkippedTests().size(), 1, "Incorrect skipped test count");
@@ -136,20 +142,20 @@ public class ListenerChainTest {
         assertEquals(tla.getConfigurationFailures().size(), 0, "Incorrect configuration method failure count");
         assertEquals(tla.getConfigurationSkips().size(), 0, "Incorrect configuration method skip count");
         
-        assertTrue(ChainedListener.configSuccess.contains("beforeSuccess"));
-        assertTrue(ChainedListener.configSuccess.contains("afterSuccess"));
-        assertTrue(ChainedListener.beforeConfig.contains("beforeSuccess"));
-        assertTrue(ChainedListener.beforeConfig.contains("afterSuccess"));
+        assertTrue(chainedListener.configSuccess.contains("beforeSuccess"));
+        assertTrue(chainedListener.configSuccess.contains("afterSuccess"));
+        assertTrue(chainedListener.beforeConfig.contains("beforeSuccess"));
+        assertTrue(chainedListener.beforeConfig.contains("afterSuccess"));
         
-        assertTrue(ChainedListener.beforeMethodBefore.contains("beforeSuccess"));
-        assertTrue(ChainedListener.beforeMethodAfter.contains("beforeSuccess"));
-        assertTrue(ChainedListener.testMethodBefore.contains("testSkipped"));
-        assertTrue(ChainedListener.testMethodAfter.contains("testSkipped"));
-        assertTrue(ChainedListener.afterMethodBefore.contains("afterSuccess"));
-        assertTrue(ChainedListener.afterMethodAfter.contains("afterSuccess"));
+        assertTrue(chainedListener.beforeMethodBefore.contains("beforeSuccess"));
+        assertTrue(chainedListener.beforeMethodAfter.contains("beforeSuccess"));
+        assertTrue(chainedListener.testMethodBefore.contains("testSkipped"));
+        assertTrue(chainedListener.testMethodAfter.contains("testSkipped"));
+        assertTrue(chainedListener.afterMethodBefore.contains("afterSuccess"));
+        assertTrue(chainedListener.afterMethodAfter.contains("afterSuccess"));
         
-        assertTrue(ChainedListener.testStarted.contains("testSkipped"));
-        assertTrue(ChainedListener.testSkipped.contains("testSkipped"));
+        assertTrue(chainedListener.testStarted.contains("testSkipped"));
+        assertTrue(chainedListener.testSkipped.contains("testSkipped"));
         
     }
     
@@ -166,6 +172,8 @@ public class ListenerChainTest {
         testNG.setGroups("failAndPass");
         testNG.run();
         
+        ChainedListener chainedListener = lc.getAttachedListener(ChainedListener.class).get();
+        
         assertEquals(tla.getPassedTests().size(), 3, "Incorrect passed test count");
         assertEquals(tla.getFailedTests().size(), 0, "Incorrect failed test count");
         assertEquals(tla.getSkippedTests().size(), 0, "Incorrect skipped test count");
@@ -173,20 +181,20 @@ public class ListenerChainTest {
         assertEquals(tla.getConfigurationFailures().size(), 0, "Incorrect configuration method failure count");
         assertEquals(tla.getConfigurationSkips().size(), 0, "Incorrect configuration method skip count");
         
-        assertTrue(ChainedListener.configSuccess.contains("beforeSuccess"));
-        assertTrue(ChainedListener.configSuccess.contains("afterSuccess"));
-        assertTrue(ChainedListener.beforeConfig.contains("beforeSuccess"));
-        assertTrue(ChainedListener.beforeConfig.contains("afterSuccess"));
+        assertTrue(chainedListener.configSuccess.contains("beforeSuccess"));
+        assertTrue(chainedListener.configSuccess.contains("afterSuccess"));
+        assertTrue(chainedListener.beforeConfig.contains("beforeSuccess"));
+        assertTrue(chainedListener.beforeConfig.contains("afterSuccess"));
         
-        assertTrue(ChainedListener.beforeMethodBefore.contains("beforeSuccess"));
-        assertTrue(ChainedListener.beforeMethodAfter.contains("beforeSuccess"));
-        assertTrue(ChainedListener.testMethodBefore.contains("failAndPass"));
-        assertTrue(ChainedListener.testMethodAfter.contains("failAndPass"));
-        assertTrue(ChainedListener.afterMethodBefore.contains("afterSuccess"));
-        assertTrue(ChainedListener.afterMethodAfter.contains("afterSuccess"));
+        assertTrue(chainedListener.beforeMethodBefore.contains("beforeSuccess"));
+        assertTrue(chainedListener.beforeMethodAfter.contains("beforeSuccess"));
+        assertTrue(chainedListener.testMethodBefore.contains("failAndPass"));
+        assertTrue(chainedListener.testMethodAfter.contains("failAndPass"));
+        assertTrue(chainedListener.afterMethodBefore.contains("afterSuccess"));
+        assertTrue(chainedListener.afterMethodAfter.contains("afterSuccess"));
         
-        assertTrue(ChainedListener.testStarted.contains("failAndPass"));
-        assertTrue(ChainedListener.testCurved.contains("failAndPass"));
+        assertTrue(chainedListener.testStarted.contains("failAndPass"));
+        assertTrue(chainedListener.testCurved.contains("failAndPass"));
         
     }
     
@@ -203,6 +211,8 @@ public class ListenerChainTest {
         testNG.setGroups("beforeFailed");
         testNG.run();
         
+        ChainedListener chainedListener = lc.getAttachedListener(ChainedListener.class).get();
+        
         assertEquals(tla.getPassedTests().size(), 0, "Incorrect passed test count");
         assertEquals(tla.getFailedTests().size(), 0, "Incorrect failed test count");
         assertEquals(tla.getSkippedTests().size(), 1, "Incorrect skipped test count");
@@ -210,17 +220,17 @@ public class ListenerChainTest {
         assertEquals(tla.getConfigurationFailures().size(), 1, "Incorrect configuration method failure count");
         assertEquals(tla.getConfigurationSkips().size(), 1, "Incorrect configuration method skip count");
         
-        assertTrue(ChainedListener.configFailure.contains("beforeFailure"));
-        assertTrue(ChainedListener.configSkipped.contains("afterSuccess"));
-        assertTrue(ChainedListener.beforeConfig.contains("beforeFailure"));
+        assertTrue(chainedListener.configFailure.contains("beforeFailure"));
+        assertTrue(chainedListener.configSkipped.contains("afterSuccess"));
+        assertTrue(chainedListener.beforeConfig.contains("beforeFailure"));
         
-        assertTrue(ChainedListener.beforeMethodBefore.contains("beforeFailure"));
-        assertTrue(ChainedListener.beforeMethodAfter.contains("beforeFailure"));
-        assertTrue(ChainedListener.testMethodBefore.contains("skipBeforeFailed"));
-        assertTrue(ChainedListener.testMethodAfter.contains("skipBeforeFailed"));
+        assertTrue(chainedListener.beforeMethodBefore.contains("beforeFailure"));
+        assertTrue(chainedListener.beforeMethodAfter.contains("beforeFailure"));
+        assertTrue(chainedListener.testMethodBefore.contains("skipBeforeFailed"));
+        assertTrue(chainedListener.testMethodAfter.contains("skipBeforeFailed"));
         
-        assertTrue(ChainedListener.testStarted.contains("skipBeforeFailed"));
-        assertTrue(ChainedListener.testSkipped.contains("skipBeforeFailed"));
+        assertTrue(chainedListener.testStarted.contains("skipBeforeFailed"));
+        assertTrue(chainedListener.testSkipped.contains("skipBeforeFailed"));
         
     }
     
@@ -237,6 +247,8 @@ public class ListenerChainTest {
         testNG.setGroups("beforeSkipped");
         testNG.run();
         
+        ChainedListener chainedListener = lc.getAttachedListener(ChainedListener.class).get();
+        
         assertEquals(tla.getPassedTests().size(), 0, "Incorrect passed test count");
         assertEquals(tla.getFailedTests().size(), 0, "Incorrect failed test count");
         assertEquals(tla.getSkippedTests().size(), 1, "Incorrect skipped test count");
@@ -244,17 +256,17 @@ public class ListenerChainTest {
         assertEquals(tla.getConfigurationFailures().size(), 0, "Incorrect configuration method failure count");
         assertEquals(tla.getConfigurationSkips().size(), 2, "Incorrect configuration method skip count");
         
-        assertTrue(ChainedListener.configSkipped.contains("beforeSkipped"));
-        assertTrue(ChainedListener.configSkipped.contains("afterSuccess"));
-        assertTrue(ChainedListener.beforeConfig.contains("beforeSkipped"));
+        assertTrue(chainedListener.configSkipped.contains("beforeSkipped"));
+        assertTrue(chainedListener.configSkipped.contains("afterSuccess"));
+        assertTrue(chainedListener.beforeConfig.contains("beforeSkipped"));
         
-        assertTrue(ChainedListener.beforeMethodBefore.contains("beforeSkipped"));
-        assertTrue(ChainedListener.beforeMethodAfter.contains("beforeSkipped"));
-        assertTrue(ChainedListener.testMethodBefore.contains("skipBeforeSkipped"));
-        assertTrue(ChainedListener.testMethodAfter.contains("skipBeforeSkipped"));
+        assertTrue(chainedListener.beforeMethodBefore.contains("beforeSkipped"));
+        assertTrue(chainedListener.beforeMethodAfter.contains("beforeSkipped"));
+        assertTrue(chainedListener.testMethodBefore.contains("skipBeforeSkipped"));
+        assertTrue(chainedListener.testMethodAfter.contains("skipBeforeSkipped"));
         
-        assertTrue(ChainedListener.testStarted.contains("skipBeforeSkipped"));
-        assertTrue(ChainedListener.testSkipped.contains("skipBeforeSkipped"));
+        assertTrue(chainedListener.testStarted.contains("skipBeforeSkipped"));
+        assertTrue(chainedListener.testSkipped.contains("skipBeforeSkipped"));
         
     }
     
@@ -271,6 +283,8 @@ public class ListenerChainTest {
         testNG.setGroups("afterFailed");
         testNG.run();
         
+        ChainedListener chainedListener = lc.getAttachedListener(ChainedListener.class).get();
+        
         assertEquals(tla.getPassedTests().size(), 1, "Incorrect passed test count");
         assertEquals(tla.getFailedTests().size(), 0, "Incorrect failed test count");
         assertEquals(tla.getSkippedTests().size(), 0, "Incorrect skipped test count");
@@ -278,20 +292,20 @@ public class ListenerChainTest {
         assertEquals(tla.getConfigurationFailures().size(), 1, "Incorrect configuration method failure count");
         assertEquals(tla.getConfigurationSkips().size(), 0, "Incorrect configuration method skip count");
         
-        assertTrue(ChainedListener.configSuccess.contains("beforeSuccess"));
-        assertTrue(ChainedListener.configFailure.contains("afterFailure"));
-        assertTrue(ChainedListener.beforeConfig.contains("beforeSuccess"));
-        assertTrue(ChainedListener.beforeConfig.contains("afterFailure"));
+        assertTrue(chainedListener.configSuccess.contains("beforeSuccess"));
+        assertTrue(chainedListener.configFailure.contains("afterFailure"));
+        assertTrue(chainedListener.beforeConfig.contains("beforeSuccess"));
+        assertTrue(chainedListener.beforeConfig.contains("afterFailure"));
         
-        assertTrue(ChainedListener.beforeMethodBefore.contains("beforeSuccess"));
-        assertTrue(ChainedListener.beforeMethodAfter.contains("beforeSuccess"));
-        assertTrue(ChainedListener.testMethodBefore.contains("testAfterFailed"));
-        assertTrue(ChainedListener.testMethodAfter.contains("testAfterFailed"));
-        assertTrue(ChainedListener.afterMethodBefore.contains("afterFailure"));
-        assertTrue(ChainedListener.afterMethodAfter.contains("afterFailure"));
+        assertTrue(chainedListener.beforeMethodBefore.contains("beforeSuccess"));
+        assertTrue(chainedListener.beforeMethodAfter.contains("beforeSuccess"));
+        assertTrue(chainedListener.testMethodBefore.contains("testAfterFailed"));
+        assertTrue(chainedListener.testMethodAfter.contains("testAfterFailed"));
+        assertTrue(chainedListener.afterMethodBefore.contains("afterFailure"));
+        assertTrue(chainedListener.afterMethodAfter.contains("afterFailure"));
         
-        assertTrue(ChainedListener.testStarted.contains("testAfterFailed"));
-        assertTrue(ChainedListener.testSuccess.contains("testAfterFailed"));
+        assertTrue(chainedListener.testStarted.contains("testAfterFailed"));
+        assertTrue(chainedListener.testSuccess.contains("testAfterFailed"));
         
     }
     
@@ -308,6 +322,8 @@ public class ListenerChainTest {
         testNG.setGroups("afterSkipped");
         testNG.run();
         
+        ChainedListener chainedListener = lc.getAttachedListener(ChainedListener.class).get();
+        
         assertEquals(tla.getPassedTests().size(), 1, "Incorrect passed test count");
         assertEquals(tla.getFailedTests().size(), 0, "Incorrect failed test count");
         assertEquals(tla.getSkippedTests().size(), 0, "Incorrect skipped test count");
@@ -315,21 +331,63 @@ public class ListenerChainTest {
         assertEquals(tla.getConfigurationFailures().size(), 0, "Incorrect configuration method failure count");
         assertEquals(tla.getConfigurationSkips().size(), 1, "Incorrect configuration method skip count");
         
-        assertTrue(ChainedListener.configSuccess.contains("beforeSuccess"));
-        assertTrue(ChainedListener.configSkipped.contains("afterSkipped"));
-        assertTrue(ChainedListener.beforeConfig.contains("beforeSuccess"));
-        assertTrue(ChainedListener.beforeConfig.contains("afterSkipped"));
+        assertTrue(chainedListener.configSuccess.contains("beforeSuccess"));
+        assertTrue(chainedListener.configSkipped.contains("afterSkipped"));
+        assertTrue(chainedListener.beforeConfig.contains("beforeSuccess"));
+        assertTrue(chainedListener.beforeConfig.contains("afterSkipped"));
         
-        assertTrue(ChainedListener.beforeMethodBefore.contains("beforeSuccess"));
-        assertTrue(ChainedListener.beforeMethodAfter.contains("beforeSuccess"));
-        assertTrue(ChainedListener.testMethodBefore.contains("testAfterSkipped"));
-        assertTrue(ChainedListener.testMethodAfter.contains("testAfterSkipped"));
-        assertTrue(ChainedListener.afterMethodBefore.contains("afterSkipped"));
-        assertTrue(ChainedListener.afterMethodAfter.contains("afterSkipped"));
+        assertTrue(chainedListener.beforeMethodBefore.contains("beforeSuccess"));
+        assertTrue(chainedListener.beforeMethodAfter.contains("beforeSuccess"));
+        assertTrue(chainedListener.testMethodBefore.contains("testAfterSkipped"));
+        assertTrue(chainedListener.testMethodAfter.contains("testAfterSkipped"));
+        assertTrue(chainedListener.afterMethodBefore.contains("afterSkipped"));
+        assertTrue(chainedListener.afterMethodAfter.contains("afterSkipped"));
         
-        assertTrue(ChainedListener.testStarted.contains("testAfterSkipped"));
-        assertTrue(ChainedListener.testSuccess.contains("testAfterSkipped"));
+        assertTrue(chainedListener.testStarted.contains("testAfterSkipped"));
+        assertTrue(chainedListener.testSuccess.contains("testAfterSkipped"));
         
+    }
+
+    @Test
+    public void verifyConstructorFactory(){
+        ListenerChain lc = new ListenerChain();
+        TestListenerAdapter tla = new TestListenerAdapter();
+
+        TestNG testNG = new TestNG();
+        testNG.setTestClasses(new Class[]{ConstructorFactory.class});
+        testNG.addListener((ITestNGListener) lc);
+        testNG.addListener((ITestNGListener) tla);
+        testNG.run();
+
+        ChainedListener chainedListener = lc.getAttachedListener(ChainedListener.class).get();
+        
+        assertEquals(tla.getPassedTests().size(), 3, "Incorrect passed test count");
+        assertEquals(tla.getFailedTests().size(), 0, "Incorrect failed test count");
+        assertEquals(tla.getSkippedTests().size(), 0, "Incorrect skipped test count");
+        assertEquals(tla.getFailedButWithinSuccessPercentageTests().size(), 0, "Incorrect curve-graded success count");
+        assertEquals(tla.getConfigurationFailures().size(), 0, "Incorrect configuration method failure count");
+        assertEquals(tla.getConfigurationSkips().size(), 0, "Incorrect configuration method skip count");
+        
+        assertTrue(chainedListener.testMethodBefore.contains("fakeTest"));
+        assertTrue(chainedListener.testMethodAfter.contains("fakeTest"));
+        
+        assertTrue(chainedListener.testStarted.contains("fakeTest"));
+        assertTrue(chainedListener.testSuccess.contains("fakeTest"));
+        
+        assertTrue(chainedListener.beforeClass.contains("ConstructorFactory"));
+        assertTrue(chainedListener.afterClass.contains("ConstructorFactory"));
+        
+        assertTrue(chainedListener.testsBegun.contains("Command line test"));
+        assertTrue(chainedListener.testsEnded.contains("Command line test"));
+        
+        assertTrue(chainedListener.suiteBegun.contains("Command line suite"));
+        assertTrue(chainedListener.suiteEnded.contains("Command line suite"));
+        
+        assertTrue(chainedListener.xformTest.contains("method: fakeTest"));
+        assertTrue(chainedListener.xformProvider.contains("method: ints"));
+        assertTrue(chainedListener.xformFactory.contains("ctor: (unknown)"));
+        
+        assertTrue(chainedListener.interceptor.contains("Command line test"));
     }
     
 }

@@ -596,14 +596,26 @@ public class ListenerChain
      * @param listenerType listener type
      * @return optional listener instance
      */
-    @SuppressWarnings("unchecked")
     public static <T extends ITestNGListener> Optional<T>
             getAttachedListener(ISuite suite, Class<T> listenerType) {
         
         Objects.requireNonNull(suite, "[suite] must be non-null");
         Objects.requireNonNull(listenerType, "[listenerType] must be non-null");
         ListenerChain chain = (ListenerChain) suite.getAttribute(LISTENER_CHAIN);
-        for (ITestNGListener listener : chain.listeners) {
+        Objects.requireNonNull(chain, "Specified suite has no ListenerChain");
+        return chain.getAttachedListener(listenerType);
+    }
+
+    /**
+     * Get reference to an instance of the specified listener type.
+     * 
+     * @param <T> listener type
+     * @param listenerType listener type
+     * @return optional listener instance
+     */
+    @SuppressWarnings("unchecked")
+    public <T extends ITestNGListener> Optional<T> getAttachedListener(Class<T> listenerType) {
+        for (ITestNGListener listener : listeners) {
             if (listener.getClass() == listenerType) {
                 return Optional.of((T) listener);
             }
@@ -617,7 +629,9 @@ public class ListenerChain
      * @param testMethod test method
      */
     private void attachListeners(Method testMethod) {
-        attachListeners(testMethod.getDeclaringClass());
+        if (testMethod != null) {
+            processLinkedListeners(testMethod.getDeclaringClass());
+        }
     }
     
     /**
@@ -632,11 +646,11 @@ public class ListenerChain
      */
     private void attachListeners(Class<?> testClass, Constructor<?> testCtor, Method testMethod) {
         if (testClass != null) {
-            attachListeners(testClass);
+            processLinkedListeners(testClass);
         } else if (testCtor != null) {
-            attachListeners(testCtor.getDeclaringClass());
-        } else {
-            attachListeners(testMethod.getDeclaringClass());
+            processLinkedListeners(testCtor.getDeclaringClass());
+        } else if (testMethod != null) {
+            processLinkedListeners(testMethod.getDeclaringClass());
         }
     }
     
@@ -646,6 +660,19 @@ public class ListenerChain
      * @param testClass test class
      */
     private void attachListeners(Class<?> testClass) {
+        if (testClass != null) {
+            processLinkedListeners(testClass);
+        }
+    }
+    
+    /**
+     * Process the {@link LinkedListeners} annotation of the specified test class.
+     * 
+     * @param testClass test class
+     */
+    private void processLinkedListeners(Class<?> testClass) {
+        Objects.requireNonNull(testClass, "[testClass] must be non-null");
+        
         LinkedListeners annotation = testClass.getAnnotation(LinkedListeners.class);
         if (null != annotation) {
             Class<?> markedClass = testClass;
