@@ -188,4 +188,13 @@ public class ArtifactCollector<T extends ArtifactType> implements ITestListener 
         }
     }
 
+    /**
+     * Get the artifact provider object.
+     * 
+     * @return artifact provider object
+     */
+    public T getArtifactProvider() {
+        return provider;
+    }
+    
 }
