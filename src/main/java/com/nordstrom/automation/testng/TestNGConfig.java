@@ -3,6 +3,9 @@ package com.nordstrom.automation.testng;
 import java.io.IOException;
 
 import org.apache.commons.configuration2.ex.ConfigurationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.testng.IRetryAnalyzer;
 import org.testng.ITestResult;
 import org.testng.Reporter;
 
@@ -18,6 +21,7 @@ public class TestNGConfig extends SettingsCore<TestNGConfig.TestNGSettings> {
     
     private static final String SETTINGS_FILE = "testng.properties";
     private static final String TESTNG_CONFIG = "TESTNG_CONFIG";
+    private static final Logger LOGGER = LoggerFactory.getLogger(TestNGConfig.class);
     
     /**
      * This enumeration declares the settings that enable you to control the parameters
@@ -30,8 +34,10 @@ public class TestNGConfig extends SettingsCore<TestNGConfig.TestNGSettings> {
     public enum TestNGSettings implements SettingsCore.SettingsAPI {
         /** name: <b>testng.timeout.test</b> <br> default: {@code null} */
         TEST_TIMEOUT("testng.timeout.test", null),
-        /** name: testng.max.retry <br> default: {@code null} */
-        MAX_RETRY("testng.max.retry", null);
+        /** name: <b>testng.retry.analyzer</b> <br> default: <b>com.nordstrom.automation.testng.RetryAnalyzer</b> */
+        RETRY_ANALYZER("testng.retry.analyzer", "com.nordstrom.automation.testng.RetryAnalyzer"),
+        /** name: <b>testng.max.retry</b> <br> default: <b>0</b> */
+        MAX_RETRY("testng.max.retry", "0");
 
         private String propertyName;
         private String defaultValue;
@@ -101,6 +107,30 @@ public class TestNGConfig extends SettingsCore<TestNGConfig.TestNGSettings> {
         }
         
         return config;
+    }
+    
+    /**
+     * Get class object indicated as the retry analyzer.
+     *   
+     * @return retry analyzer class object (may be 'null')
+     */
+    @SuppressWarnings("unchecked")
+    public Class<IRetryAnalyzer> getRetryAnalyzerClass() {
+        if (getInt(TestNGSettings.MAX_RETRY.key()) > 0) {
+            String retryAnalyzerName = getString(TestNGSettings.RETRY_ANALYZER.key());
+            if ((retryAnalyzerName == null) || retryAnalyzerName.isEmpty()) {
+                LOGGER.warn("Value of setting [{}] is undefined", TestNGSettings.RETRY_ANALYZER.key());
+            } else {
+                try {
+                    return (Class<IRetryAnalyzer>) Class.forName(retryAnalyzerName);
+                } catch (ClassNotFoundException e) {
+                    LOGGER.warn("Specified retry analyzer class '{}' not found", retryAnalyzerName);
+                } catch (ClassCastException e) {
+                    LOGGER.warn("Specified retry analyzer '{}' does not implement IRetryAnalyzer", retryAnalyzerName);
+                }
+            }
+        }
+        return null;
     }
     
     @Override

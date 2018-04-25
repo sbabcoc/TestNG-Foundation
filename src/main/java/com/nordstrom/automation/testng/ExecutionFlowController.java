@@ -11,6 +11,7 @@ import org.testng.IInvokedMethod;
 import org.testng.IInvokedMethodListener;
 import org.testng.IMethodInstance;
 import org.testng.IMethodInterceptor;
+import org.testng.IRetryAnalyzer;
 import org.testng.ITestContext;
 import org.testng.ITestResult;
 import org.testng.annotations.ITestAnnotation;
@@ -123,8 +124,23 @@ public class ExecutionFlowController implements IInvokedMethodListener, IMethodI
                 }
             }
             
-            if (config.containsKey(TestNGSettings.MAX_RETRY.key())) {
-                //TODO - Add code to set [retryAnalyzer] attribute of @Test annotation
+            // if no retry analyzer is specified
+            if (annotation.getRetryAnalyzer() == null) {
+                // get default retry analyzer
+                Class<IRetryAnalyzer> retryAnalyzerClass = config.getRetryAnalyzerClass();
+                // if retry enabled
+                if (retryAnalyzerClass != null) {
+                    // determine if retry is disabled for this method
+                    NoRetry noRetryOnMethod = testMethod.getAnnotation(NoRetry.class);
+                    // determine if retry is disabled for the class that declares this method
+                    NoRetry noRetryOnClass = testMethod.getDeclaringClass().getAnnotation(NoRetry.class);
+                    
+                    // if retry is not disabled for method or class
+                    if ((noRetryOnMethod == null) && (noRetryOnClass == null)) {
+                        // set retry analyzer
+                        annotation.setRetryAnalyzer(retryAnalyzerClass);
+                    }
+                }
             }
         }
     }
