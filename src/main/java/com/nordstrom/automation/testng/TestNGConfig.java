@@ -29,7 +29,9 @@ public class TestNGConfig extends SettingsCore<TestNGConfig.TestNGSettings> {
      */
     public enum TestNGSettings implements SettingsCore.SettingsAPI {
         /** name: <b>testng.timeout.test</b> <br> default: {@code null} */
-        TEST_TIMEOUT("testng.timeout.test", null);
+        TEST_TIMEOUT("testng.timeout.test", null),
+        /** name: testng.max.retry <br> default: {@code null} */
+        MAX_RETRY("testng.max.retry", null);
 
         private String propertyName;
         private String defaultValue;

@@ -25,14 +25,15 @@ import com.nordstrom.automation.testng.TestNGConfig.TestNGSettings;
  *     the corresponding methods in the test class. In-bound attribute propagation is performed before forwarding the
  *     {@link #beforeInvocation(IInvokedMethod, ITestResult)} call, and out-bound attribute propagation is performed
  *     after forwarding the {@link #afterInvocation(IInvokedMethod, ITestResult)} call.</li>
+ *     <li>For methods that don't specify a timeout interval, set the configured (or default) standard interval.</li>
  * </ul> 
  */
 
 /*
  * TODO - This block comment describes features that have yet to be implemented.
  * 
- * The following items describe features that have yet to be implemented: target platform, automatic retry, and method
- * timeout management. All of these will be implemented in the method interceptor.
+ * The following items describe features that have yet to be implemented: target platform and automatic retry.
+ * Both of these will be implemented in the method interceptor.
  * 
  *     <li>For test classes that request target platform support: 
  *         <ul>
@@ -49,7 +50,6 @@ import com.nordstrom.automation.testng.TestNGConfig.TestNGSettings;
  *                 org.testng.SkipException}.</li> 
  *         </ul>
  *     </li>
- *     <li>For methods that don't specify a timeout interval, set the configured (or default) standard interval.</li>
  */
 public class ExecutionFlowController implements IInvokedMethodListener, IMethodInterceptor, IAnnotationTransformer {
     
@@ -121,6 +121,10 @@ public class ExecutionFlowController implements IInvokedMethodListener, IMethodI
                     // set test timeout interval
                     annotation.setTimeOut(defaultTimeout);
                 }
+            }
+            
+            if (config.containsKey(TestNGSettings.MAX_RETRY.key())) {
+                
             }
         }
     }
