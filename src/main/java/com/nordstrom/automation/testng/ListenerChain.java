@@ -713,7 +713,7 @@ public class ListenerChain
             type = listenerTyp;
         }
         
-        if ( ! listenerSet.contains(type)) {
+        if ( ! listenerSet.contains(type)) { //NOSONAR
             listenerSet.add(type);
             
             if (object == null) {
