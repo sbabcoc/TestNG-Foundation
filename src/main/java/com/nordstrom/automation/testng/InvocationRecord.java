@@ -6,6 +6,9 @@ import java.util.Arrays;
 
 import org.testng.ITestResult;
 
+/**
+ * 
+ */
 class InvocationRecord {
     
     final Method method;
@@ -15,6 +18,10 @@ class InvocationRecord {
     final String methodName;
     final Object[] parameters;
     
+    /**
+     * 
+     * @param result
+     */
     InvocationRecord(ITestResult result) {
         method = result.getMethod().getConstructorOrMethod().getMethod();
         suiteName = result.getTestContext().getSuite().getName();

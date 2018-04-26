@@ -34,8 +34,8 @@ public class TestNGConfig extends SettingsCore<TestNGConfig.TestNGSettings> {
     public enum TestNGSettings implements SettingsCore.SettingsAPI {
         /** name: <b>testng.timeout.test</b> <br> default: {@code null} */
         TEST_TIMEOUT("testng.timeout.test", null),
-        /** name: <b>testng.retry.analyzer</b> <br> default: <b>com.nordstrom.automation.testng.RetryAnalyzer</b> */
-        RETRY_ANALYZER("testng.retry.analyzer", "com.nordstrom.automation.testng.RetryAnalyzer"),
+        /** name: <b>testng.retry.analyzer</b> <br> default: <b>com.nordstrom.automation.testng.RetryManager</b> */
+        RETRY_ANALYZER("testng.retry.analyzer", "com.nordstrom.automation.testng.RetryManager"),
         /** name: <b>testng.max.retry</b> <br> default: <b>0</b> */
         MAX_RETRY("testng.max.retry", "0");
 

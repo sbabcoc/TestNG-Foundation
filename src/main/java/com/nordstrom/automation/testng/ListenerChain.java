@@ -689,7 +689,8 @@ public class ListenerChain
     }
     
     /**
-     * Wrap the current listener chain with an instance of the specified listener class.<br>
+     * Wrap the current listener chain with an instance of the specified listener class.
+     * <p>
      * <b>NOTE</b>: The order in which listener methods are invoked is determined by the
      * order in which listener objects are added to the chain. Listener <i>before</i> methods
      * are invoked in last-added-first-called order. Listener <i>after</i> methods are invoked
@@ -699,7 +700,7 @@ public class ListenerChain
      * @param listenerTyp listener class to add to the chain (may be 'null')
      * @param listenerObj listener object to add to the chain (may be 'null')
      */
-    private void attachListener(Class<? extends ITestNGListener> listenerTyp, ITestNGListener listenerObj) {
+    private void attachListener(Class<? extends ITestNGListener> listenerTyp, ITestNGListener listenerObj) { //NOSONAR
         Class<? extends ITestNGListener> type;
         ITestNGListener object;
         

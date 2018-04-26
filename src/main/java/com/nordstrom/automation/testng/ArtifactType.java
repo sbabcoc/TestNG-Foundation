@@ -9,7 +9,7 @@ import com.nordstrom.common.file.PathUtils;
 /**
  * This interface defines the contract fulfilled by artifact capture providers. Instances of this interface supply the
  * scenario-specific implementation for artifact capture through the {@link ArtifactCollector} listener.
- * <br><br>
+ * <p>
  * <b>IMPLEMENTING ARTIFACTTYPE</b>
  * <pre><code>
  * package com.nordstrom.example;
@@ -110,7 +110,7 @@ public interface ArtifactType {
     
     /**
      * Get the extension for artifact files of this type.
-     * <br><br>
+     * <p>
      * <b>NOTE</b>: The returned path can be either relative or absolute.
      * 
      * @return artifact file extension

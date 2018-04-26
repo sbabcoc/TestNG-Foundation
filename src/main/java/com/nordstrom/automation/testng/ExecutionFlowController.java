@@ -18,7 +18,8 @@ import org.testng.annotations.ITestAnnotation;
 import com.nordstrom.automation.testng.TestNGConfig.TestNGSettings;
 
 /**
- * This TestNG listener performs several basic functions related to test method execution: <br>
+ * This TestNG listener performs several basic functions related to test method execution: 
+ * <p>
  * <ul>
  *     <li>Propagate attributes: [<i>before</i> method] &rarr; [test method] &rarr; [<i>after</i> method]</li>
  *     <li>For test classes that implement the {@link IInvokedMethodListenerEx} interface,
@@ -27,28 +28,28 @@ import com.nordstrom.automation.testng.TestNGConfig.TestNGSettings;
  *     {@link #beforeInvocation(IInvokedMethod, ITestResult)} call, and out-bound attribute propagation is performed
  *     after forwarding the {@link #afterInvocation(IInvokedMethod, ITestResult)} call.</li>
  *     <li>For methods that don't specify a timeout interval, set the configured (or default) standard interval.</li>
- * </ul> 
- */
-
-/*
- * TODO - This block comment describes features that have yet to be implemented.
- * 
- * The following items describe features that have yet to be implemented: target platform and automatic retry.
- * Both of these will be implemented in the method interceptor.
- * 
- *     <li>For test classes that request target platform support: 
- *         <ul>
- *             <li>For runs targeting a specific platform, filter out non-target methods.</li>
- *             <li>Attach the specified (or default) target platform to each test method.</li>
- *             <li>Activate target platform prior to invoking each test method.</li>
- *         </ul>
- *     </li>
  *     <li>If automatic retry of failed tests is enabled: 
  *         <ul>
  *             <li>Attach the specified (or default) retry analyzer to each test method with no prior declaration.</li>
  *             <li><b>NOTE</b>: TestNG sets the status of retried tests to {@code SKIP}. The 'throwable' of these
  *                 retried tests distinguishes them from actual skipped tests, for which the 'throwable' is {@link 
  *                 org.testng.SkipException}.</li> 
+ *         </ul>
+ *     </li>
+ * </ul> 
+ */
+
+/*
+ * TODO - This block comment describes a feature that has yet to be implemented.
+ * 
+ * The following item describes a feature that has yet to be implemented: target platform.
+ * This will be implemented in the method interceptor.
+ * 
+ *     <li>For test classes that request target platform support: 
+ *         <ul>
+ *             <li>For runs targeting a specific platform, filter out non-target methods.</li>
+ *             <li>Attach the specified (or default) target platform to each test method.</li>
+ *             <li>Activate target platform prior to invoking each test method.</li>
  *         </ul>
  *     </li>
  */
