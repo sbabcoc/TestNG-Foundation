@@ -132,5 +132,4 @@ class InvocationRecord {
         
         return builder.append(')').toString();
     }
-    
 }
