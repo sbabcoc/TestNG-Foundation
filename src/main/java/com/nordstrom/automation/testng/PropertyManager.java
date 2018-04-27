@@ -8,7 +8,6 @@ import org.testng.ITestResult;
 
 /**
  * This utility class provides basic management for properties associated with specific tests.
- * <p>
  * <ul>
  *     <li>{@link #extractAttributes(ITestResult)} extracts the attribute collection from the specified test result
  *         into a {@link Map}.</li>

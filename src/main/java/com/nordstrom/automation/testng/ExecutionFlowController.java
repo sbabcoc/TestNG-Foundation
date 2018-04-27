@@ -19,7 +19,6 @@ import com.nordstrom.automation.testng.TestNGConfig.TestNGSettings;
 
 /**
  * This TestNG listener performs several basic functions related to test method execution: 
- * <p>
  * <ul>
  *     <li>Propagate attributes: [<i>before</i> method] &rarr; [test method] &rarr; [<i>after</i> method]</li>
  *     <li>For test classes that implement the {@link IInvokedMethodListenerEx} interface,
