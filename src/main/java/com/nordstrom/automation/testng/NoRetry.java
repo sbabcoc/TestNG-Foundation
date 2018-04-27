@@ -11,8 +11,8 @@ import java.lang.annotation.Target;
  * Use this annotation to mark test methods and classes for which automatic retry is failures not desired:
  * 
  * <blockquote><pre>
- * &commat;Test
- * &commat;NoRetry
+ * &#64;Test
+ * &#64;NoRetry
  * public void testLongRunning() {
  *     // test implementation goes here
  * }</pre></blockquote>

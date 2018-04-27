@@ -18,9 +18,9 @@ import org.testng.ITestResult;
  * method arguments with the {@link RedactValue} annotation:
  * 
  * <blockquote><pre>
- * &commat;Test
- * &commat;Parameters({"username", "password"})
- * public void testLogin(String username, &commat;RedactValue String password) {
+ * &#64;Test
+ * &#64;Parameters({"username", "password"})
+ * public void testLogin(String username, &#64;RedactValue String password) {
  *     // test implementation goes here
  * }</pre></blockquote>
  * 

@@ -33,9 +33,9 @@ import com.nordstrom.common.base.ExceptionUnwrapper;
  * the {@link RedactValue} annotation:
  * 
  * <blockquote><pre>
- * &commat;Test
- * &commat;Parameters({"username", "password"})
- * public void testLogin(String username, &commat;RedactValue String password) {
+ * &#64;Test
+ * &#64;Parameters({"username", "password"})
+ * public void testLogin(String username, &#64;RedactValue String password) {
  *     // test implementation goes here
  * }</pre></blockquote>
  * 
@@ -50,7 +50,7 @@ import com.nordstrom.common.base.ExceptionUnwrapper;
  * sure to invoke the overridden method in <b>RetryManager</b> if your analyzer declines to request method retry.
  * 
  * <blockquote><pre>
- * &commat;Override
+ * &#64;Override
  * protected boolean isRetriable(ITestResult result) {
  *     if (isRetriableInFramework(result)) {
  *         return true;

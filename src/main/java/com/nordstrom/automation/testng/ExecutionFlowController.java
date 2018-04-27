@@ -73,8 +73,8 @@ import com.nordstrom.automation.testng.TestNGConfig.TestNGSettings;
  * For these sorts of scenarios, you can mark test methods or classes with the {@link NoRetry} annotation:
  * 
  * <blockquote><pre>
- * &commat;Test
- * &commat;NoRetry
+ * &#64;Test
+ * &#64;NoRetry
  * public void testLongRunning() {
  *     // test implementation goes here
  * }</pre></blockquote>
@@ -90,9 +90,9 @@ import com.nordstrom.automation.testng.TestNGConfig.TestNGSettings;
  * the {@link RedactValue} annotation:
  * 
  * <blockquote><pre>
- * &commat;Test
- * &commat;Parameters({"username", "password"})
- * public void testLogin(String username, &commat;RedactValue String password) {
+ * &#64;Test
+ * &#64;Parameters({"username", "password"})
+ * public void testLogin(String username, &#64;RedactValue String password) {
  *     // test implementation goes here
  * }</pre></blockquote>
  * 
