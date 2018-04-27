@@ -138,7 +138,7 @@ public class ArtifactCollector<T extends ArtifactType> implements ITestListener 
     
     /**
      * Get base name for artifact files for the specified test result.
-     * <br><br>
+     * <p>
      * <b>NOTE</b>: The base name is derived from the name of the current test.
      * If the method is parameterized, a hash code is computed from the parameter
      * values and appended to the base name as an 8-digit hexadecimal integer.

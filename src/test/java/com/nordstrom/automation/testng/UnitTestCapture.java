@@ -15,7 +15,7 @@ public class UnitTestCapture extends ArtifactCollector<UnitTestArtifact> {
     
     /**
      * Capture artifact from the current test result context.
-     * <br><br>
+     * <p>
      * <b>NOTE</b>: This override is here solely to record the artifact path for the benefit of the unit tests,
      * as verification meta-data. It makes no contribution to the actual process of artifact capture
      * 
