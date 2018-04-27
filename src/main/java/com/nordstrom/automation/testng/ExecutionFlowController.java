@@ -37,6 +37,67 @@ import com.nordstrom.automation.testng.TestNGConfig.TestNGSettings;
  *         </ul>
  *     </li>
  * </ul> 
+ * 
+ * <b>CONFIGURING METHOD TIMEOUT</b>
+ * <p>
+ * Method timeout is controlled by the {@link TestNGSettings#TEST_TIMEOUT TEST_TIMEOUT} setting. By default, this
+ * setting is undefined. During initialization phase, TestNG passes each test that's about to be run to the
+ * {@link ExecutionFlowController#transform(ITestAnnotation, Class, Constructor, Method) transform} method. If a test
+ * timeout interval is specified (via {@link TestNGSettings#TEST_TIMEOUT TEST_TIMEOUT}) and this interval is longer
+ * than the timeout that's already assigned to the test, the configured test timeout interval is assigned.
+ * <p>
+ * <b>CONFIGURING AUTOMATIC RETRY</b>
+ * <p>
+ * Automatic retry of failed tests is configured via two settings and a service loader provider configuration file:
+ * <ul>
+ *     <li>{@link TestNGSettings#MAX_RETRY MAX_RETRY} - The number of times a failed test will be retried
+ *     (default = <b>0</b>).</li>
+ *     <li>{@link TestNGSettings#RETRY_ANALYZER RETRY_ANALYZER} - The fully-qualified name of the retry analyzer class
+ *     to attach to each test (default = {@link com.nordstrom.automation.testng.RetryManager}).</li>
+ *     <li>{@code META-INF/services/org.testng.IRetryAnalyzer} - Service loader retry analyzer configuration file
+ *     (absent by default). To add managed analyzers, create this file and add the fully-qualified named of their
+ *     classes, one line per item.</li>
+ * </ul>
+ * 
+ * Note that until you create and populate the provider configuration file, <b>RetryManager</b> will always return
+ * {@code false}. Consequently, no failed tests will be retried. The {@link IRetryAnalyzer} implementations in the
+ * classes specified by the configuration file determine whether or not any given failed test is retried.
+ * <p>
+ * <b>DECLINING AUTOMATIC RETRY SUPPORT</b>
+ * <p>
+ * Once automatic retry is enabled, {@link RetryManager} will be attached to every method that doesn't already specify
+ * a retry analyzer. However, there may be test methods or classes that you don't wish to retry. For example, you may
+ * have a long-running test method that would delay completion of the suite, or you have an entire class of tests that
+ * rely on externally-managed resources that must be replenished between runs.
+ * <p>
+ * For these sorts of scenarios, you can mark test methods or classes with the {@link NoRetry} annotation:
+ * 
+ * <blockquote><pre>
+ * &commat;Test
+ * &commat;NoRetry
+ * public void testLongRunning() {
+ *     // test implementation goes here
+ * }</pre></blockquote>
+ * 
+ * <b>REDACTING PARAMETER VALUES IN LOG MESSAGES</b>
+ * <p>
+ * Prior to retrying a failed test, <b>RetryManager</b> emits a debug-level message in this format:
+ * <blockquote>{@code ### RETRY ### [suite-name/test-name] className.methodName(parmValue...)}</blockquote>
+ * 
+ * The class/method portion of these messages is produced by the {@link InvocationRecord} class. The content of each
+ * {@code parmValue} item (if any) represents the actual value passed to the corresponding argument of a failed
+ * invocation of a parameterized test. Sensitive values can be redacted by marking their test method arguments with
+ * the {@link RedactValue} annotation:
+ * 
+ * <blockquote><pre>
+ * &commat;Test
+ * &commat;Parameters({"username", "password"})
+ * public void testLogin(String username, &commat;RedactValue String password) {
+ *     // test implementation goes here
+ * }</pre></blockquote>
+ * 
+ * The retry message for this method would include the actual user name, but redact the password:
+ * <blockquote>{@code ### RETRY ### [MySuite/MyTest] AccountTest.testLogin(john.doe, |:password:|)}</blockquote>
  */
 
 /*
