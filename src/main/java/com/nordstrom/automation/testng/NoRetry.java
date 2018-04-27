@@ -8,7 +8,14 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
+ * Use this annotation to mark test methods and classes for which automatic retry is failures not desired:
  * 
+ * <blockquote><pre>
+ * &commat;Test
+ * &commat;NoRetry
+ * public void testLongRunning() {
+ *     // test implementation goes here
+ * }</pre></blockquote>
  */
 @Retention(RUNTIME)
 @Target({TYPE, METHOD})
