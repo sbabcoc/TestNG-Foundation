@@ -184,3 +184,8 @@ public class ExampleTest {
 ```
 
 As shown above, we use the **`@LinkedListeners`** annotation to attach **DriverListener** and **ExecutionFlowController**. The order in which listener methods are invoked is determined by the order in which listener objects are added to the chain. Listener _before_ methods are invoked in **_last-added-first-called_** order. Listener _after_ methods are invoked in **_first-added-first-called_** order. Only one instance of any given listener class will be included in the chain.
+
+### **ExecutionFlowController** managed features: Method timeout and retry analyzer
+The annotation transformer of **ExecutionFlowController** applies the configuration for two managed features to their corresponding attributes in the **`@Test`** annotation:
+
+* The **TEST_TIMEOUT** setting specifies the global test timeout interval (in milliseconds). 
