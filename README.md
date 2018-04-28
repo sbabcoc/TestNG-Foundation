@@ -188,4 +188,47 @@ As shown above, we use the **`@LinkedListeners`** annotation to attach **Driver
 ### **ExecutionFlowController** managed features: Method timeout and retry analyzer
 The annotation transformer of **ExecutionFlowController** applies the configuration for two managed features to their corresponding attributes in the **`@Test`** annotation:
 
-* The **TEST_TIMEOUT** setting specifies the global test timeout interval (in milliseconds). 
+* The **TEST_TIMEOUT** setting specifies the global test timeout interval (in milliseconds). By default, this setting is undefined, which disables this feature. When a timeout interval is specified, this value is assigned to every test method doesn't already specify a longer interval.
+* There are two settings that work in tandem to manage the global retry analyzer feature:
+  * The **MAX_RETRY** setting specifies the global test retry count. By default, this setting has a value of **0**, which disables the global retry analyzer feature.
+  * The **RETRY_ANALYZER** setting specifies the global retry analyzer class. By default, this setting specifies the **RetryManager** class. This can be overridden with the fully-qualified name of a different retry analyzer. However, this is typically unnecessary, as **RetryManager** enables you to attach one or more retry analyzers through the service loader. More on this below.
+  * When a positive retry count and valid retry analyzer are specified, the indicated analyzer is attached to every test method that doesn't already specify a retry analyzer.
+
+### Attaching retry analyzers via **RetryManager**
+
+**RetryManager** is a TestNG retry analyzer that provides framework for invoking collections of scenario-specific analyzers that are installed via the **ServiceLoader**:
+* Managed retry analyzers implement the standard **IRetryAnalyzer** interface.
+* Analyzer classes are added to the managed collection via entries in a file named **`META-INF/services/org.testng.IRetryAnalyzer`**
+* The number of times a failed test will be retried is configured via the **MAX_RETRY** setting, which defaults to **0**.
+
+Prior to retrying a failed test, **RetryManager** emits a debug-level message in this format:
+> ### RETRY ### [suite-name/test-name] className.methodName(parmValue...)
+
+The class/method portion of these messages is produced by the **InvocationRecord** class. The content of each `parmValue` item (if any) represents the actual value passed to the corresponding argument of a failed invocation of a parameterized test.
+
+### Redacting sensitive values in **RetryManager** messages
+
+Sensitive values can be redacted by marking their test method arguments with the **`@RedactValue`** annotation:
+```java
+@Test
+@Parameters({"username", "password"})
+public void testLogin(String username, @RedactValue String password) {
+    // test implementation goes here
+}
+```
+
+The retry message for this method would include the actual user name, but redact the password:
+> ### RETRY ### [MySuite/MyTest] AccountTest.testLogin(john.doe, |:arg1:|)
+
+### Using **RetryManager** in another framework
+
+If you plan to use **RetryManager** in another framework, we recommend that you extend this class and override the **`isRetriable(ITestResult)`** method instead of registering your retry analyzer via the service loader. This strategy enables clients of your framework to add their own analyzers without disconnecting yours. Just make sure to invoke the overridden method in **RetryManager** if your analyzer declines to request method retry.
+```java
+@Override
+protected boolean isRetriable(ITestResult result) {
+    if (isRetriableInFramework(result)) {
+        return true;
+    }
+    return super.isRetriable(result);
+}
+```
