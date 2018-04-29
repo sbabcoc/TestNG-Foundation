@@ -54,7 +54,7 @@ import com.nordstrom.automation.testng.TestNGConfig.TestNGSettings;
  *     <li>{@link TestNGSettings#RETRY_ANALYZER RETRY_ANALYZER} - The fully-qualified name of the retry analyzer class
  *     to attach to each test (default = {@link com.nordstrom.automation.testng.RetryManager}).</li>
  *     <li>{@code META-INF/services/org.testng.IRetryAnalyzer} - Service loader retry analyzer configuration file
- *     (absent by default). To add managed analyzers, create this file and add the fully-qualified named of their
+ *     (absent by default). To add managed analyzers, create this file and add the fully-qualified names of their
  *     classes, one line per item.</li>
  * </ul>
  * 

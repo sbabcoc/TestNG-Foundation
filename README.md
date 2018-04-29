@@ -192,7 +192,7 @@ The annotation transformer of **ExecutionFlowController** applies the configurat
 * Automatic retry of failed tests is configured via two settings and a service loader provider configuration file:
   * The **MAX_RETRY** setting specifies the global test retry count. By default, this setting has a value of **0**, which disables the global retry analyzer feature.
   * The **RETRY_ANALYZER** setting specifies the global retry analyzer class. By default, this setting specifies the **RetryManager** class. This can be overridden with the fully-qualified name of a different retry analyzer. However, this is typically unnecessary, as **RetryManager** enables you to attach one or more retry analyzers through the service loader. More on this below.
-  * **`META-INF/services/org.testng.IRetryAnalyzer`** is the service loader retry analyzer configuration file. By default, this file is absent. To add managed analyzers, create this file and add the fully-qualified named of their classes, one line per item.
+  * **`META-INF/services/org.testng.IRetryAnalyzer`** is the service loader retry analyzer configuration file. By default, this file is absent. To add managed analyzers, create this file and add the fully-qualified names of their classes, one line per item.
  
 When a positive retry count and valid retry analyzer are specified, the indicated analyzer is attached to every test method that doesn't already specify a retry analyzer. Note that until you create and populate the provider configuration file, **RetryManager** will always return `false`. Consequently, no failed tests will be retried. The **IRetryAnalyzer** implementations in the classes specified by the configuration file determine whether or not any given failed test is retried.
 
