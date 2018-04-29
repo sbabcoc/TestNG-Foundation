@@ -54,7 +54,7 @@ import com.nordstrom.automation.testng.TestNGConfig.TestNGSettings;
  *     <li>{@link TestNGSettings#RETRY_ANALYZER RETRY_ANALYZER} - The fully-qualified name of the retry analyzer class
  *     to attach to each test (default = {@link com.nordstrom.automation.testng.RetryManager}).</li>
  *     <li>{@code META-INF/services/org.testng.IRetryAnalyzer} - Service loader retry analyzer configuration file
- *     (absent by default). To add managed analyzers, create this file and add the fully-qualified named of their
+ *     (absent by default). To add managed analyzers, create this file and add the fully-qualified names of their
  *     classes, one line per item.</li>
  * </ul>
  * 
@@ -65,9 +65,9 @@ import com.nordstrom.automation.testng.TestNGConfig.TestNGSettings;
  * <b>DECLINING AUTOMATIC RETRY SUPPORT</b>
  * <p>
  * Once automatic retry is enabled, {@link RetryManager} will be attached to every method that doesn't already specify
- * a retry analyzer. However, there may be test methods or classes that you don't wish to retry. For example, you may
- * have a long-running test method that would delay completion of the suite, or you have an entire class of tests that
- * rely on externally-managed resources that must be replenished between runs.
+ * a retry analyzer. However, there may be test methods or classes that you don't wish to be retried. For example, you
+ * may have a long-running test method that would delay completion of the suite, or you have an entire class of tests
+ * that rely on externally-managed resources that must be replenished between runs.
  * <p>
  * For these sorts of scenarios, you can mark test methods or classes with the {@link NoRetry} annotation:
  * 
@@ -96,7 +96,7 @@ import com.nordstrom.automation.testng.TestNGConfig.TestNGSettings;
  * }</pre></blockquote>
  * 
  * The retry message for this method would include the actual user name, but redact the password:
- * <blockquote>{@code ### RETRY ### [MySuite/MyTest] AccountTest.testLogin(john.doe, |:password:|)}</blockquote>
+ * <blockquote>{@code ### RETRY ### [MySuite/MyTest] AccountTest.testLogin(john.doe, |:arg1:|)}</blockquote>
  */
 
 /*

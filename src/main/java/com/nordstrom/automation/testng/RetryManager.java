@@ -40,14 +40,22 @@ import com.nordstrom.common.base.ExceptionUnwrapper;
  * }</pre></blockquote>
  * 
  * The retry message for this method would include the actual user name, but redact the password:
- * <blockquote>{@code ### RETRY ### [MySuite/MyTest] AccountTest.testLogin(john.doe, |:password:|)}</blockquote>
+ * <blockquote>{@code ### RETRY ### [MySuite/MyTest] AccountTest.testLogin(john.doe, |:arg1:|)}</blockquote>
  * 
+ * <b>AUTOMATIC ATTACHMENT OF RETRYMANAGER</b>
+ * <p>
+ * Note that <b>RetryManager</b> is attached by {@link ExecutionFlowController} to every test method when automatic
+ * retry is enabled. This behavior can be disabled on a per-method or per-class basis via the {@link NoRetry}
+ * annotation. You can also specify an alternate retry analyzer via the {@link TestNGSettings#RETRY_ANALYZER
+ * RETRY_ANALYZER} setting. See the {@link ExecutionFlowController} documentation for more details.
+ * <p>
  * <b>USING RETRYMANAGER IN ANOTHER FRAMEWORK</b>
  * <p>
- * If you plan to use <b>RetryManager</b> in another framework, we recommend that you extend this class and override
- * the {@link #isRetriable(ITestResult)} method instead of registering your retry analyzer via the service loader.
+ * Typically, scenario-specific retry analyzers are installed via the service loader. However, if you plan to use
+ * <b>RetryManager</b> in another framework, we recommend that you extend this class and override the
+ * {@link #isRetriable(ITestResult)} method instead of registering your retry analyzer via the service loader.
  * This strategy enables clients of your framework to add their own analyzers without disconnecting yours. Just make
- * sure to invoke the overridden method in <b>RetryManager</b> if your analyzer declines to request method retry.
+ * sure to invoke the overridden method in <b>RetryManager</b> if your analyzer declines to request method retry:
  * 
  * <blockquote><pre>
  * &#64;Override
@@ -56,16 +64,12 @@ import com.nordstrom.common.base.ExceptionUnwrapper;
  *         return true;
  *     }
  *     return super.isRetriable(result);
- * }
- * </pre></blockquote>
+ * }</pre></blockquote>
  * 
- * <b>AUTOMATIC ATTACHMENT OF RETRYMANAGER</b>
+ * Remember to override the value of the {@link TestNGSettings#RETRY_ANALYZER RETRY_ANALYZER} setting with the
+ * fully-qualified class name of your framework-specific extension of <b>RetryManager</b> to enable activation
+ * of your analyzer by {@link ExecutionFlowController}.
  * <p>
- * Note that <b>RetryManager</b> is attached by {@link ExecutionFlowController} to every test method when automatic
- * retry is enabled. This behavior can be disabled on a per-method or per-class basis via the {@link NoRetry}
- * annotation. You can also specify an alternate retry analyzer via the {@link TestNGSettings#RETRY_ANALYZER
- * RETRY_ANALYZER} setting.
- * 
  * @see ExecutionFlowController
  * @see InvocationRecord
  * @see RedactValue
