@@ -69,7 +69,7 @@ import com.nordstrom.common.base.ExceptionUnwrapper;
  * Remember to override the value of the {@link TestNGSettings#RETRY_ANALYZER RETRY_ANALYZER} setting with the
  * fully-qualified class name of your framework-specific extension of <b>RetryManager</b> to enable activation
  * of your analyzer by {@link ExecutionFlowController}.
- * <p>
+ * <br>&nbsp;
  * @see ExecutionFlowController
  * @see InvocationRecord
  * @see RedactValue
