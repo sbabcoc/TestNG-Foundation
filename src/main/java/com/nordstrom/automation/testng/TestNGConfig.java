@@ -133,6 +133,9 @@ public class TestNGConfig extends SettingsCore<TestNGConfig.TestNGSettings> {
         return null;
     }
     
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getSettingsPath() {
         return SETTINGS_FILE;
