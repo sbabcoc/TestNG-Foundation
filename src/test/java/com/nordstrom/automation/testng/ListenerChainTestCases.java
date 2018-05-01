@@ -26,10 +26,6 @@ class ListenerChainTestCases {
     
     private int invokeCount;
     
-    @Test
-    public ListenerChainTestCases() {
-    }
-    
     @DataProvider(name = "data")
     public Object[][] dataProvider() {
         return new Object[][] {{"data"}};
