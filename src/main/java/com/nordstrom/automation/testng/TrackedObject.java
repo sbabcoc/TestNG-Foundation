@@ -1,6 +1,7 @@
 package com.nordstrom.automation.testng;
 
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 import org.testng.ITestResult;
@@ -51,14 +52,34 @@ public class TrackedObject<T extends Object> {
     }
     
     /**
+     * Release reference to the tracked object from the specified test result.
+     * 
+     * @param result 'true' if test result had reference to tracked object; otherwise 'false'
+     */
+    public boolean release(ITestResult result) {
+        if (references.contains(result)) {
+            result.removeAttribute(key);
+            references.remove(result);
+            if (references.isEmpty()) {
+                value = null;
+            }
+            return true;
+        }
+        return false;
+    }
+    
+    /**
      * Release all references to the tracked object from the test result into which they were propagated.
      * 
      * @return the tracked object reference itself
      */
     public T release() {
         T local = value;
-        for (ITestResult result : references) {
+        Iterator<ITestResult> iterator = references.iterator();
+        while (iterator.hasNext()) {
+            ITestResult result = iterator.next();
             result.removeAttribute(key);
+            iterator.remove();
         }
         value = null;
         return local;
