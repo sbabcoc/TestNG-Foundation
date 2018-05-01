@@ -21,12 +21,14 @@ public class TrackedObject<T extends Object> {
     /**
      * Constructor: Initialize key and value for reference-tracked object
      * 
+     * @param result test result object
      * @param key key used to store the reference-tracked object in test result attribute collections
      * @param value object reference for which attribute propagation is to be tracked
      */
-    public TrackedObject(String key, T value) {
+    public TrackedObject(ITestResult result, String key, T value) {
         this.key = key;
         this.value = value;
+        addRef(result);
     }
     
     /**
