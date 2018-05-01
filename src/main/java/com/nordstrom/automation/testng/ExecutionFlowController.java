@@ -147,11 +147,11 @@ public class ExecutionFlowController implements IInvokedMethodListener, IMethodI
         if (method.getTestMethod().isBeforeMethodConfiguration()) {
             // nothing to do here
         } else if (method.isTestMethod()) {
+            fromMethod.remove();
             PropertyManager.injectAttributes(fromBefore.get(), testResult);
             fromBefore.remove();
         } else if (method.getTestMethod().isAfterMethodConfiguration()) {
             PropertyManager.injectAttributes(fromMethod.get(), testResult);
-            fromMethod.remove();
         }
         
         if (testResult.getInstance() instanceof IInvokedMethodListenerEx) {

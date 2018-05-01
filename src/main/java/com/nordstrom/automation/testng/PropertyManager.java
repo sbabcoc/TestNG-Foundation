@@ -44,7 +44,13 @@ public final class PropertyManager {
     public static void injectAttributes(Map<String, Object> attributes, ITestResult testResult) {
         if (attributes != null) {
             for (Entry<String, Object> thisEntry : attributes.entrySet()) {
-                testResult.setAttribute(thisEntry.getKey(), thisEntry.getValue());
+                String key = thisEntry.getKey();
+                Object value = thisEntry.getValue();
+                if (value instanceof TrackedObject) {
+                    ((TrackedObject<?>) value).addRef(testResult);
+                } else {
+                    testResult.setAttribute(key, value);
+                }
             }
         }
     }
