@@ -2,7 +2,6 @@ package com.nordstrom.automation.testng;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -115,28 +114,26 @@ import com.nordstrom.automation.testng.TestNGConfig.TestNGSettings;
  */
 public class ExecutionFlowController implements IInvokedMethodListener, IMethodInterceptor, IAnnotationTransformer {
     
-    protected static final ThreadLocal<Map<String, Object>> fromBefore = new InheritableThreadLocal<Map<String, Object>>() {
-        @Override
-        public Map<String, Object> initialValue() {
-            return new HashMap<>();
-        }
-    };
+    protected static final ThreadLocal<ITestResult> fromBefore = new InheritableThreadLocal<>();
+    protected static final ThreadLocal<ITestResult> fromMethod = new InheritableThreadLocal<>();
     
-    protected static final ThreadLocal<Map<String, Object>> fromMethod = new InheritableThreadLocal<>();
-
     @Override
     public void afterInvocation(IInvokedMethod method, ITestResult testResult) {
         if (testResult.getInstance() instanceof IInvokedMethodListenerEx) {
             ((IInvokedMethodListenerEx) testResult.getInstance()).afterInvocation(method, testResult);
         }
         
+        Map<String, Object> attributes;
         if (method.getTestMethod().isBeforeMethodConfiguration()) {
             // merge with attributes from prior methods
-            Map<String, Object> attributes = fromBefore.get();
-            attributes.putAll(PropertyManager.extractAttributes(testResult));
-            fromBefore.set(attributes);
+            ITestResult lastResult = fromBefore.get();
+            if (lastResult != null) {
+                attributes = PropertyManager.extractAttributes(lastResult);
+                PropertyManager.injectAttributes(attributes, testResult);
+            }
+            fromBefore.set(testResult);
         } else if (method.isTestMethod()) {
-            fromMethod.set(PropertyManager.extractAttributes(testResult));
+            fromMethod.set(testResult);
         } else if (method.getTestMethod().isAfterMethodConfiguration()) {
             // nothing to do here
         }
@@ -144,14 +141,19 @@ public class ExecutionFlowController implements IInvokedMethodListener, IMethodI
 
     @Override
     public void beforeInvocation(IInvokedMethod method, ITestResult testResult) {
+        Map<String, Object> attributes;
         if (method.getTestMethod().isBeforeMethodConfiguration()) {
             // nothing to do here
         } else if (method.isTestMethod()) {
-            fromMethod.remove();
-            PropertyManager.injectAttributes(fromBefore.get(), testResult);
-            fromBefore.remove();
+            ITestResult lastResult = fromBefore.get();
+            if (lastResult != null) {
+                attributes = PropertyManager.extractAttributes(lastResult);
+                PropertyManager.injectAttributes(attributes, testResult);
+                fromBefore.remove();
+            }
         } else if (method.getTestMethod().isAfterMethodConfiguration()) {
-            PropertyManager.injectAttributes(fromMethod.get(), testResult);
+            attributes = PropertyManager.extractAttributes(fromMethod.get());
+            PropertyManager.injectAttributes(attributes, testResult);
         }
         
         if (testResult.getInstance() instanceof IInvokedMethodListenerEx) {
