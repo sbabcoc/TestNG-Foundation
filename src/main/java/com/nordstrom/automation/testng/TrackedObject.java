@@ -58,7 +58,7 @@ public class TrackedObject<T extends Object> {
      */
     public boolean release(ITestResult result) {
         if (references.contains(result)) {
-            result.removeAttribute(key);
+            result.setAttribute(key, null);
             references.remove(result);
             if (references.isEmpty()) {
                 value = null;
@@ -78,7 +78,7 @@ public class TrackedObject<T extends Object> {
         Iterator<ITestResult> iterator = references.iterator();
         while (iterator.hasNext()) {
             ITestResult result = iterator.next();
-            result.removeAttribute(key);
+            result.setAttribute(key, null);
             iterator.remove();
         }
         value = null;
