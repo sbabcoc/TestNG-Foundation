@@ -9,8 +9,7 @@ Future releases of **TestNG Foundation** will add automatic retry of failed test
 ## TestNG Listeners
 
 * [ExecutionFlowController](https://github.com/Nordstrom/TestNG-Foundation/blob/master/src/main/java/com/nordstrom/automation/testng/ExecutionFlowController.java):  
-**ExecutionFlowController** is a TestNG listener that propagates test context attributes:  
- [_before_ method] → [test method] → [_after_ method]  
+**ExecutionFlowController** is a TestNG listener that propagates test context attributes: [_before_ method] → [test method] → [_after_ method]  
 This feature enables tests to attach context-specific values that are accessible throughout the entire lifecycle of the test.  
  For test classes that implement the **IInvokedMethodListenerEx** interface, **ExecutionFlowController** forwards calls from its own invoked method listener implementation to the corresponding methods in the test class. In-bound attribute propagation is performed before forwarding the `beforeInvocation(IInvokedMethod, ITestResult)` call, and out-bound attribute propagation is performed after forwarding the `afterInvocation(IInvokedMethod, ITestResult)` call.
 * [ListenerChain](https://github.com/Nordstrom/TestNG-Foundation/blob/master/src/main/java/com/nordstrom/automation/testng/ListenerChain.java):  

@@ -19,7 +19,10 @@ import com.nordstrom.automation.testng.TestNGConfig.TestNGSettings;
 /**
  * This TestNG listener performs several basic functions related to test method execution: 
  * <ul>
- *     <li>Propagate attributes: [<i>before</i> method] &rarr; [test method] &rarr; [<i>after</i> method]</li>
+ *     <li><b>ExecutionFlowController</b> propagate test context attributes: [<i>before</i> method] &rarr; [test
+ *     method] &rarr; [<i>after</i> method]<br>
+ *     This feature enables tests to attach context-specific values that are accessible throughout the entire
+ *     lifecycle of the test.</li>
  *     <li>For test classes that implement the {@link IInvokedMethodListenerEx} interface,
  *     <b>ExecutionFlowController</b> forwards calls received by its own invoked method listener implementation to
  *     the corresponding methods in the test class. In-bound attribute propagation is performed before forwarding the
