@@ -129,11 +129,11 @@ import com.nordstrom.automation.testng.TestNGConfig.TestNGSettings;
  * public void setDriver(WebDriver driver) {
  *     ITestResult result = Reporter.getCurrentTestResult();
  *     if (driver != null) {
- *         new TrackedObject<>(result, DRIVER, driver);
+ *         new TrackedObject&lt;&gt;(result, DRIVER, driver);
  *     } else {
  *         Object val = result.getAttribute(DRIVER);
  *         if (val instanceof TrackedObject) {
- *             ((TrackedObject<?>) val).release();
+ *             ((TrackedObject&lt;?&gt;) val).release();
  *         } else {
  *             result.removeAttribute(DRIVER);
  *         }
@@ -145,7 +145,7 @@ import com.nordstrom.automation.testng.TestNGConfig.TestNGSettings;
  *     ITestResult result = Reporter.getCurrentTestResult();
  *     Object val = result.getAttribute(DRIVER);
  *     if (val instanceof TrackedObject) {
- *         obj = ((TrackedObject<?>) val).getValue();
+ *         obj = ((TrackedObject&lt;?&gt;) val).getValue();
  *     } else {
  *         obj = val;
  *     }

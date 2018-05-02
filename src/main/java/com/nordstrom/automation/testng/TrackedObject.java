@@ -54,7 +54,8 @@ public class TrackedObject<T extends Object> {
     /**
      * Release reference to the tracked object from the specified test result.
      * 
-     * @param result 'true' if test result had reference to tracked object; otherwise 'false'
+     * @param result test result for which tracked object reference should be released
+     * @return 'true' if test result had reference to tracked object; otherwise 'false' 
      */
     public boolean release(ITestResult result) {
         if (references.contains(result)) {
