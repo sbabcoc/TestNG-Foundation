@@ -19,7 +19,7 @@ import com.nordstrom.automation.testng.TestNGConfig.TestNGSettings;
 /**
  * This TestNG listener performs several basic functions related to test method execution: 
  * <ul>
- *     <li><b>ExecutionFlowController</b> propagate test context attributes: [<i>before</i> method] &rarr; [test
+ *     <li><b>ExecutionFlowController</b> propagates test context attributes: [<i>before</i> method] &rarr; [test
  *     method] &rarr; [<i>after</i> method]<br>
  *     This feature enables tests to attach context-specific values that are accessible throughout the entire
  *     lifecycle of the test.</li>
@@ -28,14 +28,12 @@ import com.nordstrom.automation.testng.TestNGConfig.TestNGSettings;
  *     the corresponding methods in the test class. In-bound attribute propagation is performed before forwarding the
  *     {@link #beforeInvocation(IInvokedMethod, ITestResult)} call, and out-bound attribute propagation is performed
  *     after forwarding the {@link #afterInvocation(IInvokedMethod, ITestResult)} call.</li>
- *     <li>For methods that don't specify a timeout interval, set the configured (or default) standard interval.</li>
- *     <li>If automatic retry of failed tests is enabled: 
- *         <ul>
- *             <li>Attach the specified (or default) retry analyzer to each test method with no prior declaration.</li>
- *             <li><b>NOTE</b>: TestNG sets the status of retried tests to {@code SKIP}. The 'throwable' of these
- *                 retried tests distinguishes them from actual skipped tests, for which the 'throwable' is {@link 
- *                 org.testng.SkipException}.</li> 
- *         </ul>
+ *     <li>For methods that don't specify a timeout interval, <b>ExecutionFlowController</b> sets the configured (or
+ *     default) standard interval.</li>
+ *     <li>If automatic retry of failed tests is enabled, <b>ExecutionFlowController</b> attaches the specified (or
+ *     default) retry analyzer to each test method with no prior declaration.<br>
+ *     <b>NOTE</b>: TestNG sets the status of retried tests to {@code SKIP}. The 'throwable' of these retried tests
+ *     distinguishes them from actual skipped tests, for which the 'throwable' is {@link org.testng.SkipException}.
  *     </li>
  * </ul> 
  * 
