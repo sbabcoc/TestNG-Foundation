@@ -11,6 +11,7 @@ Future releases of **TestNG Foundation** will add automatic retry of failed test
 * [ExecutionFlowController](https://github.com/Nordstrom/TestNG-Foundation/blob/master/src/main/java/com/nordstrom/automation/testng/ExecutionFlowController.java):  
 **ExecutionFlowController** is a TestNG listener that propagates test context attributes:  
  [_before_ method] → [test method] → [_after_ method]  
+This feature enables tests to attach context-specific values that are accessible throughout the entire lifecycle of the test.  
  For test classes that implement the **IInvokedMethodListenerEx** interface, **ExecutionFlowController** forwards calls from its own invoked method listener implementation to the corresponding methods in the test class. In-bound attribute propagation is performed before forwarding the `beforeInvocation(IInvokedMethod, ITestResult)` call, and out-bound attribute propagation is performed after forwarding the `afterInvocation(IInvokedMethod, ITestResult)` call.
 * [ListenerChain](https://github.com/Nordstrom/TestNG-Foundation/blob/master/src/main/java/com/nordstrom/automation/testng/ListenerChain.java):  
 **ListenerChain** is a TestNG listener that enables you to add other listeners at runtime and guarantees the order in which they're invoked. This is similar in behavior to a JUnit rule chain. **ListenerChain** also provides static methods that enable you to acquire references to listeners that are linked into the chain.
@@ -248,4 +249,46 @@ protected boolean isRetriable(ITestResult result) {
 }
 ```
 
-Remember to override the value of the **RETRY_ANALYZER** setting with the fully-qualified class name of your framework-specific extension of **RetryManager** to enable activation of your analyzer by **ExecutionFlowController**. 
+Remember to override the value of the **RETRY_ANALYZER** setting with the fully-qualified class name of your framework-specific extension of **RetryManager** to enable activation of your analyzer by **ExecutionFlowController**.
+
+### Propagation of Test Attributes
+
+**ExecutionFlowController** propagates test context attributes from one phase of test execution to the next. This feature enables tests to attach context-specific values that are accessible throughout the entire lifecycle of the test.  
+The attribute propagation feature of **ExecutionFlowController** produces many-to-one-to-many behavior:
+* The attributes attached to all executed **`@BeforeMethod`** configuration methods are aggregated together for propagation to the test method.
+* The attributes attached to the test method (which include those that were propagated from _before_) are propagated to all executed **`@AfterMethod`** configuration methods.
+
+#### Managing Object Reference Attributes
+
+This attribute propagation feature provides an easy way for tests to maintain context-specific values. For any attribute whose value is an object reference, this behavior can result in the creation of additional references that will prevent the object from being marked for garbage collection until the entire suite of tests completes. For these sorts of attributes, **TestNG Foundation** provides the [TrackedObject](https://github.com/Nordstrom/TestNG-Foundation/blob/master/src/main/java/com/nordstrom/automation/testng/TrackedObject.java) class.  
+**TrackedObject** is a reference-tracking wrapper used by **PropertyManager** to record the test result objects to which an object reference is propagated. This enables the client to release all references when the object is no longer needed:
+```java
+private static final DRIVER = "Driver";
+
+public void setDriver(WebDriver driver) {
+    ITestResult result = Reporter.getCurrentTestResult();
+    if (driver != null) {
+        new TrackedObject<>(result, DRIVER, driver);
+    } else {
+        Object val = result.getAttribute(DRIVER);
+        if (val instanceof TrackedObject) {
+            ((TrackedObject<?>) val).release();
+        } else {
+            result.removeAttribute(DRIVER);
+        }
+    }
+}
+
+public WebDriver getDriver() {
+    Object obj;
+    ITestResult result = Reporter.getCurrentTestResult();
+    Object val = result.getAttribute(DRIVER);
+    if (val instanceof TrackedObject) {
+        obj = ((TrackedObject<?>) val).getValue();
+    } else {
+        obj = val;
+    }
+    return (WebDriver) obj;
+}
+```
+In this example, a **Selenium** driver attribute is stored as a tracked object. When the driver is no longer needed, specifying a `null` value will signal that all propagated references should be released. To retrieve the driver reference from the test attribute, extract it with the **`TrackedObject.getValue()`** method.

@@ -96,6 +96,64 @@ import com.nordstrom.automation.testng.TestNGConfig.TestNGSettings;
  * 
  * The retry message for this method would include the actual user name, but redact the password:
  * <blockquote>{@code ### RETRY ### [MySuite/MyTest] AccountTest.testLogin(john.doe, |:arg1:|)}</blockquote>
+ * 
+ * <b>PROPAGATION OF TEST ATTRIBUTES</b>
+ * <p>
+ * <b>ExecutionFlowController</b> propagates test context attributes from one phase of test execution to the next.
+ * This feature enables tests to attach context-specific values that are accessible throughout the entire lifecycle
+ * of the test.
+ * <p>  
+ * The attribute propagation feature of <b>ExecutionFlowController</b> produces many-to-one-to-many behavior:
+ * <ul>
+ *     <li>The attributes attached to all executed {@code @BeforeMethod} configuration methods are aggregated together
+ *     for propagation to the test method.</li>
+ *     <li>The attributes attached to the test method (which include those that were propagated from <i>before</i>)
+ *     are propagated to all executed {@code @AfterMethod} configuration methods.</li>
+ * </ul>
+ * 
+ * <b>MANAGING OBJECT REFERENCE ATTRIBUTES</b>
+ * <p>
+ * This attribute propagation feature provides an easy way for tests to maintain context-specific values. For any
+ * attribute whose value is an object reference, this behavior can result in the creation of additional references
+ * that will prevent the object from being marked for garbage collection until the entire suite of tests completes.
+ * For these sorts of attributes, <b>TestNG Foundation</b> provides the {@link TrackedObject} class.
+ * <p>
+ * <b>TrackedObject</b> is a reference-tracking wrapper used by {@link PropertyManager} to record the test result
+ * objects to which an object reference is propagated. This enables the client to release all references when the
+ * object is no longer needed:
+ * 
+ * <blockquote><pre>
+ * private static final DRIVER = "Driver";
+ * 
+ * public void setDriver(WebDriver driver) {
+ *     ITestResult result = Reporter.getCurrentTestResult();
+ *     if (driver != null) {
+ *         new TrackedObject<>(result, DRIVER, driver);
+ *     } else {
+ *         Object val = result.getAttribute(DRIVER);
+ *         if (val instanceof TrackedObject) {
+ *             ((TrackedObject<?>) val).release();
+ *         } else {
+ *             result.removeAttribute(DRIVER);
+ *         }
+ *     }
+ * }
+ * 
+ * public WebDriver getDriver() {
+ *     Object obj;
+ *     ITestResult result = Reporter.getCurrentTestResult();
+ *     Object val = result.getAttribute(DRIVER);
+ *     if (val instanceof TrackedObject) {
+ *         obj = ((TrackedObject<?>) val).getValue();
+ *     } else {
+ *         obj = val;
+ *     }
+ *     return (WebDriver) obj;
+ * }</pre></blockquote>
+ * 
+ * In this example, a <b>Selenium</b> driver attribute is stored as a tracked object. When the driver is no longer
+ * needed, specifying a {@code null} value will signal that all propagated references should be released. To retrieve
+ * the driver reference from the test attribute, extract it with the {@link TrackedObject#getValue()} method.
  */
 
 /*
