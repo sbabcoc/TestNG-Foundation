@@ -9,9 +9,13 @@ Future releases of **TestNG Foundation** will add automatic retry of failed test
 ## TestNG Listeners
 
 * [ExecutionFlowController](https://github.com/Nordstrom/TestNG-Foundation/blob/master/src/main/java/com/nordstrom/automation/testng/ExecutionFlowController.java):  
-**ExecutionFlowController** is a TestNG listener that propagates test context attributes: [_before_ method] → [test method] → [_after_ method]  
+**ExecutionFlowController** is a TestNG listener that performs several basic functions related to test method execution: 
+  * **ExecutionFlowController** propagates test context attributes: [_before_ method] → [test method] → [_after_ method]  
 This feature enables tests to attach context-specific values that are accessible throughout the entire lifecycle of the test.  
- For test classes that implement the **IInvokedMethodListenerEx** interface, **ExecutionFlowController** forwards calls from its own invoked method listener implementation to the corresponding methods in the test class. In-bound attribute propagation is performed before forwarding the `beforeInvocation(IInvokedMethod, ITestResult)` call, and out-bound attribute propagation is performed after forwarding the `afterInvocation(IInvokedMethod, ITestResult)` call.
+  * For test classes that implement the **IInvokedMethodListenerEx** interface, **ExecutionFlowController** forwards calls from its own invoked method listener implementation to the corresponding methods in the test class. In-bound attribute propagation is performed before forwarding the `beforeInvocation(IInvokedMethod, ITestResult)` call, and out-bound attribute propagation is performed after forwarding the `afterInvocation(IInvokedMethod, ITestResult)` call.
+  * For methods that don't specify a timeout interval, **ExecutionFlowController** sets the configured (or default) standard interval.
+  *  If automatic retry of failed tests is enabled, **ExecutionFlowController** attaches the specified (or default) retry analyzer to each test method with no prior declaration.  
+  **NOTE**: TestNG sets the status of retried tests to `SKIP`. The 'throwable' of these retried tests distinguishes them from actual skipped tests, for which the 'throwable' is **`org.testng.SkipException`**.
 * [ListenerChain](https://github.com/Nordstrom/TestNG-Foundation/blob/master/src/main/java/com/nordstrom/automation/testng/ListenerChain.java):  
 **ListenerChain** is a TestNG listener that enables you to add other listeners at runtime and guarantees the order in which they're invoked. This is similar in behavior to a JUnit rule chain. **ListenerChain** also provides static methods that enable you to acquire references to listeners that are linked into the chain.
 * [ArtifactCollector](https://github.com/Nordstrom/TestNG-Foundation/blob/master/src/main/java/com/nordstrom/automation/testng/ArtifactCollector.java):  
