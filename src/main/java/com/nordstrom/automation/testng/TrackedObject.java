@@ -11,7 +11,7 @@ import org.testng.ITestResult;
  * which an object reference is propagated. This enables the client to release all references when the value is no
  * longer needed.
  * 
- * @param <T> tracked object type 
+ * @param <T> tracked object type
  */
 public class TrackedObject<T extends Object> {
     
@@ -35,6 +35,7 @@ public class TrackedObject<T extends Object> {
     /**
      * Create a new reference-tracked object.
      * 
+     * @param <T> tracked object type
      * @param result test result object
      * @param key key used to store the reference-tracked object in test result attribute collections
      * @param value object reference for which attribute propagation is to be tracked
