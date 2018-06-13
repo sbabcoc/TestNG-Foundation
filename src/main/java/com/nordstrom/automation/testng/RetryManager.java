@@ -1,6 +1,5 @@
 package com.nordstrom.automation.testng;
 
-import java.util.Iterator;
 import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.concurrent.ConcurrentHashMap;
@@ -95,7 +94,7 @@ public class RetryManager implements IRetryAnalyzer {
      * {@inheritDoc}
      */
     @Override
-    public boolean retry(ITestResult result) {
+    public boolean retry(final ITestResult result) {
         boolean doRetry = false;
         result.setThrowable(ExceptionUnwrapper.unwrap(result.getThrowable()));
         
@@ -124,10 +123,9 @@ public class RetryManager implements IRetryAnalyzer {
      * @param result failed result to be evaluated
      * @return {@code true} if test should be retried; otherwise {@code false}
      */
-    protected boolean isRetriable(ITestResult result) {
-        Iterator<IRetryAnalyzer> iterator = retryAnalyzerLoader.iterator();
-        while (iterator.hasNext()) {
-            if (iterator.next().retry(result)) {
+    protected boolean isRetriable(final ITestResult result) {
+        for (IRetryAnalyzer analyzer : retryAnalyzerLoader) {
+            if (analyzer.retry(result)) {
                 return true;
             }
         }
