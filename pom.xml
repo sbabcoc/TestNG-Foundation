@@ -33,8 +33,8 @@
     <surefire-plugin.version>2.20.1</surefire-plugin.version>
     <source-plugin.version>3.0.1</source-plugin.version>
     <javadoc-plugin.version>2.10.4</javadoc-plugin.version>
-    <java-utils.version>1.6.0</java-utils.version>
-    <settings.version>2.0.7</settings.version>
+    <java-utils.version>1.7.2</java-utils.version>
+    <settings.version>2.2.2</settings.version>
     <sonar.language>java</sonar.language>
     <jacoco.version>0.7.9</jacoco.version>
     <guava.version>23.5-jre</guava.version>
