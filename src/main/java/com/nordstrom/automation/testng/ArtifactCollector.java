@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import org.testng.IConfigurationListener;
 import org.testng.ITestContext;
 import org.testng.ITestListener;
 import org.testng.ITestResult;
@@ -22,7 +23,7 @@ import com.nordstrom.common.file.PathUtils;
  * 
  * @param <T> scenario-specific artifact capture type
  */
-public class ArtifactCollector<T extends ArtifactType> implements ITestListener {
+public class ArtifactCollector<T extends ArtifactType> implements ITestListener, IConfigurationListener {
     
     private static final String ARTIFACT_PATHS = "ArtifactPaths";
     
@@ -37,6 +38,21 @@ public class ArtifactCollector<T extends ArtifactType> implements ITestListener 
         this.provider = provider;
     }
 
+    @Override
+    public void onConfigurationSuccess(ITestResult result) {
+        // nothing to do here
+    }
+
+    @Override
+    public void onConfigurationFailure(ITestResult result) {
+        captureArtifact(result);
+    }
+
+    @Override
+    public void onConfigurationSkip(ITestResult result) {
+        // nothing to do here
+    }
+    
     @Override
     public void onFinish(ITestContext context) {
         // nothing to do here
@@ -79,7 +95,7 @@ public class ArtifactCollector<T extends ArtifactType> implements ITestListener 
      * @param result TestNG test result object
      * @return (optional) path at which the captured artifact was stored
      */
-    public Optional<Path> captureArtifact(ITestResult result) {
+    public synchronized Optional<Path> captureArtifact(ITestResult result) {
         if (! provider.canGetArtifact(result)) {
             return Optional.empty();
         }
@@ -178,7 +194,7 @@ public class ArtifactCollector<T extends ArtifactType> implements ITestListener 
      * @param result TestNG test result object
      * @return (optional) list of artifact paths
      */
-    public static Optional<List<Path>> retrieveArtifactPaths(ITestResult result) {
+    public static synchronized Optional<List<Path>> retrieveArtifactPaths(ITestResult result) {
         @SuppressWarnings("unchecked")
         List<Path> artifactPaths = (List<Path>) result.getAttribute(ARTIFACT_PATHS);
         if (artifactPaths != null) {
@@ -196,5 +212,5 @@ public class ArtifactCollector<T extends ArtifactType> implements ITestListener 
     public T getArtifactProvider() {
         return provider;
     }
-    
+
 }

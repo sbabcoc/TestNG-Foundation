@@ -5,7 +5,6 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -67,9 +66,8 @@ public class ListenerChain
     private static final String LISTENER_CHAIN = "ListenerChain";
     
     public ListenerChain() {
-        Iterator<LinkedListener> iterator = ServiceLoader.load(LinkedListener.class).iterator();
-        while (iterator.hasNext()) {
-            attachListener(null, iterator.next());
+        for (LinkedListener listener : ServiceLoader.load(LinkedListener.class)) {
+            attachListener(null, listener);
         }
     }
 
