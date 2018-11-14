@@ -78,7 +78,6 @@ public class RetryManager implements IRetryAnalyzer {
     
     private final TestNGConfig config;
     private final Map<InvocationRecord, Integer> invocations;
-    private final ServiceLoader<IRetryAnalyzer> retryAnalyzerLoader;
     private final Logger logger = LoggerFactory.getLogger(getClass());
     
     /**
@@ -87,7 +86,6 @@ public class RetryManager implements IRetryAnalyzer {
     public RetryManager() {
         config = TestNGConfig.getConfig();
         invocations = new ConcurrentHashMap<>();
-        retryAnalyzerLoader = ServiceLoader.load(IRetryAnalyzer.class);
     }
     
     /**
@@ -124,7 +122,7 @@ public class RetryManager implements IRetryAnalyzer {
      * @return {@code true} if test should be retried; otherwise {@code false}
      */
     protected boolean isRetriable(final ITestResult result) {
-        for (IRetryAnalyzer analyzer : retryAnalyzerLoader) {
+        for (IRetryAnalyzer analyzer : ServiceLoader.load(IRetryAnalyzer.class)) {
             if (analyzer.retry(result)) {
                 return true;
             }
