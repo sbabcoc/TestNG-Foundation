@@ -95,7 +95,7 @@ public class ArtifactCollector<T extends ArtifactType> implements ITestListener,
      * @param result TestNG test result object
      * @return (optional) path at which the captured artifact was stored
      */
-    public Optional<Path> captureArtifact(ITestResult result) {
+    public synchronized Optional<Path> captureArtifact(ITestResult result) {
         if (! provider.canGetArtifact(result)) {
             return Optional.empty();
         }
@@ -194,7 +194,7 @@ public class ArtifactCollector<T extends ArtifactType> implements ITestListener,
      * @param result TestNG test result object
      * @return (optional) list of artifact paths
      */
-    public static Optional<List<Path>> retrieveArtifactPaths(ITestResult result) {
+    public static synchronized Optional<List<Path>> retrieveArtifactPaths(ITestResult result) {
         @SuppressWarnings("unchecked")
         List<Path> artifactPaths = (List<Path>) result.getAttribute(ARTIFACT_PATHS);
         if (artifactPaths != null) {
