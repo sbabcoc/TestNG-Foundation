@@ -17,6 +17,7 @@ import org.testng.IAnnotationTransformer3;
 import org.testng.IClassListener;
 import org.testng.IConfigurationListener;
 import org.testng.IConfigurationListener2;
+import org.testng.IExecutionListener;
 import org.testng.IInvokedMethod;
 import org.testng.IInvokedMethodListener;
 import org.testng.IInvokedMethodListener2;
@@ -43,7 +44,7 @@ import com.google.common.collect.Lists;
  * invoked. This is similar in behavior to a JUnit rule chain.
  */
 public class ListenerChain
-                implements IAnnotationTransformer3, ISuiteListener, IConfigurationListener2,
+                implements IAnnotationTransformer3, IExecutionListener, ISuiteListener, IConfigurationListener2,
                 IInvokedMethodListener2, ITestListener, IMethodInterceptor, IClassListener {
     
     private Set<Class<?>> markedClasses = Collections.synchronizedSet(new HashSet<>());
@@ -54,6 +55,7 @@ public class ListenerChain
     private List<IAnnotationTransformer> annotationXformers = new ArrayList<>();
     private List<IAnnotationTransformer2> annotationXformers2 = new ArrayList<>();
     private List<IAnnotationTransformer3> annotationXformers3 = new ArrayList<>();
+    private List<IExecutionListener> executionListeners = new ArrayList<>();
     private List<ISuiteListener> suiteListeners = new ArrayList<>();
     private List<IConfigurationListener> configListeners = new ArrayList<>();
     private List<IConfigurationListener2> configListeners2 = new ArrayList<>();
@@ -198,6 +200,32 @@ public class ListenerChain
         synchronized(annotationXformers3) {
             for (IAnnotationTransformer3 annotationXformer : annotationXformers3) {
                 annotationXformer.transform(annotation, testClass);
+            }
+        }
+    }
+
+    /**
+     * [IExecutionListener]
+     * Invoked before the TestNG run starts.
+     */
+    @Override
+    public void onExecutionStart() {
+        synchronized(executionListeners) {
+            for (IExecutionListener executionListener : executionListeners) {
+                executionListener.onExecutionStart();
+            }
+        }
+    }
+
+    /**
+     * [IExecutionListener]
+     * Invoked once all the suites have been run.
+     */
+    @Override
+    public void onExecutionFinish() {
+        synchronized(executionListeners) {
+            for (IExecutionListener executionListener : executionListeners) {
+                executionListener.onExecutionFinish();
             }
         }
     }
@@ -738,6 +766,12 @@ public class ListenerChain
             } else if (object instanceof IAnnotationTransformer) {
                 synchronized(annotationXformers) {
                     annotationXformers.add((IAnnotationTransformer) object);
+                }
+            }
+            
+            if (object instanceof IExecutionListener) {
+                synchronized(executionListeners) {
+                    executionListeners.add((IExecutionListener) object);
                 }
             }
             
