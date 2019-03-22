@@ -277,6 +277,7 @@ public void setDriver(WebDriver driver) {
         if (val instanceof TrackedObject) {
             ((TrackedObject<?>) val).release();
         } else {
+            result.setAttribute(DRIVER, null);
             result.removeAttribute(DRIVER);
         }
     }
