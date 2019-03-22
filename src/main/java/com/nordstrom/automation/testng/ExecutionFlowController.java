@@ -135,6 +135,7 @@ import com.nordstrom.automation.testng.TestNGConfig.TestNGSettings;
  *         if (val instanceof TrackedObject) {
  *             ((TrackedObject&lt;?&gt;) val).release();
  *         } else {
+ *             result.setAttribute(DRIVER, null);
  *             result.removeAttribute(DRIVER);
  *         }
  *     }
