@@ -16,6 +16,7 @@ This feature enables tests to attach context-specific values that are accessible
   * For methods that don't specify a timeout interval, **ExecutionFlowController** sets the configured (or default) standard interval.
   *  If automatic retry of failed tests is enabled, **ExecutionFlowController** attaches the specified (or default) retry analyzer to each test method with no prior declaration.  
   **NOTE**: TestNG sets the status of retried tests to `SKIP`. The 'throwable' of these retried tests distinguishes them from actual skipped tests, for which the 'throwable' is **`org.testng.SkipException`**.
+  * In-depth details of **ExecutionFlowController** can be found [here](docs/ExecutionFlowController.md).
 * [ListenerChain](https://github.com/Nordstrom/TestNG-Foundation/blob/master/src/main/java/com/nordstrom/automation/testng/ListenerChain.java):  
 **ListenerChain** is a TestNG listener that enables you to add other listeners at runtime and guarantees the order in which they're invoked. This is similar in behavior to a JUnit rule chain. **ListenerChain** also provides static methods that enable you to acquire references to listeners that are linked into the chain.
 * [ArtifactCollector](https://github.com/Nordstrom/TestNG-Foundation/blob/master/src/main/java/com/nordstrom/automation/testng/ArtifactCollector.java):  
