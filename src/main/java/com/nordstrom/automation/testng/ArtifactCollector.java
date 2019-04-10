@@ -7,13 +7,13 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 import org.testng.IConfigurationListener;
 import org.testng.ITestContext;
 import org.testng.ITestListener;
 import org.testng.ITestResult;
 
+import com.google.common.base.Optional;
 import com.nordstrom.common.file.PathUtils;
 
 /**
@@ -97,12 +97,12 @@ public class ArtifactCollector<T extends ArtifactType> implements ITestListener,
      */
     public synchronized Optional<Path> captureArtifact(ITestResult result) {
         if (! provider.canGetArtifact(result)) {
-            return Optional.empty();
+            return Optional.absent();
         }
         
         byte[] artifact = provider.getArtifact(result);
         if ((artifact == null) || (artifact.length == 0)) {
-            return Optional.empty();
+            return Optional.absent();
         }
         
         Path collectionPath = getCollectionPath(result);
@@ -112,7 +112,7 @@ public class ArtifactCollector<T extends ArtifactType> implements ITestListener,
             } catch (IOException e) {
                 String messageTemplate = "Unable to create collection directory ({}); no artifact was captured";
                 provider.getLogger().warn(messageTemplate, collectionPath, e);
-                return Optional.empty();
+                return Optional.absent();
             }
         }
         
@@ -124,7 +124,7 @@ public class ArtifactCollector<T extends ArtifactType> implements ITestListener,
                             provider.getArtifactExtension());
         } catch (IOException e) {
             provider.getLogger().warn("Unable to get output path; no artifact was captured", e);
-            return Optional.empty();
+            return Optional.absent();
         }
         
         try {
@@ -132,7 +132,7 @@ public class ArtifactCollector<T extends ArtifactType> implements ITestListener,
             Files.write(artifactPath, artifact);
         } catch (IOException e) {
             provider.getLogger().warn("I/O error saving to ({}); no artifact was captured", artifactPath, e);
-            return Optional.empty();
+            return Optional.absent();
         }
         
         recordArtifactPath(artifactPath, result);
@@ -149,7 +149,25 @@ public class ArtifactCollector<T extends ArtifactType> implements ITestListener,
         ITestContext testContext = result.getTestContext();
         String outputDirectory = testContext.getOutputDirectory();
         Path collectionPath = Paths.get(outputDirectory);
-        return collectionPath.resolve(provider.getArtifactPath(result));
+        Path artifactPath = provider.getArtifactPath(result);
+        if (artifactPath == null) {
+            artifactPath = getArtifactPath(result);
+        }
+        return collectionPath.resolve(artifactPath);
+    }
+    
+    /**
+     * Get the path at which to store artifacts.
+     * 
+     * @param result TestNG test result object
+     * @return artifact storage path
+     */
+    private Path getArtifactPath(ITestResult result) {
+        if (result != null) {
+            return PathUtils.ReportsDirectory.getPathForObject(result.getInstance());
+        } else {
+            return PathUtils.ReportsDirectory.ARTIFACT.getPath();
+        }
     }
     
     /**
@@ -200,7 +218,7 @@ public class ArtifactCollector<T extends ArtifactType> implements ITestListener,
         if (artifactPaths != null) {
             return Optional.of(artifactPaths);
         } else {
-            return Optional.empty();
+            return Optional.absent();
         }
     }
 

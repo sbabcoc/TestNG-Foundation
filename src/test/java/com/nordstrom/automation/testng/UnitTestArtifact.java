@@ -1,5 +1,7 @@
 package com.nordstrom.automation.testng;
 
+import java.nio.file.Path;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.ITestResult;
@@ -46,6 +48,11 @@ public class UnitTestArtifact implements ArtifactType {
     }
 
     @Override
+    public Path getArtifactPath(ITestResult result) {
+        return null;
+    }
+
+    @Override
     public String getArtifactExtension() {
         return EXTENSION;
     }
@@ -73,5 +80,4 @@ public class UnitTestArtifact implements ArtifactType {
     static CaptureState getCaptureState(ITestResult result) {
         return (CaptureState) result.getAttribute(CAPTURE_STATE);
     }
-
 }

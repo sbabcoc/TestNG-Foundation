@@ -1,5 +1,6 @@
 package com.nordstrom.automation.testng;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -7,7 +8,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.ServiceLoader;
 import java.util.Set;
 
@@ -37,6 +37,7 @@ import org.testng.annotations.IListenersAnnotation;
 import org.testng.annotations.ITestAnnotation;
 import org.testng.internal.InvokedMethod;
 
+import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 
 /**
@@ -47,9 +48,9 @@ public class ListenerChain
                 implements IAnnotationTransformer3, IExecutionListener, ISuiteListener, IConfigurationListener2,
                 IInvokedMethodListener2, ITestListener, IMethodInterceptor, IClassListener {
     
-    private Set<Class<?>> markedClasses = Collections.synchronizedSet(new HashSet<>());
+    private Set<Class<?>> markedClasses = Collections.synchronizedSet(new HashSet<Class<?>>());
     private Set<Class<? extends ITestNGListener>> listenerSet = 
-            Collections.synchronizedSet(new HashSet<>());
+            Collections.synchronizedSet(new HashSet<Class<? extends ITestNGListener>>());
     
     private List<ITestNGListener> listeners = new ArrayList<>();
     private List<IAnnotationTransformer> annotationXformers = new ArrayList<>();
@@ -646,7 +647,7 @@ public class ListenerChain
                 return Optional.of((T) listener);
             }
         }
-        return Optional.empty();
+        return Optional.absent();
     }
 
     /**
@@ -701,10 +702,7 @@ public class ListenerChain
         
         LinkedListeners annotation = testClass.getAnnotation(LinkedListeners.class);
         if (null != annotation) {
-            Class<?> markedClass = testClass;
-            while (null == markedClass.getDeclaredAnnotation(LinkedListeners.class)) {
-                markedClass = markedClass.getSuperclass();
-            }
+            Class<?> markedClass = getMarkedClass(testClass);
             if ( ! markedClasses.contains(markedClass)) {
                 markedClasses.add(markedClass);
                 for (Class<? extends ITestNGListener> listener : annotation.value()) {
@@ -819,5 +817,22 @@ public class ListenerChain
                 }
             }
         }
+    }
+    
+    /**
+     * Get the class in the hierarchy of the specified test class that declares the {@link LinkedListener} annotation.
+     * 
+     * @param testClass test class to be evaluated
+     * @return class that declares the {@link LinkedListener} annotation; {@code null} if annotation isn't found
+     */
+    private static Class<?> getMarkedClass(Class<?> testClass) {
+        for (Class<?> thisClass = testClass; thisClass != null; thisClass = thisClass.getSuperclass()) {
+            for (Annotation annotation : thisClass.getDeclaredAnnotations()) {
+                if (annotation.annotationType().isAssignableFrom(LinkedListener.class)) {
+                    return thisClass;
+                }
+            }
+        }
+        return null;
     }
 }
