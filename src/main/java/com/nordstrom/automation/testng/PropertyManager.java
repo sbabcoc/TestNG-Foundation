@@ -18,7 +18,7 @@ import org.testng.ITestResult;
 public final class PropertyManager {
     
     private PropertyManager() {
-        throw new AssertionError("PropertyManager is a static utility class.");
+        throw new AssertionError("PropertyManager is a static utility class that cannot be instantiated.");
     }
     
     /**

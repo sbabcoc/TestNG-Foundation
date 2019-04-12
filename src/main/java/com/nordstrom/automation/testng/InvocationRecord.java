@@ -1,7 +1,7 @@
 package com.nordstrom.automation.testng;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
 import java.util.Arrays;
 
 import org.testng.ITestResult;
@@ -133,14 +133,13 @@ class InvocationRecord {
         
         if (len > 0) {
             int i = 0;
-            Parameter[] methodParms = method.getParameters();
+            Annotation[][] methodParms = method.getParameterAnnotations();
             
             do {
-                Parameter parm = methodParms[i];
-                if (null == parm.getAnnotation(RedactValue.class)) {
-                    builder.append(parameters[i]);
+                if (isRedacted(methodParms[i])) {
+                    builder.append("|:").append("arg" + i).append(":|");
                 } else {
-                    builder.append("|:").append(parm.getName()).append(":|");
+                    builder.append(parameters[i]);
                 }
                 
                 if (++i == len) break;
@@ -150,5 +149,20 @@ class InvocationRecord {
         }
         
         return builder.append(')').toString();
+    }
+    
+    /**
+     * Determine if the specified annotations indicate that the corresponding parameter should be redacted.
+     * 
+     * @param annotations array of parameter {@link Annotation} objects
+     * @return {@code true} if the parameter should be redacted; otherwise {@code false}
+     */
+    private static boolean isRedacted(Annotation[] annotations) {
+        for (Annotation annotation : annotations) {
+            if (annotation.annotationType().isAssignableFrom(RedactValue.class)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

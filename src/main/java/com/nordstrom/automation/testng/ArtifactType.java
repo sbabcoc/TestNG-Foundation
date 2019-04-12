@@ -4,8 +4,6 @@ import java.nio.file.Path;
 import org.slf4j.Logger;
 import org.testng.ITestResult;
 
-import com.nordstrom.common.file.PathUtils;
-
 /**
  * This interface defines the contract fulfilled by artifact capture providers. Instances of this interface supply the
  * scenario-specific implementation for artifact capture through the {@link ArtifactCollector} listener.
@@ -98,15 +96,9 @@ public interface ArtifactType {
      * Get the path at which to store artifacts.
      * 
      * @param result TestNG test result object
-     * @return artifact storage path
+     * @return artifact storage path; {@code null} to accept default path
      */
-    default Path getArtifactPath(ITestResult result) {
-        if (result != null) {
-            return PathUtils.ReportsDirectory.getPathForObject(result.getInstance());
-        } else {
-            return PathUtils.ReportsDirectory.ARTIFACT.getPath();
-        }
-    }
+    Path getArtifactPath(ITestResult result);
     
     /**
      * Get the extension for artifact files of this type.
@@ -116,5 +108,4 @@ public interface ArtifactType {
      * @return artifact file extension
      */
     String getArtifactExtension();
-    
 }
