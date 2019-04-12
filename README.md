@@ -43,7 +43,7 @@ import org.testng.ITestResult;
 
 import com.nordstrom.automation.testng.ArtifactType;
 
-public class MyArtifactType implements ArtifactType {
+public class MyArtifactType extends ArtifactType {
     
     private static final String ARTIFACT_PATH = "artifacts";
     private static final String EXTENSION = "txt";
@@ -62,7 +62,7 @@ public class MyArtifactType implements ArtifactType {
 
     @Override
     public Path getArtifactPath(ITestResult result) {
-        return ArtifactType.super.getArtifactPath(result).resolve(ARTIFACT_PATH);
+        return super.getArtifactPath(result).resolve(ARTIFACT_PATH);
     }
     
     @Override
