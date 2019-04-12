@@ -149,7 +149,11 @@ public class ArtifactCollector<T extends ArtifactType> implements ITestListener,
         ITestContext testContext = result.getTestContext();
         String outputDirectory = testContext.getOutputDirectory();
         Path collectionPath = Paths.get(outputDirectory);
-        return collectionPath.resolve(getArtifactPath(result));
+        Path artifactPath = provider.getArtifactPath(result);
+        if (artifactPath == null) {
+            artifactPath = getArtifactPath(result);
+        }
+        return collectionPath.resolve(artifactPath);
     }
     
     /**
@@ -158,16 +162,12 @@ public class ArtifactCollector<T extends ArtifactType> implements ITestListener,
      * @param result TestNG test result object
      * @return artifact storage path
      */
-    private Path getArtifactPath(ITestResult result) {
-        Path artifactPath = provider.getArtifactPath(result);
-        if (artifactPath == null) {
-            if (result != null) {
-                artifactPath = PathUtils.ReportsDirectory.getPathForObject(result.getInstance());
-            } else {
-                artifactPath = PathUtils.ReportsDirectory.ARTIFACT.getPath();
-            }
+    public static Path getArtifactPath(ITestResult result) {
+        if (result != null) {
+            return PathUtils.ReportsDirectory.getPathForObject(result.getInstance());
+        } else {
+            return PathUtils.ReportsDirectory.ARTIFACT.getPath();
         }
-        return artifactPath;
     }
     
     /**
