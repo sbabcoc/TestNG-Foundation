@@ -22,7 +22,7 @@ import com.nordstrom.common.file.PathUtils;
  * 
  * import com.nordstrom.automation.testng.ArtifactType;
  * 
- * public class MyArtifactType implements ArtifactType {
+ * public class MyArtifactType extends ArtifactType {
  *     
  *     private static final String ARTIFACT_PATH = "artifacts";
  *     private static final String EXTENSION = "txt";
@@ -40,8 +40,8 @@ import com.nordstrom.common.file.PathUtils;
  *     }
  *     
  *     &#64;Override
- *     public Page getArtifactPath(ITestResult result) {
- *         return ArtifactType.super.getArtifactPath(result).resolve(ARTIFACT_PATH);
+ *     public Path getArtifactPath(ITestResult result) {
+ *         return super.getArtifactPath(result).resolve(ARTIFACT_PATH);
  *     }
  * 
  *     &#64;Override
