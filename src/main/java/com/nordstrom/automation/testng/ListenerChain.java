@@ -820,15 +820,15 @@ public class ListenerChain
     }
     
     /**
-     * Get the class in the hierarchy of the specified test class that declares the {@link LinkedListener} annotation.
+     * Get the class in the hierarchy of the specified test class that declares the {@link LinkedListeners} annotation.
      * 
      * @param testClass test class to be evaluated
-     * @return class that declares the {@link LinkedListener} annotation; {@code null} if annotation isn't found
+     * @return class that declares the {@link LinkedListeners} annotation; {@code null} if annotation isn't found
      */
     private static Class<?> getMarkedClass(Class<?> testClass) {
         for (Class<?> thisClass = testClass; thisClass != null; thisClass = thisClass.getSuperclass()) {
             for (Annotation annotation : thisClass.getDeclaredAnnotations()) {
-                if (annotation.annotationType().isAssignableFrom(LinkedListener.class)) {
+                if (annotation.annotationType().isAssignableFrom(LinkedListeners.class)) {
                     return thisClass;
                 }
             }
