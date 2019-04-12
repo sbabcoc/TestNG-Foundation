@@ -1,12 +1,10 @@
 package com.nordstrom.automation.testng;
 
-import java.nio.file.Path;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.ITestResult;
 
-public class UnitTestArtifact implements ArtifactType {
+public class UnitTestArtifact extends ArtifactType {
     
     private static final String CAPTURE_DISABLED = "CaptureDisabled";
     private static final String CAPTURE_CRIPPLED = "CaptureCrippled";
@@ -45,11 +43,6 @@ public class UnitTestArtifact implements ArtifactType {
             setCaptureState(result, CaptureState.CAPTURE_FAILED);
             return new byte[0];
         }
-    }
-
-    @Override
-    public Path getArtifactPath(ITestResult result) {
-        return null;
     }
 
     @Override
