@@ -4,6 +4,8 @@ import java.nio.file.Path;
 import org.slf4j.Logger;
 import org.testng.ITestResult;
 
+import com.nordstrom.common.file.PathUtils;
+
 /**
  * This interface defines the contract fulfilled by artifact capture providers. Instances of this interface supply the
  * scenario-specific implementation for artifact capture through the {@link ArtifactCollector} listener.
@@ -20,7 +22,7 @@ import org.testng.ITestResult;
  * 
  * import com.nordstrom.automation.testng.ArtifactType;
  * 
- * public class MyArtifactType implements ArtifactType {
+ * public class MyArtifactType extends ArtifactType {
  *     
  *     private static final String ARTIFACT_PATH = "artifacts";
  *     private static final String EXTENSION = "txt";
@@ -38,8 +40,8 @@ import org.testng.ITestResult;
  *     }
  *     
  *     &#64;Override
- *     public Page getArtifactPath(ITestResult result) {
- *         return ArtifactType.super.getArtifactPath(result).resolve(ARTIFACT_PATH);
+ *     public Path getArtifactPath(ITestResult result) {
+ *         return super.getArtifactPath(result).resolve(ARTIFACT_PATH);
  *     }
  * 
  *     &#64;Override
@@ -67,14 +69,16 @@ import org.testng.ITestResult;
  * }
  * </code></pre>
  */
-public interface ArtifactType {
+public abstract class ArtifactType {
     
     /**
      * Get the SLF4J {@link Logger} for this artifact type.
      * 
-     * @return logger for this artifact
+     * @return logger for this artifact (may be {@code null}) 
      */
-    Logger getLogger();
+    public Logger getLogger() {
+        return null;
+    }
     
     /**
      * Determine if artifact capture is available in the specified context.
@@ -82,7 +86,7 @@ public interface ArtifactType {
      * @param result TestNG test result object
      * @return 'true' if capture is available; otherwise 'false'
      */
-    boolean canGetArtifact(ITestResult result);
+    public abstract boolean canGetArtifact(ITestResult result);
     
     /**
      * Capture an artifact from the specified context.
@@ -90,15 +94,21 @@ public interface ArtifactType {
      * @param result TestNG test result object
      * @return byte array containing the captured artifact; if capture fails, an empty array is returned
      */
-    byte[] getArtifact(ITestResult result);
+    public abstract byte[] getArtifact(ITestResult result);
     
     /**
      * Get the path at which to store artifacts.
      * 
      * @param result TestNG test result object
-     * @return artifact storage path; {@code null} to accept default path
+     * @return artifact storage path
      */
-    Path getArtifactPath(ITestResult result);
+    public Path getArtifactPath(ITestResult result) {
+        if (result != null) {
+            return PathUtils.ReportsDirectory.getPathForObject(result.getInstance());
+        } else {
+            return PathUtils.ReportsDirectory.ARTIFACT.getPath();
+        }
+    }
     
     /**
      * Get the extension for artifact files of this type.
@@ -107,5 +117,5 @@ public interface ArtifactType {
      * 
      * @return artifact file extension
      */
-    String getArtifactExtension();
+    public abstract String getArtifactExtension();
 }

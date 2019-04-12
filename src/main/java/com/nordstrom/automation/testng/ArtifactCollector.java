@@ -110,8 +110,10 @@ public class ArtifactCollector<T extends ArtifactType> implements ITestListener,
             try {
                 Files.createDirectories(collectionPath);
             } catch (IOException e) {
-                String messageTemplate = "Unable to create collection directory ({}); no artifact was captured";
-                provider.getLogger().warn(messageTemplate, collectionPath, e);
+                if (provider.getLogger() != null) {
+                    String messageTemplate = "Unable to create collection directory ({}); no artifact was captured";
+                    provider.getLogger().warn(messageTemplate, collectionPath, e);
+                }
                 return Optional.absent();
             }
         }
@@ -123,15 +125,21 @@ public class ArtifactCollector<T extends ArtifactType> implements ITestListener,
                             getArtifactBaseName(result), 
                             provider.getArtifactExtension());
         } catch (IOException e) {
-            provider.getLogger().warn("Unable to get output path; no artifact was captured", e);
+            if (provider.getLogger() != null) {
+                provider.getLogger().warn("Unable to get output path; no artifact was captured", e);
+            }
             return Optional.absent();
         }
         
         try {
-            provider.getLogger().info("Saving captured artifact to ({}).", artifactPath);
+            if (provider.getLogger() != null) {
+                provider.getLogger().info("Saving captured artifact to ({}).", artifactPath);
+            }
             Files.write(artifactPath, artifact);
         } catch (IOException e) {
-            provider.getLogger().warn("I/O error saving to ({}); no artifact was captured", artifactPath, e);
+            if (provider.getLogger() != null) {
+                provider.getLogger().warn("I/O error saving to ({}); no artifact was captured", artifactPath, e);
+            }
             return Optional.absent();
         }
         
@@ -149,25 +157,7 @@ public class ArtifactCollector<T extends ArtifactType> implements ITestListener,
         ITestContext testContext = result.getTestContext();
         String outputDirectory = testContext.getOutputDirectory();
         Path collectionPath = Paths.get(outputDirectory);
-        Path artifactPath = provider.getArtifactPath(result);
-        if (artifactPath == null) {
-            artifactPath = getArtifactPath(result);
-        }
-        return collectionPath.resolve(artifactPath);
-    }
-    
-    /**
-     * Get the path at which to store artifacts.
-     * 
-     * @param result TestNG test result object
-     * @return artifact storage path
-     */
-    public static Path getArtifactPath(ITestResult result) {
-        if (result != null) {
-            return PathUtils.ReportsDirectory.getPathForObject(result.getInstance());
-        } else {
-            return PathUtils.ReportsDirectory.ARTIFACT.getPath();
-        }
+        return collectionPath.resolve(provider.getArtifactPath(result));
     }
     
     /**
