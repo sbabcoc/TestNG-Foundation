@@ -161,7 +161,7 @@ To specify the listener(s) you wish to attach via the **ListenerChain** service 
 com.example.ServiceLoadedListener
 ```
 
-In a Maven project, the preceding file is stored in the **_src/main/resources_** folder:
+In a Maven project, the preceding file is stored in the **_src/test/resources_** folder:
 
 ![com.testng.ITestNGListener](docs/images/META-INF-2.png)
 
