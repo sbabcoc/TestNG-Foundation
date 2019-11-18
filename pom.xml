@@ -30,17 +30,17 @@
     <maven.compiler.source>1.7</maven.compiler.source>
     <maven.compiler.target>1.7</maven.compiler.target>
     <testng.version>6.10</testng.version>
-    <surefire-plugin.version>2.20.1</surefire-plugin.version>
-    <source-plugin.version>3.0.1</source-plugin.version>
-    <javadoc-plugin.version>2.10.4</javadoc-plugin.version>
-    <java-utils.version>1.9.1</java-utils.version>
-    <settings.version>2.3.1</settings.version>
+    <surefire-plugin.version>2.22.0</surefire-plugin.version>
+    <source-plugin.version>3.2.0</source-plugin.version>
+    <javadoc-plugin.version>3.1.1</javadoc-plugin.version>
+    <java-utils.version>1.9.3</java-utils.version>
+    <settings.version>2.3.3</settings.version>
     <sonar.language>java</sonar.language>
-    <jacoco.version>0.7.9</jacoco.version>
-    <guava.version>19.0</guava.version>
+    <jacoco.version>0.8.5</jacoco.version>
+    <guava.version>28.1-android</guava.version>
     <toolchains-plugin.version>1.1</toolchains-plugin.version>
     <gpg-plugin.version>1.6</gpg-plugin.version>
-    <staging-plugin.version>1.6.7</staging-plugin.version>
+    <staging-plugin.version>1.6.8</staging-plugin.version>
     <release-plugin.version>2.5.3</release-plugin.version>
     <skipSigning>true</skipSigning>
   </properties>
