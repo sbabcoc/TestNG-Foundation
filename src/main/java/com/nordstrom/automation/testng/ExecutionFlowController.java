@@ -2,16 +2,12 @@ package com.nordstrom.automation.testng;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
-import java.util.List;
 import java.util.Map;
 
 import org.testng.IAnnotationTransformer;
 import org.testng.IInvokedMethod;
 import org.testng.IInvokedMethodListener;
-import org.testng.IMethodInstance;
-import org.testng.IMethodInterceptor;
 import org.testng.IRetryAnalyzer;
-import org.testng.ITestContext;
 import org.testng.ITestResult;
 import org.testng.annotations.ITestAnnotation;
 import com.nordstrom.automation.testng.TestNGConfig.TestNGSettings;
@@ -172,7 +168,7 @@ import com.nordstrom.automation.testng.TestNGConfig.TestNGSettings;
  *         </ul>
  *     </li>
  */
-public class ExecutionFlowController implements IInvokedMethodListener, IMethodInterceptor, IAnnotationTransformer {
+public class ExecutionFlowController implements IInvokedMethodListener, IAnnotationTransformer {
     
     protected static final ThreadLocal<ITestResult> fromBefore = new InheritableThreadLocal<>();
     protected static final ThreadLocal<ITestResult> fromMethod = new InheritableThreadLocal<>();
@@ -219,14 +215,6 @@ public class ExecutionFlowController implements IInvokedMethodListener, IMethodI
         if (testResult.getInstance() instanceof IInvokedMethodListenerEx) {
             ((IInvokedMethodListenerEx) testResult.getInstance()).beforeInvocation(method, testResult);
         }
-    }
-
-    @Override
-    public List<IMethodInstance> intercept(List<IMethodInstance> methods, ITestContext context) {
-        // target platform support: filter out non-targeted methods
-        // target platform support: set method target descriptions
-        
-        return methods;
     }
 
     @Override
