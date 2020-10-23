@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.nordstrom.tools</groupId>
   <artifactId>testng-foundation</artifactId>
-  <version>2.0.2-SNAPSHOT</version>
+  <version>1.13.5-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <name>TestNG Foundation</name>
@@ -27,9 +27,9 @@
   
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.source>1.8</maven.compiler.source>
-    <maven.compiler.target>1.8</maven.compiler.target>
-    <testng.version>7.1.0</testng.version>
+    <maven.compiler.source>1.7</maven.compiler.source>
+    <maven.compiler.target>1.7</maven.compiler.target>
+    <testng.version>6.10</testng.version>
     <surefire-plugin.version>2.22.0</surefire-plugin.version>
     <source-plugin.version>3.2.0</source-plugin.version>
     <javadoc-plugin.version>3.1.1</javadoc-plugin.version>
@@ -49,7 +49,7 @@
     <connection>scm:git:https://github.com/sbabcoc/TestNG-Foundation.git</connection>
     <developerConnection>scm:git:https://github.com/sbabcoc/TestNG-Foundation.git</developerConnection>
     <url>https://github.com/sbabcoc/TestNG-Foundation/tree/master</url>
-    <tag>HEAD</tag>
+    <tag>testng-foundation-1.13.3</tag>
   </scm>
 
   <distributionManagement>
@@ -191,7 +191,7 @@
         <configuration>
           <toolchains>
             <jdk>
-              <version>1.8</version>
+              <version>1.7</version>
               <vendor>oracle</vendor>
             </jdk>
           </toolchains>
