@@ -7,9 +7,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.testng.IAnnotationTransformer3;
+import org.testng.IAnnotationTransformer;
 import org.testng.IClassListener;
-import org.testng.IConfigurationListener2;
+import org.testng.IConfigurationListener;
 import org.testng.IInvokedMethod;
 import org.testng.IInvokedMethodListener;
 import org.testng.IMethodInstance;
@@ -26,9 +26,8 @@ import org.testng.annotations.IFactoryAnnotation;
 import org.testng.annotations.IListenersAnnotation;
 import org.testng.annotations.ITestAnnotation;
 
-public class ChainedListener
-                implements IAnnotationTransformer3, ISuiteListener, IConfigurationListener2,
-                IInvokedMethodListener, ITestListener, IMethodInterceptor, IClassListener {
+public class ChainedListener implements IAnnotationTransformer, ISuiteListener, IConfigurationListener,
+		IInvokedMethodListener, ITestListener, IMethodInterceptor, IClassListener {
     
     Set<String> configSuccess = Collections.synchronizedSet(new HashSet<String>());
     Set<String> configFailure = Collections.synchronizedSet(new HashSet<String>());

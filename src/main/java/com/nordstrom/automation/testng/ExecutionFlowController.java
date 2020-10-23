@@ -153,21 +153,6 @@ import com.nordstrom.automation.testng.TestNGConfig.TestNGSettings;
  * needed, specifying a {@code null} value will signal that all propagated references should be released. To retrieve
  * the driver reference from the test attribute, extract it with the {@link TrackedObject#getValue()} method.
  */
-
-/*
- * TODO - This block comment describes a feature that has yet to be implemented.
- * 
- * The following item describes a feature that has yet to be implemented: target platform.
- * This will be implemented in the method interceptor.
- * 
- *     <li>For test classes that request target platform support: 
- *         <ul>
- *             <li>For runs targeting a specific platform, filter out non-target methods.</li>
- *             <li>Attach the specified (or default) target platform to each test method.</li>
- *             <li>Activate target platform prior to invoking each test method.</li>
- *         </ul>
- *     </li>
- */
 public class ExecutionFlowController implements IInvokedMethodListener, IAnnotationTransformer {
     
     protected static final ThreadLocal<ITestResult> fromBefore = new InheritableThreadLocal<>();

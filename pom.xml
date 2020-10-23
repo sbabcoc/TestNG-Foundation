@@ -7,7 +7,7 @@
 
   <name>TestNG Foundation</name>
   <description>This is the foundation framework for TestNG automation</description>
-  <url>https://github.com/Nordstrom/TestNG-Foundation</url>
+  <url>https://github.com/sbabcoc/TestNG-Foundation</url>
 
   <licenses>
     <license>
@@ -46,9 +46,9 @@
   </properties>
 
   <scm>
-    <connection>scm:git:https://github.com/Nordstrom/TestNG-Foundation.git</connection>
-    <developerConnection>scm:git:https://github.com/Nordstrom/TestNG-Foundation.git</developerConnection>
-    <url>https://github.com/Nordstrom/TestNG-Foundation/tree/master</url>
+    <connection>scm:git:https://github.com/sbabcoc/TestNG-Foundation.git</connection>
+    <developerConnection>scm:git:https://github.com/sbabcoc/TestNG-Foundation.git</developerConnection>
+    <url>https://github.com/sbabcoc/TestNG-Foundation/tree/master</url>
     <tag>testng-foundation-1.13.3</tag>
   </scm>
 
