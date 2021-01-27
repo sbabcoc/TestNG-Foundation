@@ -33,11 +33,11 @@
     <surefire-plugin.version>2.22.0</surefire-plugin.version>
     <source-plugin.version>3.2.0</source-plugin.version>
     <javadoc-plugin.version>3.1.1</javadoc-plugin.version>
-    <java-utils.version>1.9.3</java-utils.version>
-    <settings.version>2.3.3</settings.version>
+    <java-utils.version>2.0.0</java-utils.version>
+    <settings.version>2.3.5</settings.version>
     <sonar.language>java</sonar.language>
     <jacoco.version>0.8.5</jacoco.version>
-    <guava.version>28.1-android</guava.version>
+    <guava.version>30.1-android</guava.version>
     <toolchains-plugin.version>1.1</toolchains-plugin.version>
     <gpg-plugin.version>1.6</gpg-plugin.version>
     <staging-plugin.version>1.6.8</staging-plugin.version>
