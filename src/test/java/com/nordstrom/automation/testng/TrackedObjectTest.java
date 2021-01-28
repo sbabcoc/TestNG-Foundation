@@ -44,8 +44,8 @@ public class TrackedObjectTest {
         ITestResult result = Reporter.getCurrentTestResult();
         TrackedObject<Object> tracked = TrackedObject.create(result, KEY, obj);
         
-        ITestResult result2 = TestResult.newEmptyTestResult();
-        ITestResult result3 = TestResult.newEmptyTestResult();
+        ITestResult result2 = new TestResult();
+        ITestResult result3 = new TestResult();
         
         tracked.addRef(result2);
         assertTrue(result2.getAttributeNames().contains(KEY));
@@ -66,8 +66,8 @@ public class TrackedObjectTest {
         ITestResult result = Reporter.getCurrentTestResult();
         TrackedObject<Object> tracked = TrackedObject.create(result, KEY, obj);
         
-        ITestResult result2 = TestResult.newEmptyTestResult();
-        ITestResult result3 = TestResult.newEmptyTestResult();
+        ITestResult result2 = new TestResult();
+        ITestResult result3 = new TestResult();
         
         tracked.addRef(result2);
         tracked.addRef(result3);
