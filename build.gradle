@@ -169,15 +169,10 @@ task("${profile}JavadocJar", type: Jar, dependsOn: "${profile}Javadoc") {
   destinationDir = libsDir
 }
 
-task testNG(type: Test) {
-  useTestNG()
-  reports.html.destination = file("${buildDir}/reports/testng")
-  testLogging.showStandardStreams = true
-}
-
 test {
-  dependsOn testNG
-  reports.html.destination = file("${buildDir}/reports/junit")
+  useTestNG()
+  include '**/*Test.class'
+  reports.html.destination = file("${buildDir}/reports/testng")
   testLogging.showStandardStreams = true
 }
 
