@@ -18,3 +18,4 @@ target-j7/
 build/
 build-j8/
 build-j7/
+bin/
