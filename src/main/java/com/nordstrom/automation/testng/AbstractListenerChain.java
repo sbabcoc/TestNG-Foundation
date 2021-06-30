@@ -483,6 +483,17 @@ public abstract class AbstractListenerChain implements IAnnotationTransformer, I
     }
 
     /**
+     * Attach linked listeners that are active on the test class that contains the specified test method.
+     * 
+     * @param testMethod test method
+     */
+    protected void attachListeners(Method testMethod) {
+        if (testMethod != null) {
+            processLinkedListeners(testMethod.getDeclaringClass());
+        }
+    }
+    
+    /**
      * Attach linked listeners that are active on the test class defined by the specified test context. Note that only
      * one of the three parameters testClass, testCtor and testMethod will be non-null.
      * 
@@ -498,17 +509,6 @@ public abstract class AbstractListenerChain implements IAnnotationTransformer, I
         } else if (testCtor != null) {
             processLinkedListeners(testCtor.getDeclaringClass());
         } else if (testMethod != null) {
-            processLinkedListeners(testMethod.getDeclaringClass());
-        }
-    }
-    
-    /**
-     * Attach linked listeners that are active on the test class that contains the specified test method.
-     * 
-     * @param testMethod test method
-     */
-    protected void attachListeners(Method testMethod) {
-        if (testMethod != null) {
             processLinkedListeners(testMethod.getDeclaringClass());
         }
     }
