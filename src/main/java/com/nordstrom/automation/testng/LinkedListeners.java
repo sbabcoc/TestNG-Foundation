@@ -11,7 +11,7 @@ import org.testng.ITestNGListener;
 
 /**
  * This annotation enables test class implementors to specify an array of TestNG listeners to attach to the
- * {@link ListenerChain}.
+ * {@link AbstractListenerChain}.
  */
 @Retention(RUNTIME)
 @Target({TYPE})

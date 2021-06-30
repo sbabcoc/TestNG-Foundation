@@ -287,6 +287,16 @@
                 <configuration>
                   <sources>
                     <source>src/main/java-j7</source>
+                  </sources>
+                </configuration>
+              </execution>
+              <execution>
+                <id>add-test-source</id>
+                <goals>
+                  <goal>add-test-source</goal>
+                </goals>
+                <configuration>
+                  <sources>
                     <source>src/test/java-j7</source>
                   </sources>
                 </configuration>
@@ -342,6 +352,16 @@
                 <configuration>
                   <sources>
                     <source>src/main/java-j8</source>
+                  </sources>
+                </configuration>
+              </execution>
+              <execution>
+                <id>add-test-source</id>
+                <goals>
+                  <goal>add-test-source</goal>
+                </goals>
+                <configuration>
+                  <sources>
                     <source>src/test/java-j8</source>
                   </sources>
                 </configuration>

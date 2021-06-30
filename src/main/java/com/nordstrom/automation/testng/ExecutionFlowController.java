@@ -12,6 +12,8 @@ import org.testng.ITestResult;
 import org.testng.annotations.ITestAnnotation;
 import com.nordstrom.automation.testng.TestNGConfig.TestNGSettings;
 
+import static com.nordstrom.automation.testng.VersionUtility.getRetryAnalyzerClass;
+
 /**
  * This TestNG listener performs several basic functions related to test method execution: 
  * <ul>
@@ -221,7 +223,7 @@ public class ExecutionFlowController implements IInvokedMethodListener, IAnnotat
             }
             
             // if no retry analyzer is specified
-            if (annotation.getRetryAnalyzer() == null) {
+            if (getRetryAnalyzerClass(annotation) == null) {
                 // get default retry analyzer
                 Class<IRetryAnalyzer> retryAnalyzerClass = config.getRetryAnalyzerClass();
                 // if retry enabled
