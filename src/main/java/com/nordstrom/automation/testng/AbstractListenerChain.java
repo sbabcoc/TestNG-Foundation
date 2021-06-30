@@ -39,8 +39,8 @@ import com.google.common.collect.Lists;
 public abstract class AbstractListenerChain implements IAnnotationTransformer, IExecutionListener, ISuiteListener,
 		IConfigurationListener, IInvokedMethodListener, ITestListener, IMethodInterceptor, IClassListener {
     
-    protected Set<Class<?>> markedClasses = Collections.synchronizedSet(new HashSet<Class<?>>());
-    protected Set<Class<? extends ITestNGListener>> listenerSet = 
+    private Set<Class<?>> markedClasses = Collections.synchronizedSet(new HashSet<Class<?>>());
+    private Set<Class<? extends ITestNGListener>> listenerSet = 
             Collections.synchronizedSet(new HashSet<Class<? extends ITestNGListener>>());
     
     protected List<ITestNGListener> listeners;
@@ -53,7 +53,7 @@ public abstract class AbstractListenerChain implements IAnnotationTransformer, I
     protected List<IMethodInterceptor> methodInterceptors;
     protected List<IClassListener> classListeners;
     
-    protected static final String LISTENER_CHAIN = "ListenerChain";
+    private static final String LISTENER_CHAIN = "ListenerChain";
     
     public AbstractListenerChain() {
         initialize();
