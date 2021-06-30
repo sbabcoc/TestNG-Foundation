@@ -7,7 +7,8 @@ import static org.testng.Assert.assertTrue;
 import org.testng.ITestResult;
 import org.testng.Reporter;
 import org.testng.annotations.Test;
-import org.testng.internal.TestResult;
+
+import static com.nordstrom.automation.testng.VersionUtility.newEmptyTestResult;
 
 public class TrackedObjectTest {
     
@@ -44,8 +45,8 @@ public class TrackedObjectTest {
         ITestResult result = Reporter.getCurrentTestResult();
         TrackedObject<Object> tracked = TrackedObject.create(result, KEY, obj);
         
-        ITestResult result2 = TestResult.newEmptyTestResult();
-        ITestResult result3 = TestResult.newEmptyTestResult();
+        ITestResult result2 = newEmptyTestResult();
+        ITestResult result3 = newEmptyTestResult();
         
         tracked.addRef(result2);
         assertTrue(result2.getAttributeNames().contains(KEY));
@@ -66,8 +67,8 @@ public class TrackedObjectTest {
         ITestResult result = Reporter.getCurrentTestResult();
         TrackedObject<Object> tracked = TrackedObject.create(result, KEY, obj);
         
-        ITestResult result2 = TestResult.newEmptyTestResult();
-        ITestResult result3 = TestResult.newEmptyTestResult();
+        ITestResult result2 = newEmptyTestResult();
+        ITestResult result3 = newEmptyTestResult();
         
         tracked.addRef(result2);
         tracked.addRef(result3);

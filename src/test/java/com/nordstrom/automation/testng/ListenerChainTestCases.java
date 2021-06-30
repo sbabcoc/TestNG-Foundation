@@ -117,9 +117,9 @@ class ListenerChainTestCases {
     public void testAttachedListeners() {
         System.out.println("testAttachedListeners");
         ITestResult result = Reporter.getCurrentTestResult();
-        Optional<ChainedListener> optChained = ListenerChain.getAttachedListener(result, ChainedListener.class);
+        Optional<ChainedListener> optChained = AbstractListenerChain.getAttachedListener(result, ChainedListener.class);
         assertTrue(optChained.isPresent());
-        Optional<ServiceLoadedListener> optService = ListenerChain.getAttachedListener(result, ServiceLoadedListener.class);
+        Optional<ServiceLoadedListener> optService = AbstractListenerChain.getAttachedListener(result, ServiceLoadedListener.class);
         assertTrue(optService.isPresent());
     }
     

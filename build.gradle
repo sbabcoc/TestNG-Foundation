@@ -1,0 +1,291 @@
+import org.apache.tools.ant.filters.ReplaceTokens
+
+plugins {
+  id 'io.codearte.nexus-staging' version '0.21.1'
+  id 'net.researchgate.release' version '2.8.1'
+}
+
+apply plugin: 'java'
+apply plugin: 'maven'
+apply plugin: 'jacoco'
+apply plugin: 'signing'
+
+compileJava.enabled = false
+processResources.enabled = false
+classes.enabled = false
+jar.enabled = false
+
+// remove default JAR artifact
+configurations.archives.artifacts.removeAll { it.provider.name == 'jar' }
+  
+afterReleaseBuild.dependsOn uploadArchives
+
+group = 'com.nordstrom.tools'
+description = 'TestNG Foundation'
+
+if (!project.hasProperty('profile')) {
+  ext.profile = 'java7'
+} else {
+  assert ['java7', 'java8'].contains(profile)
+}
+
+def archiveVer = null
+def verBits = project.version.split('-')
+def javaVersion = 'j' + profile.charAt(4)
+if (verBits.length > 1) {
+  if (verBits[1].equals(javaVersion)) {
+    archiveVer = project.version
+  } else {
+    archiveVer = verBits[0] + '-' + javaVersion + '-' + verBits[1]
+  }
+} else {
+  archiveVer = verBits[0] + '-' + javaVersion
+}
+
+project.version = archiveVer
+  
+def archiveBase = rootProject.name + '-' + archiveVer
+def buildRoot = null
+def libsDir = null
+
+switch ("${profile}") {
+case "java7":
+  buildRoot = file('build-j7')
+  libsDir = new File(buildRoot, 'libs')
+  break
+case "java8":
+  buildRoot = file('build-j8')
+  libsDir = new File(buildRoot, 'libs')
+  break
+}
+
+sourceSets {
+  java7 {
+    java {
+      srcDirs = [ 'src/main/java', 'src/main/java-j7' ]
+      outputDir = new File(buildRoot, 'classes')
+    }
+    resources {
+      srcDirs = [ 'src/main/resources' ]
+    }
+    compileClasspath = sourceSets.main.output + configurations.java7Compile
+    runtimeClasspath = output + compileClasspath + configurations.java7Runtime
+    output.resourcesDir = "${buildRoot}/classes"
+  }
+  java8 {
+    java {
+      srcDirs = [ 'src/main/java', 'src/main/java-j8' ]
+      outputDir = new File(buildRoot, 'classes-j8')
+    }
+    resources {
+      srcDirs = [ 'src/main/resources' ]
+    }
+    compileClasspath = sourceSets.main.output + configurations.java8Compile
+    runtimeClasspath = output + compileClasspath + configurations.java8Runtime
+    output.resourcesDir = "${buildRoot}/classes-j8"
+  }
+  test {
+    java {
+      srcDirs = [ 'src/test/java', "src/test/java-${javaVersion}" ]
+      outputDir = new File(buildRoot, "test-classes-${javaVersion}")
+    }
+    compileClasspath += sourceSets["${profile}"].output
+    runtimeClasspath += sourceSets["${profile}"].output
+  }
+}
+
+clean {
+  delete 'logs'
+  delete 'target'
+}
+
+jacoco {
+  toolVersion = '0.8.5'
+  reportsDir = file("${buildDir}/customJacocoReportDir")
+}
+
+jacocoTestReport {
+  reports {
+    xml.enabled false
+    csv.enabled false
+    html.destination file("${buildDir}/jacocoHtml")
+  }
+}
+
+task("${profile}Javadoc", type: Javadoc) {
+  group 'Documentation'
+  description "Generates Javadoc API documentation for the '${profile}' source code."
+  
+  source = sourceSets["${profile}"].allJava
+  classpath = configurations.compile + configurations["${profile}Compile"]
+}
+
+task("${profile}Jar", type: Jar) {
+  group 'Build'
+  description "Assembles a jar archive containing the '${profile}' classes, POM and Maven properties."
+  
+  def destPath = "META-INF/maven/${project.group}/${rootProject.name}"
+  def timestamp = Long.valueOf(System.currentTimeMillis()).toString()
+  def pomTokens = [projectVersion: archiveVer, projectTimestamp: timestamp, javaVersion: javaVersion]
+  def propTokens = [projectVersion: archiveVer, projectGroupId: project.group, projectArtifactId: rootProject.name]
+  
+  from(sourceSets["${profile}"].output) { }
+  from('.') {
+    include('pom.xml')
+    into(destPath)
+    filter(ReplaceTokens, tokens: pomTokens)
+  }
+  from('.') {
+    include('pom.properties')
+    into(destPath)
+    filter(ReplaceTokens, tokens: propTokens)
+  }
+  archiveName = archiveBase + '.jar'
+  destinationDir = libsDir
+  duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
+clean {
+  delete buildRoot
+}
+
+task("${profile}SourcesJar", type: Jar) {
+  group 'Build'
+  description "Assembles a jar archive containing the '${profile}' source files."
+  
+  classifier = 'sources'
+  from sourceSets["${profile}"].allSource
+  archiveName = archiveBase + '-sources.jar'
+  destinationDir = libsDir
+}
+
+task("${profile}JavadocJar", type: Jar, dependsOn: "${profile}Javadoc") {
+  group 'Build'
+  description "Assembles a jar archive containing the '${profile}' JavaDoc files."
+  
+  classifier = 'javadoc'
+  from tasks["${profile}Javadoc"].destinationDir
+  archiveName = archiveBase + '-javadoc.jar'
+  destinationDir = libsDir
+}
+
+test {
+  useTestNG()
+  include '**/*Test.class'
+  reports.html.destination = file("${buildDir}/reports/testng")
+  testLogging.showStandardStreams = true
+}
+
+artifacts {
+  archives tasks["${profile}Jar"]
+  archives tasks["${profile}SourcesJar"]
+  archives tasks["${profile}JavadocJar"]
+}
+
+signing {
+  sign configurations.archives
+}
+
+install {
+  repositories {
+    mavenInstaller {
+      pom.scopeMappings.with {
+        mappings.clear()
+        addMapping(300, configurations.compile, 'compile')
+        addMapping(300, configurations["${profile}Compile"], 'compile')
+      }
+    }
+  }
+}
+
+uploadArchives {
+  repositories {
+    mavenDeployer {
+      beforeDeployment { MavenDeployment deployment ->
+        signing.signPom(deployment)
+        signArchives.filesToSign.each {
+          def signOp = signing.sign(it)
+          def single = signOp.singleSignature
+          def matcher = it.name =~ /-(sources|javadoc)\.jar$/
+          single.name = 'testng-foundation'
+          single.classifier = matcher.find() ? matcher.group(1) : null
+          deployment.addArtifact(single)
+        }
+      }
+      
+      repository(url: 'https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/') {
+        authentication(userName: ossrhUsername, password: ossrhPassword)
+      }
+
+      snapshotRepository(url: 'https://s01.oss.sonatype.org/content/repositories/snapshots/') {
+        authentication(userName: ossrhUsername, password: ossrhPassword)
+      }
+
+      pom.scopeMappings.with {
+        mappings.clear()
+        addMapping(300, configurations.compile, 'compile')
+        addMapping(300, configurations["${profile}Compile"], 'compile')
+      }
+    }
+  }
+}
+
+def installer = install.repositories.mavenInstaller
+def deployer = uploadArchives.repositories.mavenDeployer
+
+[installer, deployer]*.pom*.whenConfigured { pom ->
+  pom.project {
+    name 'TestNG Foundation'
+    groupId project.group
+    artifactId rootProject.name
+    version archiveVer
+    packaging 'jar'
+    description 'TestNG Foundation is an automation framework designed to extend and enhance the capabilities provided by TestNG.'
+    url 'https://github.com/sbabcoc/TestNG-Foundation'
+
+    scm {
+      connection 'scm:git:https://github.com/sbabcoc/TestNG-Foundation.git'
+      developerConnection 'scm:git:https://github.com/sbabcoc/TestNG-Foundation.git'
+      url 'https://github.com/sbabcoc/TestNG-Foundation/tree/master'
+      tag 'HEAD'
+    }
+
+    licenses {
+      license {
+        name 'The Apache License, Version 2.0'
+        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+      }
+    }
+
+    developers {
+      developer {
+        id 'scoba'
+        name 'Scott Babcock'
+        email 'scoba@hotmail.com'
+        organization 'Nordstrom'
+        organizationUrl 'https://shop.nordstrom.com'
+      }
+    }
+  }
+}
+
+nexusStaging {
+  packageGroup = 'com.nordstrom'
+  stagingProfileId = '76d943f622957'
+}
+
+repositories {
+  mavenLocal()
+  mavenCentral()
+  maven { url 'https://repo.maven.apache.org/maven2' }
+  maven { url "${projectDir}/repo" }
+}
+
+dependencies {
+  compile 'com.nordstrom.tools:java-utils:2.0.0'
+  compile 'com.nordstrom.tools:settings:2.3.5'
+  
+  apply from: "${profile}Deps.gradle"
+  
+  testCompile configurations["${profile}Compile"]
+}

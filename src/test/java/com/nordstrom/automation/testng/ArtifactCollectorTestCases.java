@@ -48,7 +48,7 @@ public class ArtifactCollectorTestCases {
     
     private UnitTestCapture getListener() {
         ITestResult result = Reporter.getCurrentTestResult();
-        Optional<UnitTestCapture> optional = ListenerChain.getAttachedListener(result, UnitTestCapture.class);
+        Optional<UnitTestCapture> optional = AbstractListenerChain.getAttachedListener(result, UnitTestCapture.class);
         return optional.get();
     }
     
