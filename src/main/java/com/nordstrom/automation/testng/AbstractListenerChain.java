@@ -568,7 +568,7 @@ public abstract class AbstractListenerChain implements IAnnotationTransformer, I
      * @param listenerTyp listener class to add to the chain (may be 'null')
      * @param listenerObj listener object to add to the chain (may be 'null')
      */
-    public void attachListener(Class<? extends ITestNGListener> listenerTyp, ITestNGListener listenerObj) { //NOSONAR
+    protected void attachListener(Class<? extends ITestNGListener> listenerTyp, ITestNGListener listenerObj) { //NOSONAR
         Class<? extends ITestNGListener> type;
         ITestNGListener object;
         
