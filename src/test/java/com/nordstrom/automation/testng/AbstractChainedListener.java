@@ -20,6 +20,10 @@ import org.testng.ITestClass;
 import org.testng.ITestContext;
 import org.testng.ITestListener;
 import org.testng.ITestResult;
+import org.testng.annotations.IConfigurationAnnotation;
+import org.testng.annotations.IDataProviderAnnotation;
+import org.testng.annotations.IFactoryAnnotation;
+import org.testng.annotations.IListenersAnnotation;
 import org.testng.annotations.ITestAnnotation;
 
 public abstract class AbstractChainedListener implements IAnnotationTransformer, ISuiteListener,
@@ -170,6 +174,40 @@ public abstract class AbstractChainedListener implements IAnnotationTransformer,
         }
     }
 
+    @SuppressWarnings("rawtypes")
+    // @Override omitted to avoid interface conflict
+    public void transform(IConfigurationAnnotation annotation, Class testClass,
+                    Constructor testCtor, Method testMethod) {
+        
+        if (testClass != null) {
+            xformConfig.add("class: " + testClass.getSimpleName());
+        } else if (testCtor != null) {
+            xformConfig.add("ctor: " + testCtor.getName());
+        } else {
+            xformConfig.add("method: " + testMethod.getName());
+        }
+    }
+
+    // @Override omitted to avoid interface conflict
+    public void transform(IDataProviderAnnotation annotation, Method method) {
+        xformProvider.add("method: " + method.getName());
+    }
+
+    // @Override omitted to avoid interface conflict
+    public void transform(IFactoryAnnotation annotation, Method method) {
+        if (method != null) {
+            xformFactory.add("method: " + method.getName());
+        } else {
+            xformFactory.add("ctor: (unknown)");
+        }
+    }
+
+    @SuppressWarnings("rawtypes")
+    // @Override omitted to avoid interface conflict
+    public void transform(IListenersAnnotation annotation, Class testClass) {
+        xformListeners.add("class: " + testClass.getSimpleName());
+    }
+    
     @Override
     public List<IMethodInstance> intercept(List<IMethodInstance> methods, ITestContext context) {
         interceptor.add(context.getName());
