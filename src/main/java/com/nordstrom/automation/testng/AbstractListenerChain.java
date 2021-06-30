@@ -460,7 +460,7 @@ public abstract class AbstractListenerChain implements IAnnotationTransformer, I
         
         Objects.requireNonNull(suite, "[suite] must be non-null");
         Objects.requireNonNull(listenerType, "[listenerType] must be non-null");
-        AbstractListenerChain chain = (AbstractListenerChain) suite.getAttribute(LISTENER_CHAIN);
+        ListenerChain chain = (ListenerChain) suite.getAttribute(LISTENER_CHAIN);
         Objects.requireNonNull(chain, "Specified suite has no ListenerChain");
         return chain.getAttachedListener(listenerType);
     }
