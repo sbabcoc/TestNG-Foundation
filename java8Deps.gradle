@@ -8,5 +8,4 @@ tasks.withType(JavaCompile) {
 dependencies {
   java8Compile configurations.compile
   java8Compile 'org.testng:testng:7.3.0'
-  java8Compile 'com.google.guava:guava:30.1.1-jre'
 }

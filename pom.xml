@@ -34,8 +34,8 @@
     <surefire-plugin.version>3.0.0-M5</surefire-plugin.version>
     <source-plugin.version>3.2.1</source-plugin.version>
     <javadoc-plugin.version>3.3.0</javadoc-plugin.version>
-    <java-utils.version>2.0.2</java-utils.version>
-    <settings.version>2.3.8</settings.version>
+    <java-utils.version>2.0.3</java-utils.version>
+    <settings.version>2.3.9</settings.version>
     <sonar.language>java</sonar.language>
     <jacoco.version>0.8.7</jacoco.version>
     <gpg-plugin.version>3.0.1</gpg-plugin.version>
@@ -243,7 +243,6 @@
       <properties>
         <maven.compiler.release>7</maven.compiler.release>
         <testng.version>6.10</testng.version>
-        <guava.version>30.1.1-android</guava.version>
       </properties>
       <dependencyManagement>
         <dependencies>
@@ -252,21 +251,12 @@
             <artifactId>testng</artifactId>
             <version>${testng.version}</version>
           </dependency>
-          <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>${guava.version}</version>
-          </dependency>
         </dependencies>
       </dependencyManagement>
       <dependencies>
         <dependency>
           <groupId>org.testng</groupId>
           <artifactId>testng</artifactId>
-        </dependency>
-        <dependency>
-          <groupId>com.google.guava</groupId>
-          <artifactId>guava</artifactId>
         </dependency>
       </dependencies>
       <build>
@@ -307,8 +297,7 @@
       <id>java8</id>
       <properties>
         <maven.compiler.release>8</maven.compiler.release>
-        <testng.version>7.4.0</testng.version>
-        <guava.version>30.1.1-jre</guava.version>
+        <testng.version>7.3.0</testng.version>
       </properties>
       <dependencyManagement>
         <dependencies>
@@ -317,21 +306,12 @@
             <artifactId>testng</artifactId>
             <version>${testng.version}</version>
           </dependency>
-          <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>${guava.version}</version>
-          </dependency>
         </dependencies>
       </dependencyManagement>
       <dependencies>
         <dependency>
           <groupId>org.testng</groupId>
           <artifactId>testng</artifactId>
-        </dependency>
-        <dependency>
-          <groupId>com.google.guava</groupId>
-          <artifactId>guava</artifactId>
         </dependency>
       </dependencies>
       <build>
