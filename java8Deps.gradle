@@ -8,4 +8,5 @@ tasks.withType(JavaCompile) {
 dependencies {
   java8Compile configurations.compile
   java8Compile 'org.testng:testng:7.3.0'
+  java8Compile('org.apache.ant:ant:1.10.11') { force = true }
 }
