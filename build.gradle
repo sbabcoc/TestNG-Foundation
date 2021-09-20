@@ -282,8 +282,8 @@ repositories {
 }
 
 dependencies {
-  compile 'com.nordstrom.tools:java-utils:2.0.3'
-  compile 'com.nordstrom.tools:settings:2.3.9'
+  compile 'com.nordstrom.tools:java-utils:2.1.0'
+  compile 'com.nordstrom.tools:settings:2.3.10'
   
   apply from: "${profile}Deps.gradle"
   
