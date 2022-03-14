@@ -110,7 +110,13 @@ public class RetryManager implements IRetryAnalyzer {
             doRetry = isRetriable(result);
             
             if (doRetry) {
-                logger.warn("### RETRY ### [{}/{}] {}", invocation.suiteName, invocation.testName, invocation);
+                if (logger.isDebugEnabled()) {
+                    logger.debug("### RETRY ### [{}/{}] {}",
+                            invocation.suiteName, invocation.testName, invocation, result.getThrowable());
+                } else {
+                    logger.warn("### RETRY ### [{}/{}] {}",
+                            invocation.suiteName, invocation.testName, invocation);
+                }
             }
         }
         

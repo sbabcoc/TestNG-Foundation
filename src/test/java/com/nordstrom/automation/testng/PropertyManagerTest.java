@@ -14,8 +14,6 @@ import org.testng.ITestResult;
 import org.testng.Reporter;
 import org.testng.annotations.Test;
 
-import com.nordstrom.automation.testng.PropertyManager;
-
 public class PropertyManagerTest {
     
     private static final String BOOLEAN_KEY = "BOOLEAN";

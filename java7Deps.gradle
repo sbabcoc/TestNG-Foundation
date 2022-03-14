@@ -1,11 +1,31 @@
-sourceCompatibility = 1.7
-targetCompatibility = 1.7
+ext.buildRoot = file('build-j7')
+ext.libsDir = new File(buildRoot, 'libs')
 
-tasks.withType(JavaCompile) {
-    options.bootstrapClasspath = files("${System.env.JDK7_HOME}/jre/lib/rt.jar")
+java {
+  toolchain {
+    languageVersion = JavaLanguageVersion.of(7)
+  }
 }
 
+sourceSets {
+  main {
+    java {
+      srcDirs = [ 'src/main/java', 'src/main-j7/java' ]
+      outputDir = new File(buildRoot, 'classes')
+    }
+    output.resourcesDir = "${buildRoot}/classes"
+  }
+  test {
+    java {
+      srcDirs = [ 'src/test/java', 'src/test-j7/java' ]
+      outputDir = new File(buildRoot, 'test-classes')
+    }
+  }
+}
+  
 dependencies {
-  java7Compile configurations.compile
-  java7Compile 'org.testng:testng:6.10'
+  constraints {
+    api 'org.testng:testng:6.10'
+  }
+  api 'org.testng:testng'
 }
