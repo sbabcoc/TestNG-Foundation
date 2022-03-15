@@ -10,8 +10,6 @@ import org.testng.TestNG;
 import org.testng.annotations.Test;
 import org.testng.xml.XmlSuite.FailurePolicy;
 
-import com.nordstrom.automation.testng.ExecutionFlowController;
-
 public class ExecutionFlowControllerTest {
     
     @Test
@@ -30,7 +28,6 @@ public class ExecutionFlowControllerTest {
         assertEquals(tla.getConfigurationFailures().size(), 0, "Unexpected configuration method failure");
         
         assertEquals(tla.getPassedTests().size(), 2, "Incorrect passed test count");
-        assertEquals(tla.getFailedTests().size(), 0, "Incorrect failed test count");
         assertEquals(tla.getSkippedTests().size(), 0, "Incorrect skipped test count");
         
         assertEquals(HappyPathClass.fromBefore, HappyPathClass.VALUE, "Incorrect [before] value");
@@ -56,7 +53,6 @@ public class ExecutionFlowControllerTest {
         assertEquals(tla.getConfigurationFailures().size(), 0, "Unexpected configuration method failure");
         
         assertEquals(tla.getPassedTests().size(), 1, "Incorrect passed test count");
-        assertEquals(tla.getFailedTests().size(), 0, "Incorrect failed test count");
         assertEquals(tla.getConfigurationSkips().size(), 1, "Incorrect configuration skip count");
         assertEquals(tla.getSkippedTests().size(), 1, "Incorrect skipped test count");
         ITestResult methodResult = tla.getSkippedTests().get(0);
@@ -84,7 +80,6 @@ public class ExecutionFlowControllerTest {
         assertEquals(tla.getConfigurationFailures().size(), 0, "Unexpected configuration method failure");
         
         assertEquals(tla.getPassedTests().size(), 1, "Incorrect passed test count");
-        assertEquals(tla.getFailedTests().size(), 0, "Incorrect failed test count");
         assertEquals(tla.getSkippedTests().size(), 1, "Incorrect skipped test count");
         assertEquals(tla.getSkippedTests().get(0).getName(), "testMethod", "Incorrect skipped test name");
         
@@ -110,7 +105,6 @@ public class ExecutionFlowControllerTest {
         assertEquals(tla.getConfigurationFailures().size(), 0, "Unexpected configuration method failure");
         
         assertEquals(tla.getPassedTests().size(), 1, "Incorrect passed test count");
-        assertEquals(tla.getFailedTests().size(), 0, "Incorrect failed test count");
         assertEquals(tla.getSkippedTests().size(), 0, "Incorrect skipped test count");
         
         assertTrue(MethodListenerExtension.beforeMethodBefore, "Incorrect [beforeMethod] 'before' value");
