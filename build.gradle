@@ -21,7 +21,7 @@ if (!project.hasProperty('profile')) {
 apply from: "${profile}Deps.gradle"
 
 def archiveVer = null
-def verBits = project.version.split('-')
+def verBits = scmVersion.version.split('-')
 def javaVersion = 'j' + profile.charAt(4)
 if (verBits.length > 1) {
   if (verBits[1].equals(javaVersion)) {
