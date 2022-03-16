@@ -110,13 +110,8 @@ public class RetryManager implements IRetryAnalyzer {
             doRetry = isRetriable(result);
             
             if (doRetry) {
-                if (logger.isDebugEnabled()) {
-                    logger.debug("### RETRY ### [{}/{}] {}",
-                            invocation.suiteName, invocation.testName, invocation, result.getThrowable());
-                } else {
-                    logger.warn("### RETRY ### [{}/{}] {}",
-                            invocation.suiteName, invocation.testName, invocation);
-                }
+                logger.warn("### RETRY ### [{}/{}] {}", invocation.suiteName, invocation.testName, invocation,
+                        getThrowableToLog(result));
             }
         }
         
@@ -138,5 +133,18 @@ public class RetryManager implements IRetryAnalyzer {
             }
         }
         return false;
+    }
+    
+    /**
+     * Get the {@link Throwable} to log with the retry notification.
+     * 
+     * @param result result of test method that's being retried
+     * @return if exception logging is indicated, the exception that caused the test to fail; otherwise {@code null}
+     */
+    private Throwable getThrowableToLog(ITestResult result) {
+        if (logger.isDebugEnabled() || config.getBoolean(TestNGSettings.RETRY_MORE_INFO.key())) {
+            return result.getThrowable();
+        }
+        return null;
     }
 }
