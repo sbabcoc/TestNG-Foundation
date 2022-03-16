@@ -32,12 +32,42 @@ public class TestNGConfig extends SettingsCore<TestNGConfig.TestNGSettings> {
      * the {@code testng.properties} file and System property declarations.
      */
     public enum TestNGSettings implements SettingsCore.SettingsAPI {
-        /** name: <b>testng.timeout.test</b> <br> default: {@code null} */
+        /**
+         * This setting specifies the global default
+         * <a href="https://javadoc.io/static/org.testng/testng/7.5/org/testng/annotations/Test.html#timeOut()">
+         * method timeout</a> in milliseconds.
+         * <p>
+         * name: <b>testng.timeout.test</b><br>
+         * default: {@code null}
+         */
         TEST_TIMEOUT("testng.timeout.test", null),
-        /** name: <b>testng.retry.analyzer</b> <br> default: <b>com.nordstrom.automation.testng.RetryManager</b> */
+        
+        /**
+         * This setting specifies the fully-qualified class name of the default <b>TestNG</b>
+         * <a href="https://javadoc.io/static/org.testng/testng/7.5/org/testng/annotations/Test.html#retryAnalyzer()">
+         * retry analyzer</a>.
+         * <p>
+         * name: <b>testng.retry.analyzer</b><br>
+         * default: <b>{@link com.nordstrom.automation.testng.RetryManager}</b>
+         */
         RETRY_ANALYZER("testng.retry.analyzer", "com.nordstrom.automation.testng.RetryManager"),
-        /** name: <b>testng.max.retry</b> <br> default: <b>0</b> */
-        MAX_RETRY("testng.max.retry", "0");
+        
+        /**
+         * This setting specifies the maximum number of times a failed method will be retried.
+         * <p>
+         * name: <b>testng.max.retry</b><br>
+         * default: <b>0</b>
+         */
+        MAX_RETRY("testng.max.retry", "0"),
+        
+        /**
+         * This setting specifies whether the exception that caused a test to fail will be logged in the notification
+         * that the test is being retried.
+         * <p>
+         * name: <b>retry.more.info</b><br>
+         * default: {@code false}
+         */
+        RETRY_MORE_INFO("retry.more.info", "false");
 
         private String propertyName;
         private String defaultValue;
