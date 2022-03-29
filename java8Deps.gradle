@@ -25,7 +25,7 @@ sourceSets {
 
 dependencies {
   constraints {
-    api 'org.testng:testng:7.3.0'
+    api 'org.testng:testng:7.5'
     api 'org.apache.ant:ant:1.10.11'
   }
   api 'org.testng:testng'
