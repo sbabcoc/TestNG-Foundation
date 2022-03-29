@@ -297,7 +297,7 @@
       <id>java8</id>
       <properties>
         <maven.compiler.release>8</maven.compiler.release>
-        <testng.version>7.3.0</testng.version>
+        <testng.version>7.5</testng.version>
         <ant.version>1.10.11</ant.version>
       </properties>
       <dependencyManagement>
