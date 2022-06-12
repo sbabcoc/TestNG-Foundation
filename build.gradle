@@ -6,16 +6,16 @@ plugins {
   id 'jacoco'
   id 'signing'
   id 'io.github.gradle-nexus.publish-plugin' version '1.1.0'
-  id 'pl.allegro.tech.build.axion-release' version '1.13.6'
+  id 'pl.allegro.tech.build.axion-release' version '1.13.14'
 }
 
 group = 'com.nordstrom.tools'
 description = 'TestNG Foundation'
 
 if (!project.hasProperty('profile')) {
-  ext.profile = 'java7'
+  ext.profile = 'java8'
 } else {
-  assert ['java7', 'java8'].contains(profile)
+  assert ['java8'].contains(profile)
 }
 
 apply from: "${profile}Deps.gradle"
@@ -48,7 +48,7 @@ clean {
 }
 
 jacoco {
-  toolVersion = '0.8.5'
+  toolVersion = '0.8.8'
   reportsDirectory = file("${buildDir}/customJacocoReportDir")
 }
 
@@ -194,8 +194,8 @@ repositories {
 
 dependencies {
   constraints {
-    api 'com.nordstrom.tools:java-utils:2.2.0'
-    api 'com.nordstrom.tools:settings:2.3.11'
+    api 'com.nordstrom.tools:java-utils:3.0.0'
+    api 'com.nordstrom.tools:settings:3.0.0'
   }
   api 'com.nordstrom.tools:java-utils'
   api 'com.nordstrom.tools:settings'
