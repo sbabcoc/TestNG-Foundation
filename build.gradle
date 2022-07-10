@@ -195,7 +195,7 @@ repositories {
 dependencies {
   constraints {
     api 'com.nordstrom.tools:java-utils:3.0.0'
-    api 'com.nordstrom.tools:settings:3.0.0'
+    api 'com.nordstrom.tools:settings:3.0.1'
   }
   api 'com.nordstrom.tools:java-utils'
   api 'com.nordstrom.tools:settings'
