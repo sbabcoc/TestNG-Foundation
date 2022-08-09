@@ -34,8 +34,8 @@
     <surefire-plugin.version>3.0.0-M7</surefire-plugin.version>
     <source-plugin.version>3.2.1</source-plugin.version>
     <javadoc-plugin.version>3.4.0</javadoc-plugin.version>
-    <java-utils.version>3.0.0</java-utils.version>
-    <settings.version>3.0.1</settings.version>
+    <java-utils.version>3.1.1</java-utils.version>
+    <settings.version>3.0.2</settings.version>
     <sonar.language>java</sonar.language>
     <jacoco.version>0.8.8</jacoco.version>
     <gpg-plugin.version>3.0.1</gpg-plugin.version>
