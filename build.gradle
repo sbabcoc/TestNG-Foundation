@@ -13,9 +13,9 @@ group = 'com.nordstrom.tools'
 description = 'TestNG Foundation'
 
 if (!project.hasProperty('profile')) {
-  ext.profile = 'java8'
+  ext.profile = 'java11'
 } else {
-  assert ['java8'].contains(profile)
+  assert ['java8', 'java11'].contains(profile)
 }
 
 apply from: "${profile}Deps.gradle"

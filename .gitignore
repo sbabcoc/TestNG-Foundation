@@ -12,10 +12,12 @@ integration/felix-cache/
 runner
 .DS_Store
 test-output
+target-j11/
 target-j8/
 target-j7/
 .gradle/
 build/
+build-j11/
 build-j8/
 build-j7/
 bin/

@@ -1,9 +1,9 @@
-ext.buildRoot = file('build-j8')
+ext.buildRoot = file('build-j11')
 ext.libsDir = new File(buildRoot, 'libs')
 
 java {
   toolchain {
-    languageVersion = JavaLanguageVersion.of(8)
+    languageVersion = JavaLanguageVersion.of(11)
   }
 }
 
@@ -25,7 +25,7 @@ sourceSets {
 
 dependencies {
   constraints {
-    api 'org.testng:testng:7.5'
+    api 'org.testng:testng:7.7.1'
     api 'org.apache.ant:ant:1.10.13'
   }
   api 'org.testng:testng'
