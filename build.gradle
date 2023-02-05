@@ -22,7 +22,7 @@ apply from: "${profile}Deps.gradle"
 
 def archiveVer = null
 def verBits = scmVersion.version.split('-')
-def javaVersion = 'j' + profile.charAt(4)
+def javaVersion = 'j' + profile.substring(4)
 if (verBits.length > 1) {
   if (verBits[1].equals(javaVersion)) {
     archiveVer = project.version
