@@ -1,4 +1,4 @@
-[![Maven Central](https://img.shields.io/maven-central/v/com.nordstrom.tools/testng-foundation.svg)](https://mvnrepository.com/artifact/com.nordstrom.tools/testng-foundation)
+[![Maven Central](https://img.shields.io/maven-central/v/com.nordstrom.tools/testng-foundation.svg)](https://central.sonatype.com/search?q=com.nordstrom.tools+testng-foundation&core=gav)
 
 # INTRODUCTION
 
