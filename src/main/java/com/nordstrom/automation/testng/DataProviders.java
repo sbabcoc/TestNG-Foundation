@@ -2,12 +2,13 @@ package com.nordstrom.automation.testng;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-
-import com.google.common.collect.Sets;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * This class is meant for utility methods to assist in creating DataProviders
@@ -50,11 +51,11 @@ public class DataProviders {
 			// otherwise, if this is an array of array of object
 			} else if (thisObj instanceof Object[][]) {
 				// add to list as set of array of object
-				setList.add(Sets.newHashSet((Object[][]) thisObj));
+				setList.add(newHashSet((Object[][]) thisObj));
 			// otherwise, if this is an array of object
 			} else if (thisObj instanceof Object[]) {
 				// add to list as set of array of object
-				setList.add(Sets.newHashSet(unflatten((Object[]) thisObj)));
+				setList.add(newHashSet(unflatten((Object[]) thisObj)));
 			} else {
 				throw new IllegalArgumentException(
 						"Types of all arguments must be Object[][], Iterator<Object[]>, or Object[]");
@@ -86,7 +87,7 @@ public class DataProviders {
 
 		CartesianDataProvider(List<Set<Object[]>> setList) {
 			// store iterator over Cartesian product
-			provider = Sets.cartesianProduct(setList).iterator();
+			provider = cartesianProduct(setList).iterator();
 		}
 
 		@Override
@@ -123,7 +124,29 @@ public class DataProviders {
 		public void remove() {
 			provider.remove();
 		}
+		
+		public <T> List<List<T>> cartesianProduct(List<Set<T>> setList) {
+		    return cartesianProductWorker(setList,0).collect(Collectors.toList());
+		}
 
+		public <T> Stream<List<T>> cartesianProductWorker(List<Set<T>> setList, int index) {
+		    if (index == setList.size()) {
+		        List<T> emptyList = new ArrayList<>();
+		        return Stream.of(emptyList);
+		    }
+		    Set<T> currentSet = setList.get(index);
+		    return currentSet.stream().flatMap(element -> cartesianProductWorker(setList, index+1)
+		      .map(list -> {
+		          List<T> newList = new ArrayList<>(list);
+		          newList.add(0, element);
+		          return newList;
+		      }));
+		}
 	}
 
+	public static <T> Set<T> newHashSet(T[] items) {
+		Set<T> newSet = new HashSet<>();
+		Collections.addAll(newSet, items);
+		return newSet;
+	}
 }

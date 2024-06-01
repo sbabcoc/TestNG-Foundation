@@ -8,7 +8,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.ServiceLoader;
 import java.util.Set;
 
@@ -28,9 +30,6 @@ import org.testng.ITestListener;
 import org.testng.ITestNGListener;
 import org.testng.ITestResult;
 import org.testng.annotations.ITestAnnotation;
-
-import com.google.common.base.Optional;
-import com.google.common.collect.Lists;
 
 /**
  * This TestNG listener enables the addition of other listeners at runtime and guarantees the order in which they're
@@ -124,9 +123,10 @@ public abstract class AbstractListenerChain implements IAnnotationTransformer, I
         suite.setAttribute(LISTENER_CHAIN, this);
         
         synchronized(suiteListeners) {
-            for (ISuiteListener suiteListener : Lists.reverse(suiteListeners)) {
-                suiteListener.onStart(suite);
-            }
+        	ListIterator<ISuiteListener> iterator = suiteListeners.listIterator(suiteListeners.size());
+        	while (iterator.hasPrevious()) {
+        		iterator.previous().onStart(suite);
+        	}
         }
     }
 
@@ -226,9 +226,10 @@ public abstract class AbstractListenerChain implements IAnnotationTransformer, I
     // @Override omitted to avoid interface conflict
     public void beforeInvocation(IInvokedMethod method, ITestResult testResult, ITestContext context) {
         synchronized(methodListeners) {
-            for (IInvokedMethodListener methodListener : Lists.reverse(methodListeners)) {
-                methodListener.beforeInvocation(method, testResult);
-            }
+        	ListIterator<IInvokedMethodListener> iterator = methodListeners.listIterator(methodListeners.size());
+        	while (iterator.hasPrevious()) {
+        		iterator.previous().beforeInvocation(method, testResult);
+        	}
         }
     }
 
@@ -261,9 +262,10 @@ public abstract class AbstractListenerChain implements IAnnotationTransformer, I
     @Override
     public void onTestStart(ITestResult result) {
         synchronized(testListeners) {
-            for (ITestListener testListener : Lists.reverse(testListeners)) {
-                testListener.onTestStart(result);
-            }
+        	ListIterator<ITestListener> iterator = testListeners.listIterator(testListeners.size());
+        	while (iterator.hasPrevious()) {
+        		iterator.previous().onTestStart(result);
+        	}
         }
     }
 
@@ -343,9 +345,10 @@ public abstract class AbstractListenerChain implements IAnnotationTransformer, I
     @Override
     public void onStart(ITestContext context) {
         synchronized (testListeners) {
-            for (ITestListener testListener : Lists.reverse(testListeners)) {
-                testListener.onStart(context);
-            }
+        	ListIterator<ITestListener> iterator = testListeners.listIterator(testListeners.size());
+        	while (iterator.hasPrevious()) {
+        		iterator.previous().onStart(context);
+        	}
         }
     }
 
@@ -394,9 +397,10 @@ public abstract class AbstractListenerChain implements IAnnotationTransformer, I
     @Override
     public void onBeforeClass(ITestClass testClass) {
         synchronized (classListeners) {
-            for (IClassListener classListener : Lists.reverse(classListeners)) {
-                classListener.onBeforeClass(testClass);
-            }
+        	ListIterator<IClassListener> iterator = classListeners.listIterator(classListeners.size());
+        	while (iterator.hasPrevious()) {
+        		iterator.previous().onBeforeClass(testClass);
+        	}
         }
     }
 
@@ -479,7 +483,7 @@ public abstract class AbstractListenerChain implements IAnnotationTransformer, I
                 return Optional.of((T) listener);
             }
         }
-        return Optional.absent();
+        return Optional.empty();
     }
 
     /**
