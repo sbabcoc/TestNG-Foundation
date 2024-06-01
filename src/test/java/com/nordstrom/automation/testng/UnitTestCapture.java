@@ -1,9 +1,9 @@
 package com.nordstrom.automation.testng;
 
 import java.nio.file.Path;
-import org.testng.ITestResult;
+import java.util.Optional;
 
-import com.google.common.base.Optional;
+import org.testng.ITestResult;
 
 public class UnitTestCapture extends ArtifactCollector<UnitTestArtifact> {
     
