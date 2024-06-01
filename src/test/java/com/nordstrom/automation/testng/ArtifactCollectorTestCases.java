@@ -3,11 +3,11 @@ package com.nordstrom.automation.testng;
 import static org.testng.Assert.assertTrue;
 import static org.testng.Assert.fail;
 
-import java.util.Optional;
-
 import org.testng.ITestResult;
 import org.testng.Reporter;
 import org.testng.annotations.Test;
+
+import com.google.common.base.Optional;
 
 @LinkedListeners({UnitTestCapture.class, ExecutionFlowController.class})
 public class ArtifactCollectorTestCases {
