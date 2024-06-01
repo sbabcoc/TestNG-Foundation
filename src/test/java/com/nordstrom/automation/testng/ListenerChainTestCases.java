@@ -4,6 +4,8 @@ import static org.testng.Assert.assertTrue;
 import static org.testng.Assert.fail;
 
 import java.lang.reflect.Method;
+import java.util.Optional;
+
 import org.testng.ITestResult;
 import org.testng.Reporter;
 import org.testng.SkipException;
@@ -12,8 +14,6 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
-
-import com.google.common.base.Optional;
 
 /**
  * This test class is driven by {@link ListenerChainTest}. Attempts to run the tests in this class without specifying
