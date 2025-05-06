@@ -16,9 +16,9 @@ import com.nordstrom.common.base.ExceptionUnwrapper;
  * This TestNG retry analyzer provides a framework for invoking collections of scenario-specific analyzers that are
  * installed via the {@link ServiceLoader}:
  * <ul>
- *     <li>Managed retry analyzers implement the standard {@link IRetryAnalyzer} interface.</li>
+ *     <li>Managed retry analyzers implement the {@link TestNGRetryAnalyzer} interface.</li>
  *     <li>Analyzer classes are added to the managed collection via entries in a file named
- *     <blockquote>{@code META-INF/services/org.testng.IRetryAnalyzer}</blockquote></li> 
+ *     <blockquote>{@code META-INF/services/com.nordstrom.automation.testng.TestNGRetryAnalyzer}</blockquote></li> 
  *     <li>The number of times a failed test will be retried is configured via the
  *     {@link TestNGSettings#MAX_RETRY MAX_RETRY} setting, which defaults to <b>0</b>.</li>
  * </ul>
