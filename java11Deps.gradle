@@ -1,5 +1,5 @@
-ext.buildRoot = file('build-j11')
-ext.libsDir = new File(buildRoot, 'libs')
+ext.buildRoot = layout.projectDirectory.dir('build-j11')
+ext.libsDir = buildRoot.dir('libs')
 
 java {
   toolchain {
@@ -10,23 +10,23 @@ java {
 sourceSets {
   main {
     java {
-      srcDirs = [ 'src/main/java', 'src/main-j8/java' ]
-      outputDir = new File(buildRoot, 'classes')
+      srcDirs = ['src/main/java', 'src/main-j11/java']
+      destinationDirectory = buildRoot.dir('classes')
     }
-    output.resourcesDir = "${buildRoot}/classes"
+    output.resourcesDir = buildRoot.dir('classes')
   }
   test {
     java {
-      srcDirs = [ 'src/test/java', 'src/test-j8/java' ]
-      outputDir = new File(buildRoot, 'test-classes')
+      srcDirs = ['src/test/java']
+      destinationDirectory = buildRoot.dir('test-classes')
     }
   }
 }
 
 dependencies {
   constraints {
-    api 'org.testng:testng:7.8.0'
-    api 'org.apache.ant:ant:1.10.13'
+    api 'org.testng:testng:7.12.0'
+    api 'org.apache.ant:ant:1.10.15'
   }
   api 'org.testng:testng'
   api 'org.apache.ant:ant'
