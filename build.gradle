@@ -5,8 +5,8 @@ plugins {
   id 'maven-publish'
   id 'jacoco'
   id 'signing'
-  id 'io.github.gradle-nexus.publish-plugin' version '1.1.0'
-  id 'pl.allegro.tech.build.axion-release' version '1.13.14'
+  id 'io.github.gradle-nexus.publish-plugin' version '2.0.0'
+  id 'pl.allegro.tech.build.axion-release' version '1.21.1'
 }
 
 group = 'com.nordstrom.tools'
@@ -20,22 +20,21 @@ if (!project.hasProperty('profile')) {
 
 apply from: "${profile}Deps.gradle"
 
-def archiveVer = null
-def verBits = scmVersion.version.split('-')
 def javaVersion = 'j' + profile.substring(4)
+def verBits   = scmVersion.version.split('-')
+
+def archiveVer
 if (verBits.length > 1) {
-  if (verBits[1].equals(javaVersion)) {
-    archiveVer = project.version
-  } else {
-    archiveVer = verBits[0] + '-' + javaVersion + '-' + verBits[1]
-  }
+  archiveVer = verBits[1] == javaVersion
+    ? project.version
+    : "${verBits[0]}-${javaVersion}-${verBits[1]}"
 } else {
-  archiveVer = verBits[0] + '-' + javaVersion
+  archiveVer = "${verBits[0]}-${javaVersion}"
 }
 
 project.version = archiveVer
-  
-def archiveBase = rootProject.name + '-' + archiveVer
+
+def archiveBase = "${rootProject.name}-${archiveVer}"
 
 java {
   withJavadocJar()
@@ -43,87 +42,75 @@ java {
 }
 
 clean {
-  delete 'logs'
-  delete 'target'
+  delete 'logs', 'target'
 }
 
 jacoco {
-  toolVersion = '0.8.8'
-  reportsDirectory = file("${buildDir}/customJacocoReportDir")
+  toolVersion = '0.8.13'
+  reportsDirectory = layout.buildDirectory.dir('customJacocoReportDir')
 }
 
 jacocoTestReport {
   reports {
-    xml.enabled false
-    csv.enabled false
-    html.destination file("${buildDir}/jacocoHtml")
+    xml.required = false
+    csv.required = false
+    html.outputLocation = layout.buildDirectory.dir('jacocoHtml')
   }
 }
 
+def destPath = "META-INF/maven/${project.group}/${rootProject.name}"
+def timestamp = System.currentTimeMillis().toString()
+def pomTokens = [projectVersion: archiveVer, projectTimestamp: timestamp, javaVersion: javaVersion]
+def propTokens = [projectVersion: archiveVer, projectGroupId: project.group, projectArtifactId: rootProject.name]
+
 jar {
-  group 'Build'
-  description "Assembles a jar archive containing the '${profile}' classes, POM and Maven properties."
-  
-  def destPath = "META-INF/maven/${project.group}/${rootProject.name}"
-  def timestamp = Long.valueOf(System.currentTimeMillis()).toString()
-  def pomTokens = [projectVersion: archiveVer, projectTimestamp: timestamp, javaVersion: javaVersion]
-  def propTokens = [projectVersion: archiveVer, projectGroupId: project.group, projectArtifactId: rootProject.name]
-  
+  group = 'Build'
+  description = "Assembles a jar archive containing the '${profile}' classes, POM and Maven properties."
+
   from('.') {
-    include('pom.xml')
-    into(destPath)
+    include 'pom.xml'
+    into destPath
     filter(ReplaceTokens, tokens: pomTokens)
   }
   from('.') {
-    include('pom.properties')
-    into(destPath)
+    include 'pom.properties'
+    into destPath
     filter(ReplaceTokens, tokens: propTokens)
   }
-  archiveFileName = archiveBase + '.jar'
+  archiveFileName = "${archiveBase}.jar"
   destinationDirectory = libsDir
 }
 
-clean {
-  delete buildRoot
-}
-
 sourcesJar {
-  group 'Build'
-  description "Assembles a jar archive containing the '${profile}' source files."
-  
-  classifier = 'sources'
+  group = 'Build'
+  description = "Assembles a jar archive containing the '${profile}' source files."
+
   from sourceSets.main.allSource
-  archiveFileName = archiveBase + '-sources.jar'
+  archiveFileName = "${archiveBase}-sources.jar"
   destinationDirectory = libsDir
 }
 
 javadocJar {
   dependsOn javadoc
-  group 'Build'
-  description "Assembles a jar archive containing the '${profile}' JavaDoc files."
-  
-  classifier = 'javadoc'
+  group = 'Build'
+  description = "Assembles a jar archive containing the '${profile}' JavaDoc files."
+
   from javadoc.destinationDir
-  archiveFileName = archiveBase + '-javadoc.jar'
+  archiveFileName = "${archiveBase}-javadoc.jar"
   destinationDirectory = libsDir
 }
 
 test {
   useTestNG()
   include '**/*Test.class'
-  reports.html.destination = file("${buildDir}/reports/testng")
+  reports.html.outputLocation = layout.buildDirectory.dir('reports/testng')
   testLogging.showStandardStreams = true
-}
-
-artifacts {
-  archives tasks['sourcesJar']
-  archives tasks['javadocJar']
 }
 
 publishing {
   publications {
     mavenJava(MavenPublication) {
-      from(components.java)
+      from components.java
       pom {
         name = 'TestNG Foundation'
         groupId = project.group
@@ -165,18 +152,18 @@ signing {
   sign publishing.publications.mavenJava
 }
 
-task install {
+tasks.register('install') {
   dependsOn publishToMavenLocal
-  group publishToMavenLocal.group
-  description '[alias] ' + publishToMavenLocal.description
+  group = publishToMavenLocal.group
+  description = '[alias] ' + publishToMavenLocal.description
 }
 
 nexusPublishing {
   packageGroup = 'com.nordstrom'
   repositories {
     ossrh {
-      nexusUrl.set(uri("https://ossrh-staging-api.central.sonatype.com/service/local/"))
-      snapshotRepositoryUrl.set(uri("https://ossrh-staging-api.central.sonatype.com/content/repositories/snapshots/"))
+      nexusUrl.set(uri('https://ossrh-staging-api.central.sonatype.com/service/local/'))
+      snapshotRepositoryUrl.set(uri('https://ossrh-staging-api.central.sonatype.com/content/repositories/snapshots/'))
       if (project.hasProperty('ossrhStagingProfileId')) {
         stagingProfileId = ossrhStagingProfileId
       }
@@ -187,15 +174,12 @@ nexusPublishing {
 repositories {
   mavenLocal()
   mavenCentral()
-  maven { url 'https://repo1.maven.org/maven2' }
-  maven { url 'https://repo.maven.apache.org/maven2' }
-  maven { url "${projectDir}/repo" }
 }
 
 dependencies {
   constraints {
-    api 'com.nordstrom.tools:java-utils:3.4.1'
-    api 'com.nordstrom.tools:settings:3.0.9'
+    api 'com.nordstrom.tools:java-utils:4.0.0'
+    api 'com.nordstrom.tools:settings:4.0.0'
   }
   api 'com.nordstrom.tools:java-utils'
   api 'com.nordstrom.tools:settings'
