@@ -7,6 +7,7 @@ plugins {
   id 'signing'
   id 'io.github.gradle-nexus.publish-plugin' version '2.0.0'
   id 'pl.allegro.tech.build.axion-release' version '1.21.1'
+  id "net.linguica.maven-settings" version "0.5"
 }
 
 group = 'com.nordstrom.tools'
@@ -151,6 +152,15 @@ publishing {
 signing {
   useGpgCmd()
   sign publishing.publications.mavenJava
+}
+
+mavenSettings {
+  servers {
+    ossrh {
+      project.ext.ossrhUsername = username
+      project.ext.ossrhPassword = password
+    }
+  }
 }
 
 tasks.register('install') {
