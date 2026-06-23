@@ -273,7 +273,7 @@ public void setDriver(WebDriver driver) {
     ITestResult result = Reporter.getCurrentTestResult();
     // if setting driver
     if (driver != null) {
-        // NOTE: tracker gets stored in test result
+        // store new tracked object in test result
         new TrackedObject<>(result, DRIVER, driver);
     } else { // otherwise (clearing driver)
         // extract driver from test result
