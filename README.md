@@ -267,18 +267,25 @@ The attribute propagation feature of **ExecutionFlowController** produces many-t
 This attribute propagation feature provides an easy way for tests to maintain context-specific values. For any attribute whose value is an object reference, this behavior can result in the creation of additional references that will prevent the object from being marked for garbage collection until the entire suite of tests completes. For these sorts of attributes, **TestNG Foundation** provides the [TrackedObject](https://github.com/sbabcoc/TestNG-Foundation/blob/master/src/main/java/com/nordstrom/automation/testng/TrackedObject.java) class.  
 **TrackedObject** is a reference-tracking wrapper used by **PropertyManager** to record the test result objects to which an object reference is propagated. This enables the client to release all references when the object is no longer needed:
 ```java
-private static final DRIVER = "Driver";
+private static final String DRIVER = "Driver";
 
 public void setDriver(WebDriver driver) {
     ITestResult result = Reporter.getCurrentTestResult();
+    // if driver spec'd
     if (driver != null) {
+        // NOTE: tracker gets stored in test result
         new TrackedObject<>(result, DRIVER, driver);
-    } else {
+    } else { // otherwise (no driver spec'd)
+        // extract driver from test result
         Object val = result.getAttribute(DRIVER);
+        // if driver is being tracked
         if (val instanceof TrackedObject) {
+            // release test result driver ref
             ((TrackedObject<?>) val).release();
-        } else {
+        } else { // otherwise (not tracked)
+            // set driver attribute to 'null'
             result.setAttribute(DRIVER, null);
+            // remove driver attribute
             result.removeAttribute(DRIVER);
         }
     }
@@ -287,10 +294,13 @@ public void setDriver(WebDriver driver) {
 public WebDriver getDriver() {
     Object obj;
     ITestResult result = Reporter.getCurrentTestResult();
+    // extract driver from test result
     Object val = result.getAttribute(DRIVER);
+    // if driver is being tracked
     if (val instanceof TrackedObject) {
+        // get tracked driver value
         obj = ((TrackedObject<?>) val).getValue();
-    } else {
+    } else { // otherwise (not tracked)
         obj = val;
     }
     return (WebDriver) obj;
