@@ -271,11 +271,11 @@ private static final String DRIVER = "Driver";
 
 public void setDriver(WebDriver driver) {
     ITestResult result = Reporter.getCurrentTestResult();
-    // if driver spec'd
+    // if setting driver
     if (driver != null) {
         // NOTE: tracker gets stored in test result
         new TrackedObject<>(result, DRIVER, driver);
-    } else { // otherwise (no driver spec'd)
+    } else { // otherwise (clearing driver)
         // extract driver from test result
         Object val = result.getAttribute(DRIVER);
         // if driver is being tracked
