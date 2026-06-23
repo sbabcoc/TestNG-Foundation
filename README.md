@@ -284,6 +284,7 @@ public void setDriver(WebDriver driver) {
             ((TrackedObject<?>) val).release();
         } else { // otherwise (not tracked)
             // set driver attribute to 'null'
+            // (needed prior to TestNG 7.6.0)
             result.setAttribute(DRIVER, null);
             // remove driver attribute
             result.removeAttribute(DRIVER);
