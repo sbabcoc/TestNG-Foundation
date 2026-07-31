@@ -21,6 +21,10 @@ public class VersionUtility {
 
     public static Class<? extends IRetryAnalyzer> getRetryAnalyzer() {
         ITestResult testResult = Reporter.getCurrentTestResult();
+        if (testResult == null) {
+            return null;
+        }
+        
         ITestNGMethod method = testResult.getMethod();
         Class<? extends IRetryAnalyzer> clazz = method.getRetryAnalyzerClass();
         return (clazz != DisabledRetryAnalyzer.class) ? clazz : null;
