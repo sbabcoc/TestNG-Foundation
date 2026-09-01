@@ -177,6 +177,7 @@ public class ExecutionFlowController implements IInvokedMethodListener, IAnnotat
             fromBefore.set(testResult);
         } else if (method.isTestMethod()) {
             fromMethod.set(testResult);
+            fromBefore.remove();
         } else if (method.getTestMethod().isAfterMethodConfiguration()) {
             // nothing to do here
         }
